@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: user-service
+  security:
+    oauth2:
+      client:
+        registration:
+          myClient:
+            client-id: myClient
+            client-secret: HqJlrwPEcu6sfoh1L8zD29GhJ2yg9m51
+            scope:
+              - openid
+              - profile
+              - roles
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8082/
+        provider:
+          myClient:
+            issuer-uri: http://localhost:8180/realms/myRealm
+
+server:
+  port: ${USER_SERVICE_PORT:8082}
+
+eureka:
+  client:
+    prefer-same-zone-eureka: true
+    healthcheck:
+      enabled: true
+    instance-info-replication-interval-seconds: 2
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URI:http://localhost:8181/eureka/}
+  instance:
+    prefer-ip-address: true
