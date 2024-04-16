@@ -1,22 +1,7 @@
 spring:
   application:
     name: user-service
-  security:
-    oauth2:
-      client:
-        registration:
-          myClient:
-            client-id: myClient
-            client-secret: HqJlrwPEcu6sfoh1L8zD29GhJ2yg9m51
-            scope:
-              - openid
-              - profile
-              - roles
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8082/
-        provider:
-          myClient:
-            issuer-uri: http://localhost:8180/realms/myRealm
+
 
 server:
   port: ${USER_SERVICE_PORT:8082}

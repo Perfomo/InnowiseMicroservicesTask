@@ -6,11 +6,27 @@ spring:
       mvc:
         routes:
           - id: user-service
-            uri: http://localhost:8082
+            uri: http://localhost:8082/
             predicates:
-              - Path=/user-service/**
+              - Path=/users/**
             filters:
-              - RewritePath=/user-service, /
+              - RewritePath=/users, /
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/microServsRealm
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/realms/microServsRealm
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: gatewayClient
+            client-secret: Z2jPIyTUA9562YkipbTtabNu2gILR69C
+            scope: openid
+
 server:
   port: ${GATEWAY_SERVICE_PORT:8081}
 
