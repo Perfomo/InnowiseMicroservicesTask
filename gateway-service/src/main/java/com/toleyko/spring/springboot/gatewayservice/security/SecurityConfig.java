@@ -15,9 +15,6 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import javax.print.DocFlavor;
-import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
@@ -30,7 +27,8 @@ public class SecurityConfig {
         http.oauth2Login(Customizer.withDefaults());
         return http
                 .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
-                        .requestMatchers("/**").hasRole("USER"))
+                        .requestMatchers("/products/**").hasRole("MANAGER")
+                        .requestMatchers("/users/**").hasRole("USER"))
                 .build();
     }
 
