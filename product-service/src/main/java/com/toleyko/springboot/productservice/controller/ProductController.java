@@ -12,6 +12,12 @@ public class ProductController {
 
     private ProductService productService;
 
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
     @GetMapping("/products")
     public List<Product> getAllStudents() {
         return productService.getAllProducts();
