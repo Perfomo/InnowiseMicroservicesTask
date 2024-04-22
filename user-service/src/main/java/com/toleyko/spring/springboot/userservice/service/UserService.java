@@ -34,7 +34,7 @@ public class UserService {
                 .create(user);
 
         if (response.getStatus() == 409) {
-            throw new UserAlreadyExistException("User with this username already exist.");
+            throw new UserAlreadyExistException("User with this username or email is already exist.");
         }
         if (response.getStatus() == 400) {
             throw new BadUserDataException("Bad user data.");

@@ -1,4 +1,4 @@
-package com.toleyko.spring.springboot.gatewayservice.security;
+package com.toleyko.spring.springboot.userservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,22 +15,22 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
 import java.util.stream.Stream;
+
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     @Bean
-    public SecurityFilterChain spSecurityWebFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain SecurityWebFilterChain(HttpSecurity http) throws Exception {
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         http.oauth2Login(Customizer.withDefaults());
         return http
-                .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
-                        .requestMatchers("/products/**").hasRole("MANAGER")
-                        .requestMatchers("/users/**").permitAll())
+                .authorizeHttpRequests(c -> c.anyRequest().permitAll())
                 .build();
     }
+
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
