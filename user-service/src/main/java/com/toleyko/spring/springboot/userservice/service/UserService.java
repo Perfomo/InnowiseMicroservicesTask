@@ -65,11 +65,9 @@ public class UserService {
         return userRepresentation.getFirst();
     }
 
-    public UserRepresentation updateUser(String userName, UserDTO userDTO) {
-        UserRepresentation user = this.createUserRepresentation(userDTO);
-        UserRepresentation oldUser = keycloak.realm(KeycloakConfig.realm).users().searchByUsername(userName, true).getFirst();
-        keycloak.realm(KeycloakConfig.realm).users().get(oldUser.getId()).update(user);
-        return user;
+    public UserRepresentation updateUser(String userName, UserDTO userDTO) throws UserAlreadyExistException, BadUserDataException {
+        this.deleteUser(userName);
+        return this.createUser(userDTO);
     }
 
     public void deleteUser(String userName) {
@@ -79,7 +77,7 @@ public class UserService {
 
     private UserRepresentation createUserRepresentation(UserDTO userDTO) {
         UserRepresentation user = new UserRepresentation();
-        user.setUsername(userDTO.getUserName());
+        user.setUsername(userDTO.getUsername());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());

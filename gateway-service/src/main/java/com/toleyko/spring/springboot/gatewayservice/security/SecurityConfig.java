@@ -1,10 +1,13 @@
 package com.toleyko.spring.springboot.gatewayservice.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -24,12 +27,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain spSecurityWebFilterChain(HttpSecurity http) throws Exception {
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+        http.csrf(c -> c.ignoringRequestMatchers("/users/api/users", HttpMethod.POST));
+        http.authorizeHttpRequests(c -> c.requestMatchers("/users/**").permitAll()
+                .requestMatchers("/error").permitAll());
         http.oauth2Login(Customizer.withDefaults());
-        return http
-                .authorizeHttpRequests(c -> c.requestMatchers("/error").permitAll()
-                        .requestMatchers("/products/**").hasRole("MANAGER")
-                        .requestMatchers("/users/**").permitAll())
-                .build();
+        http.authorizeHttpRequests(c -> c.requestMatchers("/products/**").hasRole("MANAGER"));
+        return http.build();
     }
 
     @Bean

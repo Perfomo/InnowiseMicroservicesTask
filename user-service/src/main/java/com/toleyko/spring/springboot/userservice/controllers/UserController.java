@@ -22,7 +22,7 @@ public class UserController {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
             return userService.getUsers();
         }
-        throw new AccessDeniedException("You are not a manager");
+        throw new AccessDeniedException("Access denied");
     }
 
     @PostMapping("/users")
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{userName}")
-    public UserRepresentation updateUser(@PathVariable String userName, @RequestBody UserDTO userDTO) throws AccessDeniedException {
+    public UserRepresentation updateUser(@PathVariable String userName, @RequestBody UserDTO userDTO) throws AccessDeniedException, UserAlreadyExistException, BadUserDataException {
         if (this.isPermitted(userName)) {
             return userService.updateUser(userName, userDTO);
         }
@@ -62,6 +62,6 @@ public class UserController {
     private boolean isPermitted(String userName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserRepresentation user = userService.getUserByUsername(userName);
-        return user.getId().equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
+        return user.getUsername().equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
     }
 }
