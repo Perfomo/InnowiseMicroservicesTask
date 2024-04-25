@@ -9,17 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
     private UserService userService;
-
     @GetMapping("/users")
     public List<UserRepresentation> getUsers() throws AccessDeniedException {
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
             return userService.getUsers();
         }
         throw new AccessDeniedException("Access denied");
@@ -59,7 +59,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    private boolean isPermitted(String userName) {
+    public boolean isPermitted(String userName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserRepresentation user = userService.getUserByUsername(userName);
         return user.getUsername().equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
