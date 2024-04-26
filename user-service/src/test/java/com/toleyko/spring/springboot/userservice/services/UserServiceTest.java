@@ -1,9 +1,9 @@
-package com.toleyko.spring.springboot.userservice.service;
+package com.toleyko.spring.springboot.userservice.services;
 
 import com.toleyko.spring.springboot.userservice.dto.UserDTO;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.BadUserDataException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.NoSuchUserException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.NoSuchUserException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlreadyExistException;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,6 @@ public class UserServiceTest {
     private Keycloak keycloak;
     private UsersResource usersResource;
 
-
     @BeforeEach
     public void setUp() {
         this.keycloak = mock(Keycloak.class);
@@ -46,7 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testCreateUser_SuccessfulCreation() throws UserAlreadyExistException, BadUserDataException, URISyntaxException {
+    void createUser_SuccessfulTest() throws UserAlreadyExistException, BadUserDataException, URISyntaxException {
 
         Response successfulResponse = Response.status(Response.Status.CREATED).location(new URI("/api/users")).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(successfulResponse);
@@ -69,7 +68,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void UserService_CreateUser_UserAlreadyExistExceptionTest() {
+    void createUser_UserAlreadyExistExceptionTest() {
 
         Response conflictResponse = Response.status(Response.Status.CONFLICT).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(conflictResponse);
@@ -83,7 +82,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void UserService_CreateUser_BadUserDataExceptionTest() {
+    void createUser_BadUserDataExceptionTest() {
 
         Response badResponse = Response.status(Response.Status.BAD_REQUEST).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(badResponse);
@@ -97,7 +96,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void UserService_getUserByUsername_successfulCreationTest() {
+    public void getUserByUsername_successfulTest() {
         String username = "testUser";
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation userRepresentation = new UserRepresentation();
@@ -118,7 +117,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void UserService_getUserByUsername_NoSuchUserExceptionTest() {
+    public void getUserByUsername_NoSuchUserExceptionTest() {
         String username = "testUser";
         List<UserRepresentation> userRepresentations = new ArrayList<>();
         UserRepresentation userRepresentation = new UserRepresentation();
@@ -138,5 +137,4 @@ public class UserServiceTest {
             userService.getUserByUsername(username);
         });
     }
-
 }

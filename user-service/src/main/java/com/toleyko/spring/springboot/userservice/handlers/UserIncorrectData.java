@@ -1,4 +1,4 @@
-package com.toleyko.spring.springboot.userservice.handler;
+package com.toleyko.spring.springboot.userservice.handlers;
 
 import lombok.Data;
 

@@ -1,8 +1,9 @@
-package com.toleyko.spring.springboot.userservice.handler;
+package com.toleyko.spring.springboot.userservice.handlers;
 
-import com.toleyko.spring.springboot.userservice.handler.exceptions.BadUserDataException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.NoSuchUserException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.NoSuchUserException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlreadyExistException;
+import jakarta.ws.rs.ForbiddenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,13 @@ public class GlobalUserHandler {
         UserIncorrectData data = new UserIncorrectData();
         data.setInfo(badUserDataException.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<UserIncorrectData> handleException(ForbiddenException exception) {
+        UserIncorrectData data = new UserIncorrectData();
+        data.setInfo(exception.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler

@@ -1,4 +1,4 @@
-package com.toleyko.spring.springboot.userservice.handler.exceptions;
+package com.toleyko.spring.springboot.userservice.handlers.exceptions;
 
 public class UserAlreadyExistException extends Exception {
 

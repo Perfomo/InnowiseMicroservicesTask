@@ -1,8 +1,9 @@
-package com.toleyko.spring.springboot.userservice.handler;
+package com.toleyko.spring.springboot.userservice.handlers;
 
-import com.toleyko.spring.springboot.userservice.handler.exceptions.BadUserDataException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.NoSuchUserException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.NoSuchUserException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlreadyExistException;
+import jakarta.ws.rs.ForbiddenException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ public class GlobalUserHandlerTest {
     private static final UserIncorrectData userIncorrectData = new UserIncorrectData();
 
     @Test
-    public void GlobalUserHandler_handleException_noSuchUserTest() {
+    public void handleException_noSuchUserTest() {
         NoSuchUserException noSuchUserException = new NoSuchUserException("User not found");
 
         ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(noSuchUserException);
@@ -25,7 +26,7 @@ public class GlobalUserHandlerTest {
     }
 
     @Test
-    public void GlobalUserHandler_handleException_UserAlreadyExistExceptionTest() {
+    public void handleException_UserAlreadyExistExceptionTest() {
         UserAlreadyExistException userAlreadyExistException = new UserAlreadyExistException("User already exists");
 
         ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(userAlreadyExistException);
@@ -36,7 +37,7 @@ public class GlobalUserHandlerTest {
     }
 
     @Test
-    public void GlobalUserHandler_handleException_BadUserDataExceptionTest() {
+    public void handleException_BadUserDataExceptionTest() {
         BadUserDataException badUserDataException = new BadUserDataException("Bad user data.");
 
         ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(badUserDataException);
@@ -47,7 +48,18 @@ public class GlobalUserHandlerTest {
     }
 
     @Test
-    public void GlobalUserHandler_handleException_ExceptionTest() {
+    public void handleException_ForbiddenExceptionTest() {
+        ForbiddenException forbiddenException = new ForbiddenException("Access denied");
+
+        ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(forbiddenException);
+        userIncorrectData.setInfo("Access denied");
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals(userIncorrectData, response.getBody());
+    }
+
+    @Test
+    public void handleException_ExceptionTest() {
         Exception exception = new Exception("Exception");
 
         ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(exception);

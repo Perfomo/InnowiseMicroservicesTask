@@ -1,17 +1,20 @@
-package com.toleyko.spring.springboot.userservice.service;
+package com.toleyko.spring.springboot.userservice.services;
 
 import com.toleyko.spring.springboot.userservice.Credentials;
-import com.toleyko.spring.springboot.userservice.config.KeycloakConfig;
+import com.toleyko.spring.springboot.userservice.configs.KeycloakConfig;
 import com.toleyko.spring.springboot.userservice.dto.UserDTO;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.BadUserDataException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.NoSuchUserException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.NoSuchUserException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlreadyExistException;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.common.util.Time;
+import org.keycloak.jose.jwk.JWK;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
@@ -65,14 +68,26 @@ public class UserService {
         return userRepresentation.getFirst();
     }
 
-    public UserRepresentation updateUser(String userName, UserDTO userDTO) throws UserAlreadyExistException, BadUserDataException {
-        this.deleteUser(userName);
-        return this.createUser(userDTO);
+    public UserRepresentation updateUser(String userName, UserDTO userDTO) {
+        UserRepresentation user = this.getUserByUsername(userName);
+        user.setUsername(userDTO.getUsername());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
+        keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).update(user);
+        return this.getUserByUsername(userName);
     }
 
     public void deleteUser(String userName) {
         UserRepresentation user = this.getUserByUsername(userName);
+        keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).logout();
         keycloak.realm(KeycloakConfig.realm).users().delete(user.getId());
+    }
+
+    public void logoutUser() {
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        keycloak.realm(KeycloakConfig.realm).users().get(id).logout();
     }
 
     private UserRepresentation createUserRepresentation(UserDTO userDTO) {
@@ -85,5 +100,6 @@ public class UserService {
         user.setCreatedTimestamp(Time.currentTimeMillis());
         return user;
     }
+
 
 }

@@ -2,13 +2,14 @@ package com.toleyko.spring.springboot.userservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.spring.springboot.userservice.dto.UserDTO;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.BadUserDataException;
-import com.toleyko.spring.springboot.userservice.handler.exceptions.UserAlreadyExistException;
-import com.toleyko.spring.springboot.userservice.service.UserService;
+import com.toleyko.spring.springboot.userservice.handlers.GlobalUserHandler;
+import com.toleyko.spring.springboot.userservice.handlers.UserPermissionHandler;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.jose.jwk.JWK;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
@@ -18,7 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -29,11 +29,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @AutoConfigureMockMvc
 @EnableWebSecurity
@@ -41,7 +39,8 @@ public class UserControllerTest {
 
     @Mock
     private UserService userService;
-    private UserController userController;
+    @Mock
+    private UserPermissionHandler userPermissionHandler;
     private MockMvc mockMvc;
 
     private UserRepresentation createTestUser(String username) {
@@ -58,10 +57,12 @@ public class UserControllerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        userController = new UserController();
+        UserController userController = new UserController();
         userController.setUserService(userService);
-        when(userController.isPermitted(anyString())).thenReturn(true);
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        userController.setPermissionHandler(userPermissionHandler);
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+                .setControllerAdvice(new GlobalUserHandler())
+                .build();
     }
 
     @Test
@@ -86,23 +87,19 @@ public class UserControllerTest {
         verify(userService, times(1)).getUsers();
     }
 
-//    @Test
-//    public void getUsers_UnAuthorisedTest() throws Exception {
-//        Authentication authentication = new UsernamePasswordAuthenticationToken("manager", "manager",
-//                Collections.singletonList(new SimpleGrantedAuthority("User")));
-//
-//        SecurityContext securityContext = SecurityContextHolder.getContext();
-//        securityContext.setAuthentication(authentication);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/users")
-//                        .with(authentication(authentication)))
-//                .andExpect(status().isForbidden());
-//                .andReturn();
+    @Test
+    public void getUsers_UnAuthorisedTest() throws Exception {
+        Authentication authentication = new UsernamePasswordAuthenticationToken("manager", "manager",
+                Collections.singletonList(new SimpleGrantedAuthority("User")));
 
-//        Assertions.assertThrows(AccessDeniedException.class, () -> {
-//            throw Objects.requireNonNull(result.getResolvedException());
-//        });
-//    }
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users")
+                        .with(authentication(authentication)))
+                .andExpect(status().isForbidden());
+        verify(userService, times(0)).getUsers();
+    }
 
     @Test
     public void createUser_SuccessfulCreationTest() throws Exception {
@@ -122,65 +119,135 @@ public class UserControllerTest {
         Assertions.assertNotNull(responseBody);
     }
 
-//    @Test
-//    public void createUser_UserAlreadyExistExceptionTest() throws Exception {
-//        UserDTO userDTO = new UserDTO("Per","3@d","root", "Kir", "Tol");
-//        UserRepresentation userRepresentation = new UserRepresentation();
-//        userRepresentation.setUsername("Per");
-//        when(userService.createUser(userDTO)).thenThrow(new UserAlreadyExistException("msg"));
-//
-//        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(userDTO)))
-//                .andExpect(status().isBadRequest())
-//                .andReturn();
-//
-//        UserAlreadyExistException exception = Assertions.assertThrows(UserAlreadyExistException.class, () -> {
-//            throw Objects.requireNonNull(result.getResolvedException());
-//        });
-//        Assertions.assertEquals("msg", exception.getMessage());
-//    }
+    @Test
+    public void createUser_UserAlreadyExistExceptionTest() throws Exception {
+        UserDTO userDTO = new UserDTO("Per","3@d","root", "Kir", "Tol");
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setUsername("Per");
+        when(userService.createUser(userDTO)).thenThrow(new UserAlreadyExistException("msg"));
 
-//    @Test
-//    public void createUser_BadUserDataExceptionTest() throws Exception {
-//        UserDTO userDTO = new UserDTO("Per","3@d","root", "Kir", "Tol");
-//        UserRepresentation userRepresentation = new UserRepresentation();
-//        userRepresentation.setUsername("Per");
-//        when(userService.createUser(userDTO)).thenThrow(new BadUserDataException("msg"));
-//
-//        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(userDTO)))
-//                .andExpect(status().isBadRequest())
-//                .andReturn();
-//
-//        BadUserDataException exception = Assertions.assertThrows(BadUserDataException.class, () -> {
-//            throw Objects.requireNonNull(result.getResolvedException());
-//        });
-//        Assertions.assertEquals("msg", exception.getMessage());
-//    }
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(userDTO)))
+                .andExpect(status().isConflict());
+        verify(userService, times(1)).createUser(userDTO);
+    }
 
-//    @Test
-//    public void getUser_SuccessfulTest() throws Exception {
-//        String username = "per";
-//        UserRepresentation userRepresentation = new UserRepresentation();
-//        userRepresentation.setUsername(username);
-//        when(userController.isPermitted(username)).thenReturn(true);
-//        when(userService.getUserByUsername(username)).thenReturn(userRepresentation);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.username").exists())
-//                .andExpect(jsonPath("$.username").value(username));
-//        verify(userService, times(1)).getUserByUsername(username);
-//    }
+    @Test
+    public void createUser_BadUserDataExceptionTest() throws Exception {
+        UserDTO userDTO = new UserDTO("Per","3@d","root", "Kir", "Tol");
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setUsername("Per");
+        when(userService.createUser(userDTO)).thenThrow(new BadUserDataException("msg"));
 
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(userDTO)))
+                .andExpect(status().isBadRequest());
+        verify(userService, times(1)).createUser(userDTO);
+    }
 
+    @Test
+    public void getUser_SuccessfulTest() throws Exception {
+        String username = "per";
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setUsername(username);
+        doReturn(true).when(userPermissionHandler).isPermitted(username);
+        when(userService.getUserByUsername(username)).thenReturn(userRepresentation);
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").exists())
+                .andExpect(jsonPath("$.username").value(username));
+        verify(userService, times(1)).getUserByUsername(username);
+    }
 
+    @Test
+    public void getUser_ForbiddenExceptionTest() throws Exception {
+        String username = "per";
+        doReturn(false).when(userPermissionHandler).isPermitted(username);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username))
+                .andExpect(status().isForbidden());
+        verify(userService, times(0)).getUserByUsername(username);
+    }
 
+    @Test
+    public void updateUser_SuccessfulTest() throws Exception {
+        String username = "per";
+        UserRepresentation userRepresentation = new UserRepresentation();
+        UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");
+        userRepresentation.setUsername(username);
+        doReturn(true).when(userPermissionHandler).isPermitted(username);
+        when(userService.updateUser(username, userDTO)).thenReturn(userRepresentation);
 
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(userDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").exists())
+                .andExpect(jsonPath("$.username").value(username));
+        verify(userService, times(1)).updateUser(username, userDTO);
+    }
 
+    @Test
+    public void updateUser_BadUserDataExceptionTest() throws Exception {
+        String username = "per";
+        UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");
+        doReturn(true).when(userPermissionHandler).isPermitted(username);
+        when(userService.updateUser(username, userDTO)).thenThrow(new BadUserDataException("msg"));
 
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(userDTO)))
+                .andExpect(status().isBadRequest());
+        verify(userService, times(1)).updateUser(username, userDTO);
+    }
+
+    @Test
+    public void updateUser_UserAlreadyExistExceptionTest() throws Exception {
+        String username = "per";
+        UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");
+        doReturn(true).when(userPermissionHandler).isPermitted(username);
+        when(userService.updateUser(username, userDTO)).thenThrow(new UserAlreadyExistException("msg"));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(userDTO)))
+                .andExpect(status().isConflict());
+        verify(userService, times(1)).updateUser(username, userDTO);
+    }
+
+    @Test
+    public void updateUser_ForbiddenExceptionTest() throws Exception {
+        String username = "per";
+        UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");
+        doReturn(false).when(userPermissionHandler).isPermitted(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)                      .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userDTO)))
+                .andExpect(status().isForbidden());
+        verify(userService, times(0)).updateUser(username, userDTO);
+    }
+
+    @Test
+    public void deleteUserByUserName_SuccessfulTest() throws Exception {
+        String username = "per";
+        doReturn(true).when(userPermissionHandler).isPermitted(username);
+        doNothing().when(userService).deleteUser(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/{username}", username))
+                .andExpect(status().isOk());
+        verify(userService, times(1)).deleteUser(username);
+    }
+
+    @Test
+    public void deleteUserByUserName_ForbiddenExceptionTest() throws Exception {
+        String username = "per";
+        doReturn(false).when(userPermissionHandler).isPermitted(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/{username}", username))
+                .andExpect(status().isForbidden());
+        verify(userService, times(0)).deleteUser(username);
+    }
 
 }

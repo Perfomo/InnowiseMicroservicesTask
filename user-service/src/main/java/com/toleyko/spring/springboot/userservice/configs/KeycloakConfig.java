@@ -1,4 +1,4 @@
-package com.toleyko.spring.springboot.userservice.config;
+package com.toleyko.spring.springboot.userservice.configs;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
