@@ -9,10 +9,8 @@ import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlready
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.common.util.Time;
-import org.keycloak.jose.jwk.JWK;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -100,6 +98,4 @@ public class UserService {
         user.setCreatedTimestamp(Time.currentTimeMillis());
         return user;
     }
-
-
 }

@@ -9,11 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserPermissionHandler {
-    @Autowired
     private UserService userService;
     public boolean isPermitted(String userName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserRepresentation user = userService.getUserByUsername(userName);
         return user.getUsername().equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
+    }
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

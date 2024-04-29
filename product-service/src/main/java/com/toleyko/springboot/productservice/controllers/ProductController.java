@@ -1,6 +1,7 @@
-package com.toleyko.springboot.productservice.controller;
+package com.toleyko.springboot.productservice.controllers;
 
 import com.toleyko.springboot.productservice.entity.Product;
+import com.toleyko.springboot.productservice.handlers.exceptions.ProductNotFoundException;
 import com.toleyko.springboot.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,41 +13,33 @@ public class ProductController {
 
     private ProductService productService;
 
-
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
     @GetMapping("/products")
-    public List<Product> getAllStudents() {
+    public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
     @GetMapping("/products/{id}")
-    public Product getStudentById(@PathVariable Integer id) {
+    public Product getProductById(@PathVariable Integer id) throws ProductNotFoundException {
         return productService.getProductById(id);
     }
 
     @PostMapping("/products")
-    public Product saveStudent(@RequestBody Product product) {
-        productService.saveProduct(product);
-        return product;
+    public Product saveProduct(@RequestBody Product product) {
+        return productService.saveProduct(product);
     }
 
     @PutMapping("/products")
-    public Product updateStudent(@RequestBody Product product) {
-        productService.saveProduct(product);
-        return product;
+    public Product updateProduct(@RequestBody Product product) {
+        return productService.saveProduct(product);
     }
 
     @DeleteMapping("/products/{id}")
-    public void deleteStudentById(@PathVariable Integer id) {
+    public void deleteProductById(@PathVariable Integer id) {
         productService.deleteProductById(id);
     }
 
     @Autowired
-    public void setStudentService(ProductService productService) {
+    public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 }

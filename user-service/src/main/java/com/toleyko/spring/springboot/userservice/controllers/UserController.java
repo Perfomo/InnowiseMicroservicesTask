@@ -5,6 +5,7 @@ import com.toleyko.spring.springboot.userservice.handlers.UserPermissionHandler;
 import com.toleyko.spring.springboot.userservice.handlers.exceptions.BadUserDataException;
 import com.toleyko.spring.springboot.userservice.handlers.exceptions.UserAlreadyExistException;
 import com.toleyko.spring.springboot.userservice.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.ForbiddenException;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{userName}")
-    public UserRepresentation updateUser(@PathVariable String userName, @RequestBody UserDTO userDTO) throws ForbiddenException, UserAlreadyExistException, BadUserDataException {
+    public UserRepresentation updateUser(@PathVariable String userName, @RequestBody UserDTO userDTO) throws ForbiddenException {
         if (userPermissionHandler.isPermitted(userName)) {
             return userService.updateUser(userName, userDTO);
         }
@@ -59,7 +60,6 @@ public class UserController {
 
     @GetMapping("/logout")
     public void logoutUser() {
-        System.out.println("hi");
         userService.logoutUser();
     }
 
@@ -70,7 +70,6 @@ public class UserController {
 
     @Autowired
     public void setPermissionHandler(UserPermissionHandler userPermissionHandler) {
-        System.out.println("hi");
         this.userPermissionHandler = userPermissionHandler;
     }
 }

@@ -2,9 +2,11 @@ package com.toleyko.springboot.productservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
 @Entity
+@Accessors(chain = true)
 @Table(name = "products")
 public class Product {
     @Id
@@ -12,7 +14,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @Column(name = "cost")

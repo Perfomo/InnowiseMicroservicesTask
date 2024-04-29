@@ -2,6 +2,7 @@ package com.toleyko.springboot.productservice.service;
 
 import com.toleyko.springboot.productservice.dao.ProductRepository;
 import com.toleyko.springboot.productservice.entity.Product;
+import com.toleyko.springboot.productservice.handlers.exceptions.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -17,13 +18,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(Integer id) {
-        Product product = null;
+    public Product getProductById(Integer id) throws ProductNotFoundException {
         Optional<Product> optional = productRepository.findById(id);
         if (optional.isPresent()) {
-            product = optional.get();
+            return optional.get();
         }
-        return product;
+        throw new ProductNotFoundException("Product not found");
     }
 
     @Override
@@ -32,8 +32,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void saveProduct(Product product) {
-        productRepository.save(product);
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
     }
 
     @Autowired

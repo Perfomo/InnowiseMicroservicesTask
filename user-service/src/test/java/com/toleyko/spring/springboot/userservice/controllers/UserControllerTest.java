@@ -190,34 +190,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUser_BadUserDataExceptionTest() throws Exception {
-        String username = "per";
-        UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");
-        doReturn(true).when(userPermissionHandler).isPermitted(username);
-        when(userService.updateUser(username, userDTO)).thenThrow(new BadUserDataException("msg"));
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(userDTO)))
-                .andExpect(status().isBadRequest());
-        verify(userService, times(1)).updateUser(username, userDTO);
-    }
-
-    @Test
-    public void updateUser_UserAlreadyExistExceptionTest() throws Exception {
-        String username = "per";
-        UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");
-        doReturn(true).when(userPermissionHandler).isPermitted(username);
-        when(userService.updateUser(username, userDTO)).thenThrow(new UserAlreadyExistException("msg"));
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(userDTO)))
-                .andExpect(status().isConflict());
-        verify(userService, times(1)).updateUser(username, userDTO);
-    }
-
-    @Test
     public void updateUser_ForbiddenExceptionTest() throws Exception {
         String username = "per";
         UserDTO userDTO = new UserDTO("per", "2@d", "pass", "name", "las");

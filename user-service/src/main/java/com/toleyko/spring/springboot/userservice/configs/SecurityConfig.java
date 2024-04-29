@@ -16,6 +16,9 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
+
 import java.util.stream.Stream;
 
 @Configuration
@@ -47,7 +50,6 @@ public class SecurityConfig {
                                     .map(GrantedAuthority.class::cast))
                     .toList();
         });
-
         return converter;
     }
 
