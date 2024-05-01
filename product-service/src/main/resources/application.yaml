@@ -1,10 +1,6 @@
 spring:
   application:
     name: product-service
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
   datasource:
     driver-class-name: org.postgresql.Driver
     password: bestuser

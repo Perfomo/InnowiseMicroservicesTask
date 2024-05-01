@@ -19,6 +19,13 @@ spring:
             filters:
               - RewritePath=/products/(?<segment>.*), /$\{segment}
 
+          - id: inventory-service
+            uri: http://localhost:8084/
+            predicates:
+              - Path=/inventory/**
+            filters:
+              - RewritePath=/inventory/(?<segment>.*), /$\{segment}
+
   security:
     oauth2:
       resourceserver:

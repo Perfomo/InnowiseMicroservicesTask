@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/error").permitAll());
         http.oauth2Login(Customizer.withDefaults());
         http.authorizeHttpRequests(c -> c.requestMatchers("/products/**").hasRole("MANAGER"));
+        http.authorizeHttpRequests(c -> c.requestMatchers("/inventory/**").hasRole("MANAGER"));
         return http.build();
     }
 

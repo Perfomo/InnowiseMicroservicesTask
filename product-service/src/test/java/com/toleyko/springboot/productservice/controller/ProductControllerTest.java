@@ -1,4 +1,4 @@
-package com.toleyko.springboot.productservice.controllers;
+package com.toleyko.springboot.productservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.productservice.entity.Product;
@@ -82,14 +82,15 @@ public class ProductControllerTest {
 
     @Test
     public void updateProduct_SuccessfulTest() throws Exception {
-        Product product = new Product().setId(1).setName("Car").setCost(10);
-        when(productService.saveProduct(product)).thenReturn(product);
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/products")
+        Integer id = 1;
+        Product product = new Product().setId(id).setName("Car").setCost(10);
+        when(productService.updateProductById(id, product)).thenReturn(product);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(product)))
                 .andExpect(status().isOk())
                 .andReturn();
-        verify(productService, times(1)).saveProduct(product);
+        verify(productService, times(1)).updateProductById(id, product);
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertNotNull(responseBody);
     }

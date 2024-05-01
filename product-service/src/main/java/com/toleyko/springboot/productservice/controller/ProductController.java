@@ -1,7 +1,7 @@
-package com.toleyko.springboot.productservice.controllers;
+package com.toleyko.springboot.productservice.controller;
 
 import com.toleyko.springboot.productservice.entity.Product;
-import com.toleyko.springboot.productservice.handlers.exceptions.ProductNotFoundException;
+import com.toleyko.springboot.productservice.handlers.exception.ProductNotFoundException;
 import com.toleyko.springboot.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +28,9 @@ public class ProductController {
         return productService.saveProduct(product);
     }
 
-    @PutMapping("/products")
-    public Product updateProduct(@RequestBody Product product) {
-        return productService.saveProduct(product);
+    @PutMapping("/products/{id}")
+    public Product updateProduct(@PathVariable Integer id, @RequestBody Product product) throws ProductNotFoundException {
+        return productService.updateProductById(id, product);
     }
 
     @DeleteMapping("/products/{id}")
