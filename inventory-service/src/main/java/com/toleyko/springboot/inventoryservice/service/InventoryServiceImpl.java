@@ -27,6 +27,11 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public Remainder getRemainderByName(String name) {
+        return inventoryRepository.findByName(name);
+    }
+
+    @Override
     public void deleteRemainderById(Integer id) {
         inventoryRepository.deleteById(id);
     }

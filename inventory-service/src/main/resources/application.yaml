@@ -1,6 +1,10 @@
 spring:
   application:
     name: inventory-service
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: all-products-group-1
   datasource:
     driver-class-name: org.postgresql.Driver
     password: bestuser

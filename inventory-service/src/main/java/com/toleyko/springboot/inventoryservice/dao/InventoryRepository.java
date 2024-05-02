@@ -4,5 +4,5 @@ import com.toleyko.springboot.inventoryservice.entity.Remainder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InventoryRepository extends JpaRepository<Remainder, Integer> {
-
+    public Remainder findByName(String name);
 }

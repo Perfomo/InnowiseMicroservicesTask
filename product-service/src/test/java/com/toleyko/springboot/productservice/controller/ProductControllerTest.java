@@ -2,6 +2,7 @@ package com.toleyko.springboot.productservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.productservice.entity.Product;
+import com.toleyko.springboot.productservice.service.KafkaMessagePublisher;
 import com.toleyko.springboot.productservice.service.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,8 @@ import java.util.List;
 public class ProductControllerTest {
     @Mock
     private ProductService productService;
-
+    @Mock
+    private KafkaMessagePublisher publisher;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -32,6 +34,7 @@ public class ProductControllerTest {
         MockitoAnnotations.openMocks(this);
         ProductController productController = new ProductController();
         productController.setProductService(productService);
+        productController.setPublisher(publisher);
         mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
     }
 
@@ -70,6 +73,7 @@ public class ProductControllerTest {
     public void saveProduct_SuccessfulTest() throws Exception {
         Product product = new Product().setId(1).setName("Kir").setCost(999);
         when(productService.saveProduct(product)).thenReturn(product);
+        doNothing().when(publisher).sendMessageToTopic(anyString());
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(product)))
@@ -85,6 +89,7 @@ public class ProductControllerTest {
         Integer id = 1;
         Product product = new Product().setId(id).setName("Car").setCost(10);
         when(productService.updateProductById(id, product)).thenReturn(product);
+        when(productService.getProductById(id)).thenReturn(product);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(product)))
@@ -99,6 +104,8 @@ public class ProductControllerTest {
     public void deleteProductById_SuccessfulTest() throws Exception {
         Integer id = 1;
         doNothing().when(productService).deleteProductById(id);
+        when(productService.getProductById(id)).thenReturn(new Product());
+        doNothing().when(publisher).sendMessageToTopic(anyString());
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{id}", id))
                 .andExpect(status().isOk());
         verify(productService, times(1)).deleteProductById(id);
