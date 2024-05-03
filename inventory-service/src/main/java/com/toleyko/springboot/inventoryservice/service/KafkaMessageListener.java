@@ -8,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-
 @Service
 public class KafkaMessageListener {
-
     private InventoryServiceImpl inventoryService;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "all-products", groupId = "all-products-group-1")

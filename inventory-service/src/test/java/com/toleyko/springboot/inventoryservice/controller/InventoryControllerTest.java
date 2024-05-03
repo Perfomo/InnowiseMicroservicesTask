@@ -20,12 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryControllerTest {
-
     @Mock
     private InventoryServiceImpl inventoryService;
-
     private MockMvc mockMvc;
-
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);

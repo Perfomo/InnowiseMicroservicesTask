@@ -33,6 +33,8 @@ public class SecurityConfig {
         http.oauth2Login(Customizer.withDefaults());
         http.authorizeHttpRequests(c -> c.requestMatchers("/products/**").hasRole("MANAGER"));
         http.authorizeHttpRequests(c -> c.requestMatchers("/inventory/**").hasRole("MANAGER"));
+        http.authorizeHttpRequests(c -> c.requestMatchers("/orders/api/orders", HttpMethod.POST).authenticated());
+        http.authorizeHttpRequests(c -> c.requestMatchers("/orders/**").hasRole("MANAGER"));
         return http.build();
     }
 
