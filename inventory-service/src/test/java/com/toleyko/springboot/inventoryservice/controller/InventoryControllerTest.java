@@ -2,6 +2,8 @@ package com.toleyko.springboot.inventoryservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.inventoryservice.entity.Remainder;
+import com.toleyko.springboot.inventoryservice.handlers.GlobalInventoryHandler;
+import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
 import com.toleyko.springboot.inventoryservice.service.InventoryServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,10 @@ public class InventoryControllerTest {
         MockitoAnnotations.openMocks(this);
         InventoryController inventoryController = new InventoryController();
         inventoryController.setInventoryService(inventoryService);
-        mockMvc = MockMvcBuilders.standaloneSetup(inventoryController).build();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(inventoryController)
+                .setControllerAdvice(GlobalInventoryHandler.class)
+                .build();
     }
 
     @Test
@@ -62,6 +67,19 @@ public class InventoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value("pc"));
+
+        verify(inventoryService, times(1)).getRemainderById(id);
+    }
+
+    @Test
+    public void getRemainderById_RemainderNotFoundExceptionTest() throws Exception {
+        Integer id = 1;
+
+        when(inventoryService.getRemainderById(id)).thenThrow(RemainderNotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/inventory/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
 
         verify(inventoryService, times(1)).getRemainderById(id);
     }
@@ -101,6 +119,18 @@ public class InventoryControllerTest {
         verify(inventoryService, times(1)).updateRemainderById(id, remainder);
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertEquals(asJsonString(remainder), responseBody);
+    }
+    @Test
+    public void updateRemainder_RemainderNotFoundExceptionTest() throws Exception {
+        Remainder remainder = new Remainder().setName("pc");
+        Integer id = 1;
+
+        when(inventoryService.updateRemainderById(id, remainder)).thenThrow(RemainderNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/inventory/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(remainder)))
+                .andExpect(status().isNotFound());
+        verify(inventoryService, times(1)).updateRemainderById(id, remainder);
     }
 
     @Test

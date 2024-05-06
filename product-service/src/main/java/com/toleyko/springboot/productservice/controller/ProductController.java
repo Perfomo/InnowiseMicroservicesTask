@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.productservice.entity.Product;
 import com.toleyko.springboot.productservice.handlers.exception.ProductNotFoundException;
-import com.toleyko.springboot.productservice.service.KafkaMessagePublisher;
+import com.toleyko.springboot.productservice.service.KafkaToInventoryMessagePublisher;
 import com.toleyko.springboot.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class ProductController {
-
     private ProductService productService;
-
-    private KafkaMessagePublisher publisher;
-
+    private KafkaToInventoryMessagePublisher publisher;
     private ObjectMapper objectMapper = new ObjectMapper();
-
     @GetMapping("/products")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
@@ -32,19 +28,17 @@ public class ProductController {
 
     @PostMapping("/products")
     public Product saveProduct(@RequestBody Product product) throws JsonProcessingException {
-        Product product1 = productService.saveProduct(product);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"save", product1.getName()}));
-        return product1;
+        Product res = productService.saveProduct(product);
+        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"save", res.getName(), res.getCost().toString()}));
+        return res;
     }
 
     @PutMapping("/products/{id}")
     public Product updateProduct(@PathVariable Integer id, @RequestBody Product product) throws ProductNotFoundException, JsonProcessingException {
         String oldName = productService.getProductById(id).getName();
-        Product product1 = productService.updateProductById(id, product);
-        if (!oldName.equals(product.getName())) {
-            publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"update", oldName +"~"+ product1.getName()}));
-        }
-        return product1;
+        Product res = productService.updateProductById(id, product);
+        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"update", oldName +"~"+ res.getName(), res.getCost().toString()}));
+        return res;
     }
 
     @DeleteMapping("/products/{id}")
@@ -60,7 +54,7 @@ public class ProductController {
     }
 
     @Autowired
-    public void setPublisher(KafkaMessagePublisher publisher) {
+    public void setPublisher(KafkaToInventoryMessagePublisher publisher) {
         this.publisher = publisher;
     }
 }

@@ -2,10 +2,9 @@ package com.toleyko.springboot.orderservice.service;
 
 import com.toleyko.springboot.orderservice.dao.OrderRepository;
 import com.toleyko.springboot.orderservice.entity.Order;
-import com.toleyko.springboot.orderservice.handlers.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +29,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.deleteById(id);
     }
     @Override
-    public Order saveOrder(Order order, String userId) {
-
+    public Order saveOrder(Order order) {
         return orderRepository.save(order);
     }
     @Override
@@ -40,12 +38,11 @@ public class OrderServiceImpl implements OrderService {
         oldOrder.setStatus(order.getStatus());
         oldOrder.setNames(order.getNames());
         oldOrder.setCost(order.getCost());
-        orderRepository.save(oldOrder);
-        return oldOrder;
+        return orderRepository.save(oldOrder);
     }
 
     @Autowired
-    public void setRemainderRepository(OrderRepository orderRepository) {
+    public void setOrderRepository(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 }

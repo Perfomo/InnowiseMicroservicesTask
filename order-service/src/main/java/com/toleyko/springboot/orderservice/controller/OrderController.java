@@ -1,10 +1,12 @@
 package com.toleyko.springboot.orderservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.orderservice.entity.Order;
-import com.toleyko.springboot.orderservice.handlers.TokenHandler;
-import com.toleyko.springboot.orderservice.handlers.exception.ForbiddenException;
-import com.toleyko.springboot.orderservice.handlers.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.handler.TokenHandler;
+import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
+import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.service.KafkaToInventoryMessagePublisher;
 import com.toleyko.springboot.orderservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import java.util.List;
 public class OrderController {
     private OrderService orderService;
     private TokenHandler tokenHandler;
+    private KafkaToInventoryMessagePublisher publisher;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping("/orders")
     public List<Order> getAllOrders(@RequestHeader("Authorization") String authorizationHeader) throws ForbiddenException, JsonProcessingException {
@@ -33,7 +37,9 @@ public class OrderController {
     @PostMapping("/orders")
     public Order saveOrder(@RequestBody Order order, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
         String userId = tokenHandler.getUserId(authorizationHeader);
-        return orderService.saveOrder(order, userId);
+        Order order1 = orderService.saveOrder(order);
+        publisher.sendMessageToTopic(objectMapper.writeValueAsString(order1));
+        return order1;
     }
 
     @PutMapping("/orders/{id}")
@@ -54,5 +60,10 @@ public class OrderController {
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @Autowired
+    public void setPublisher(KafkaToInventoryMessagePublisher publisher) {
+        this.publisher = publisher;
     }
 }

@@ -4,12 +4,17 @@ spring:
   kafka:
     consumer:
       bootstrap-servers: localhost:9092
-      group-id: all-products-group-1
+      group-id:
+        - all-products-group-1
+        - sended-orders-group-1
   datasource:
     driver-class-name: org.postgresql.Driver
     password: bestuser
     username: bestuser
     url: jdbc:postgresql://localhost:9090/postgresDB
+  jpa:
+    hibernate:
+      ddl-auto: create
 
 server:
   port: ${INVENTORY_SERVICE_PORT:8084}

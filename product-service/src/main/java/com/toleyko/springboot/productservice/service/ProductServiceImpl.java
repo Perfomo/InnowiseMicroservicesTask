@@ -41,8 +41,7 @@ public class ProductServiceImpl implements ProductService {
         Product oldProduct = this.getProductById(id);
         oldProduct.setName(product.getName());
         oldProduct.setCost(product.getCost());
-        productRepository.save(oldProduct);
-        return oldProduct;
+        return productRepository.save(oldProduct);
     }
 
     @Autowired

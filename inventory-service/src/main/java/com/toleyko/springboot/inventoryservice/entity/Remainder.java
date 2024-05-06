@@ -22,4 +22,7 @@ public class Remainder {
 
     @Column(name = "amountSold")
     private Integer sold;
+
+    @Column(name = "cost")
+    private Double cost;
 }
