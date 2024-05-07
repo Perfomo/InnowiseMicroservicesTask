@@ -18,6 +18,9 @@ public class Order {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "user_name")
+    private String username;
+
     @ElementCollection
     @CollectionTable(name = "product_list", joinColumns = @JoinColumn(name = "id"))
     @MapKeyColumn(name = "product_name")

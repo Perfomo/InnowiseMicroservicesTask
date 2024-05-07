@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserKeycloakService {
     private Keycloak keycloak;
     @Autowired
     public void setKeycloak(Keycloak keycloak) {

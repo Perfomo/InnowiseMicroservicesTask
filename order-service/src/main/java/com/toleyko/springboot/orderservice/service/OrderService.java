@@ -11,4 +11,5 @@ public interface OrderService {
     public void deleteOrderById(Integer id);
     public Order saveOrder(Order order);
     public Order updateOrderById(Integer id, Order order) throws OrderNotFoundException;
+    public List<Order> getOrdersByUsername(String username);
 }

@@ -34,6 +34,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(c -> c.requestMatchers("/products/**").hasRole("MANAGER"));
         http.authorizeHttpRequests(c -> c.requestMatchers("/inventory/**").hasRole("MANAGER"));
         http.authorizeHttpRequests(c -> c.requestMatchers("/orders/api/orders", HttpMethod.POST).authenticated());
+        http.authorizeHttpRequests(c -> c.requestMatchers("/orders/api/*/orders", HttpMethod.GET).authenticated());
         http.authorizeHttpRequests(c -> c.requestMatchers("/orders/**").hasRole("MANAGER"));
         return http.build();
     }

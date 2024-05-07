@@ -41,6 +41,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(oldOrder);
     }
 
+    @Override
+    public List<Order> getOrdersByUsername(String username) {
+        return orderRepository.getOrderByUsername(username);
+    }
+
     @Autowired
     public void setOrderRepository(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;

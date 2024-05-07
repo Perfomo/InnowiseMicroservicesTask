@@ -115,11 +115,12 @@ public class OrderControllerTest {
     }
 
     @Test
+    /// rewiew
     public void saveOrder_SuccessfulTest() throws Exception {
         Order order = new Order();
         order.setCost(1.2);
-        when(tokenHandler.getUserId(anyString())).thenReturn("1");
-        when(orderService.saveOrder(order, "1")).thenReturn(order);
+        when(tokenHandler.getUsername(anyString())).thenReturn("user");
+        when(orderService.saveOrder(order)).thenReturn(order);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere")
@@ -127,23 +128,24 @@ public class OrderControllerTest {
                         .content(asJsonString(order)))
                 .andExpect(status().isOk())
                 .andReturn();
-        verify(orderService, times(1)).saveOrder(order, "1");
+        verify(orderService, times(1)).saveOrder(order);
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertEquals(asJsonString(order), responseBody);
     }
 
     @Test
+    ///rewiew
     public void saveOrder_JsonProcessingExceptionTest() throws Exception {
         Order order = new Order();
         order.setCost(1.2);
-        when(tokenHandler.getUserId(anyString())).thenThrow(JsonProcessingException.class);
+        when(tokenHandler.getUsername(anyString())).thenThrow(JsonProcessingException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(order)))
                 .andExpect(status().isBadRequest());
-        verify(orderService, times(0)).saveOrder(order, "1");
+        verify(orderService, times(0)).saveOrder(order);
     }
 
     @Test

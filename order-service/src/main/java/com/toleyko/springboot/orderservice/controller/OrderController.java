@@ -34,9 +34,21 @@ public class OrderController {
         return orderService.getOrderById(id);
     }
 
+    @GetMapping("/{username}/orders")
+    public String getUserOrders(@PathVariable String username, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException, ForbiddenException {
+        String authUsername = tokenHandler.getUsername(authorizationHeader);
+//        if (username.equals(authUsername)) {
+//            return orderService.getOrdersByUsername(username);
+//        }
+//        throw new ForbiddenException("Access denied");
+        return "Hi " + authUsername;
+    }
+
     @PostMapping("/orders")
     public Order saveOrder(@RequestBody Order order, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
-        String userId = tokenHandler.getUserId(authorizationHeader);
+        System.out.println("lol");
+        String username = tokenHandler.getUsername(authorizationHeader);
+        order.setUsername(username);
         Order order1 = orderService.saveOrder(order);
         publisher.sendMessageToTopic(objectMapper.writeValueAsString(order1));
         return order1;

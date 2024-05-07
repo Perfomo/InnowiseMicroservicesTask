@@ -1,6 +1,6 @@
 package com.toleyko.spring.springboot.userservice.handler;
 
-import com.toleyko.spring.springboot.userservice.service.UserService;
+import com.toleyko.spring.springboot.userservice.service.UserKeycloakService;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserPermissionHandler {
-    private UserService userService;
+    private UserKeycloakService userKeycloakService;
     public boolean isPermitted(String userName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserRepresentation user = userService.getUserByUsername(userName);
+        UserRepresentation user = userKeycloakService.getUserByUsername(userName);
         return user.getUsername().equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
     }
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUserService(UserKeycloakService userKeycloakService) {
+        this.userKeycloakService = userKeycloakService;
     }
 }

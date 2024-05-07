@@ -14,10 +14,11 @@ public class TokenHandler {
         String accessToken = authorizationHeader.substring("Bearer ".length());
         String[] tokenParts = accessToken.split("\\.");
         String payload = new String(Base64.getDecoder().decode(tokenParts[1]));
+        System.out.println(payload);
         return objectMapper.readTree(payload);
     }
-    public String getUserId(String authorizationHeader) throws JsonProcessingException {
-        return this.getTokenPayload(authorizationHeader).get("sub").asText();
+    public String getUsername(String authorizationHeader) throws JsonProcessingException {
+        return this.getTokenPayload(authorizationHeader).get("preferred_username").asText();
     }
     public boolean isManager(String authorizationHeader) throws JsonProcessingException {
         JsonNode rolesNode = this.getTokenPayload(authorizationHeader)

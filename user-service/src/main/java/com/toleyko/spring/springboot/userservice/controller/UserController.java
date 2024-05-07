@@ -1,10 +1,10 @@
 package com.toleyko.spring.springboot.userservice.controller;
 
-import com.toleyko.spring.springboot.userservice.dto.UserDTO;
+import com.toleyko.spring.springboot.userservice.dto.User;
 import com.toleyko.spring.springboot.userservice.handler.UserPermissionHandler;
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
-import com.toleyko.spring.springboot.userservice.service.UserService;
+import com.toleyko.spring.springboot.userservice.service.UserKeycloakService;
 import jakarta.ws.rs.ForbiddenException;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,34 +15,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-    private UserService userService;
+    private UserKeycloakService userKeycloakService;
     private UserPermissionHandler userPermissionHandler;
     @GetMapping("/users")
-    public List<UserRepresentation> getUsers() throws ForbiddenException {
+    public List<UserRepresentation> getAllUsers() throws ForbiddenException {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                 .stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
-            return userService.getUsers();
+            return userKeycloakService.getUsers();
         }
         throw new ForbiddenException("Access denied");
     }
 
     @PostMapping("/users")
-    public UserRepresentation createUser(@RequestBody UserDTO userDTO) throws UserAlreadyExistException, BadUserDataException {
-        return userService.createUser(userDTO);
+    public UserRepresentation createUser(@RequestBody User user) throws UserAlreadyExistException, BadUserDataException {
+        return userKeycloakService.createUser(user);
     }
 
     @GetMapping("/users/{userName}")
     public UserRepresentation getUser(@PathVariable String userName) throws ForbiddenException {
         if (userPermissionHandler.isPermitted(userName)) {
-            return userService.getUserByUsername(userName);
+            return userKeycloakService.getUserByUsername(userName);
         }
         throw new ForbiddenException("You are not a " + userName);
     }
 
     @PutMapping("/users/{userName}")
-    public UserRepresentation updateUser(@PathVariable String userName, @RequestBody UserDTO userDTO) throws ForbiddenException {
+    public UserRepresentation updateUser(@PathVariable String userName, @RequestBody User user) throws ForbiddenException {
         if (userPermissionHandler.isPermitted(userName)) {
-            return userService.updateUser(userName, userDTO);
+            return userKeycloakService.updateUser(userName, user);
         }
         throw new ForbiddenException("You are not a " + userName);
     }
@@ -50,7 +50,7 @@ public class UserController {
     @DeleteMapping("/users/{userName}")
     public void deleteUserByUserName(@PathVariable String userName) throws ForbiddenException {
         if (userPermissionHandler.isPermitted(userName)) {
-            userService.deleteUser(userName);
+            userKeycloakService.deleteUser(userName);
             return;
         }
         throw new ForbiddenException("You are not a " + userName);
@@ -58,12 +58,12 @@ public class UserController {
 
     @GetMapping("/logout")
     public void logoutUser() {
-        userService.logoutUser();
+        userKeycloakService.logoutUser();
     }
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUserService(UserKeycloakService userKeycloakService) {
+        this.userKeycloakService = userKeycloakService;
     }
 
     @Autowired

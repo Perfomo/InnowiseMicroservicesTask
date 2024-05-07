@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class UserServiceTest {
+public class UserKeycloakServiceTest {
 
     private Keycloak keycloak;
     private UsersResource usersResource;
@@ -49,8 +49,8 @@ public class UserServiceTest {
 
         Response successfulResponse = Response.status(Response.Status.CREATED).location(new URI("/api/users")).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(successfulResponse);
-        UserService userService = new UserService();
-        userService.setKeycloak(keycloak);
+        UserKeycloakService userKeycloakService = new UserKeycloakService();
+        userKeycloakService.setKeycloak(keycloak);
         User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         UserResource userResource = mock(UserResource.class);
@@ -60,7 +60,7 @@ public class UserServiceTest {
         when(userResource.roles()).thenReturn(roleMappingResource);
         when(roleMappingResource.realmLevel()).thenReturn(roleScopeResource);
 
-        UserRepresentation result = userService.createUser(user);
+        UserRepresentation result = userKeycloakService.createUser(user);
 
         assertNotNull(result);
         assertTrue(result.isEnabled());
@@ -72,12 +72,12 @@ public class UserServiceTest {
 
         Response conflictResponse = Response.status(Response.Status.CONFLICT).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(conflictResponse);
-        UserService userService = new UserService();
-        userService.setKeycloak(keycloak);
+        UserKeycloakService userKeycloakService = new UserKeycloakService();
+        userKeycloakService.setKeycloak(keycloak);
         User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         Assertions.assertThrows(UserAlreadyExistException.class, () -> {
-            userService.createUser(user);
+            userKeycloakService.createUser(user);
         });
     }
 
@@ -86,12 +86,12 @@ public class UserServiceTest {
 
         Response badResponse = Response.status(Response.Status.BAD_REQUEST).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(badResponse);
-        UserService userService = new UserService();
-        userService.setKeycloak(keycloak);
+        UserKeycloakService userKeycloakService = new UserKeycloakService();
+        userKeycloakService.setKeycloak(keycloak);
         User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         Assertions.assertThrows(BadUserDataException.class, () -> {
-            userService.createUser(user);
+            userKeycloakService.createUser(user);
         });
     }
 
@@ -109,9 +109,9 @@ public class UserServiceTest {
             return null;
         });
 
-        UserService userService = new UserService();
-        userService.setKeycloak(keycloak);
-        UserRepresentation result = userService.getUserByUsername(username);
+        UserKeycloakService userKeycloakService = new UserKeycloakService();
+        userKeycloakService.setKeycloak(keycloak);
+        UserRepresentation result = userKeycloakService.getUserByUsername(username);
 
         Assertions.assertEquals(userRepresentation, result);
     }
@@ -130,11 +130,11 @@ public class UserServiceTest {
             return null;
         });
 
-        UserService userService = new UserService();
-        userService.setKeycloak(keycloak);
+        UserKeycloakService userKeycloakService = new UserKeycloakService();
+        userKeycloakService.setKeycloak(keycloak);
 
         Assertions.assertThrows(NoSuchUserException.class, () -> {
-            userService.getUserByUsername(username);
+            userKeycloakService.getUserByUsername(username);
         });
     }
 }
