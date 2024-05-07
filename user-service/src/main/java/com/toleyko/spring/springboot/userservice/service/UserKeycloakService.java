@@ -2,7 +2,7 @@ package com.toleyko.spring.springboot.userservice.service;
 
 import com.toleyko.spring.springboot.userservice.Credentials;
 import com.toleyko.spring.springboot.userservice.config.KeycloakConfig;
-import com.toleyko.spring.springboot.userservice.dto.UserDTO;
+import com.toleyko.spring.springboot.userservice.dto.User;
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
 import com.toleyko.spring.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
@@ -25,7 +25,7 @@ public class UserService {
         this.keycloak = keycloak;
     }
 
-    public UserRepresentation createUser(UserDTO userDTO) throws UserAlreadyExistException, BadUserDataException {
+    public UserRepresentation createUser(User userDTO) throws UserAlreadyExistException, BadUserDataException {
         UserRepresentation user = this.createUserRepresentation(userDTO);
         user.setEnabled(true);
         user.setEmailVerified(true);
@@ -66,15 +66,17 @@ public class UserService {
         return userRepresentation.getFirst();
     }
 
-    public UserRepresentation updateUser(String userName, UserDTO userDTO) {
+    public UserRepresentation updateUser(String userName, User userDTO) {
         UserRepresentation user = this.getUserByUsername(userName);
         user.setUsername(userDTO.getUsername());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
+        System.out.println("yes");
         keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).update(user);
-        return this.getUserByUsername(userName);
+        System.out.println("lol");
+        return this.getUserByUsername(user.getUsername());
     }
 
     public void deleteUser(String userName) {
@@ -88,7 +90,7 @@ public class UserService {
         keycloak.realm(KeycloakConfig.realm).users().get(id).logout();
     }
 
-    private UserRepresentation createUserRepresentation(UserDTO userDTO) {
+    private UserRepresentation createUserRepresentation(User userDTO) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(userDTO.getUsername());
         user.setFirstName(userDTO.getFirstName());

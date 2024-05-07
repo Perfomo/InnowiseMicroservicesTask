@@ -1,6 +1,6 @@
 package com.toleyko.spring.springboot.userservice.service;
 
-import com.toleyko.spring.springboot.userservice.dto.UserDTO;
+import com.toleyko.spring.springboot.userservice.dto.User;
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
 import com.toleyko.spring.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
@@ -51,7 +51,7 @@ public class UserServiceTest {
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(successfulResponse);
         UserService userService = new UserService();
         userService.setKeycloak(keycloak);
-        UserDTO userDTO = new UserDTO("johnDoe", "john@example.com", "password", "Kir", "Tol");
+        User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         UserResource userResource = mock(UserResource.class);
         RoleMappingResource roleMappingResource = mock(RoleMappingResource.class);
@@ -60,7 +60,7 @@ public class UserServiceTest {
         when(userResource.roles()).thenReturn(roleMappingResource);
         when(roleMappingResource.realmLevel()).thenReturn(roleScopeResource);
 
-        UserRepresentation result = userService.createUser(userDTO);
+        UserRepresentation result = userService.createUser(user);
 
         assertNotNull(result);
         assertTrue(result.isEnabled());
@@ -74,10 +74,10 @@ public class UserServiceTest {
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(conflictResponse);
         UserService userService = new UserService();
         userService.setKeycloak(keycloak);
-        UserDTO userDTO = new UserDTO("johnDoe", "john@example.com", "password", "Kir", "Tol");
+        User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         Assertions.assertThrows(UserAlreadyExistException.class, () -> {
-            userService.createUser(userDTO);
+            userService.createUser(user);
         });
     }
 
@@ -88,10 +88,10 @@ public class UserServiceTest {
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(badResponse);
         UserService userService = new UserService();
         userService.setKeycloak(keycloak);
-        UserDTO userDTO = new UserDTO("johnDoe", "john@example.com", "password", "Kir", "Tol");
+        User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         Assertions.assertThrows(BadUserDataException.class, () -> {
-            userService.createUser(userDTO);
+            userService.createUser(user);
         });
     }
 
