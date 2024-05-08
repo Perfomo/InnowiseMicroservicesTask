@@ -48,23 +48,23 @@ public class ProductControllerTest {
     @Test
     public void getAllProducts_SuccessfulTest() throws Exception {
         List<Product> expectedProducts = new ArrayList<>();
-        expectedProducts.add((new Product()).setName("Car").setCost(10));
-        expectedProducts.add((new Product()).setName("PC").setCost(10));
+        expectedProducts.add((new Product()).setName("Car").setCost(10.1));
+        expectedProducts.add((new Product()).setName("PC").setCost(10.1));
         when(productService.getAllProducts()).thenReturn(expectedProducts);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Car"))
-                .andExpect(jsonPath("$[0].cost").value(10))
+                .andExpect(jsonPath("$[0].cost").value(10.1))
                 .andExpect(jsonPath("$[1].name").value("PC"))
-                .andExpect(jsonPath("$[1].cost").value(10));
+                .andExpect(jsonPath("$[1].cost").value(10.1));
         verify(productService, times(1)).getAllProducts();
     }
 
     @Test
     public void getProductById_SuccessfulTest() throws Exception {
         Integer id = 1;
-        Product product = new Product().setId(id).setName("Car").setCost(10);
+        Product product = new Product().setId(id).setName("Car").setCost(10.1);
         when(productService.getProductById(id)).thenReturn(product);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ public class ProductControllerTest {
 
     @Test
     public void saveProduct_SuccessfulTest() throws Exception {
-        Product product = new Product().setId(1).setName("Kir").setCost(999);
+        Product product = new Product().setId(1).setName("Kir").setCost(10.1);
         when(productService.saveProduct(product)).thenReturn(product);
         doNothing().when(publisher).sendMessageToTopic(anyString());
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
@@ -101,7 +101,7 @@ public class ProductControllerTest {
     }
     @Test
     public void saveProduct_JsonProcessingExceptionTest() throws Exception {
-        Product product = new Product().setId(1).setName("Kir").setCost(999);
+        Product product = new Product().setId(1).setName("Kir").setCost(10.1);
         when(productService.saveProduct(product)).thenReturn(product);
 
         ObjectMapper objectMapper = mock(ObjectMapper.class);
@@ -119,7 +119,7 @@ public class ProductControllerTest {
     @Test
     public void updateProduct_SuccessfulTest() throws Exception {
         Integer id = 1;
-        Product product = new Product().setId(id).setName("Car").setCost(10);
+        Product product = new Product().setId(id).setName("Car").setCost(10.1);
         when(productService.updateProductById(id, product)).thenReturn(product);
         when(productService.getProductById(id)).thenReturn(product);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)

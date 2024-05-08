@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
     private OrderRepository orderRepository;
     @Override
     public List<Order> getAllOrders() {
@@ -25,8 +24,15 @@ public class OrderServiceImpl implements OrderService {
         throw new OrderNotFoundException("Order not found");
     }
     @Override
-    public void deleteOrderById(Integer id) {
-        orderRepository.deleteById(id);
+    public Order deleteOrderById(Integer id) throws OrderNotFoundException {
+        Optional<Order> optional = orderRepository.findById(id);
+        System.out.println("Get optional");
+        if (optional.isPresent()) {
+            orderRepository.deleteById(id);
+            System.out.println("deleted");
+            return optional.get();
+        }
+        throw new OrderNotFoundException("Order not found");
     }
     @Override
     public Order saveOrder(Order order) {
@@ -34,16 +40,29 @@ public class OrderServiceImpl implements OrderService {
     }
     @Override
     public Order updateOrderById(Integer id, Order order) throws OrderNotFoundException {
-        Order oldOrder = this.getOrderById(id);
-        oldOrder.setStatus(order.getStatus());
-        oldOrder.setNames(order.getNames());
-        oldOrder.setCost(order.getCost());
-        return orderRepository.save(oldOrder);
+        Optional<Order> optional = orderRepository.findById(id);
+        if (optional.isPresent()) {
+            Order oldOrder = optional.get();
+            oldOrder.setStatus(order.getStatus());
+            oldOrder.setNames(order.getNames());
+            oldOrder.setCost(order.getCost());
+            return orderRepository.save(oldOrder);
+        }
+        throw new OrderNotFoundException("Order not found");
     }
 
     @Override
-    public List<Order> getOrdersByUsername(String username) {
-        return orderRepository.getOrderByUsername(username);
+    public void deleteOrderByUsername(String username) {
+        orderRepository.deleteAllByUsername(username);
+    }
+
+    @Override
+    public List<Order> getOrdersByUsername(String username) throws OrderNotFoundException {
+        List<Order> orderList = orderRepository.getOrderByUsername(username);
+        if (orderList.isEmpty()) {
+            throw new OrderNotFoundException("User " + username + " doesn't have any orders");
+        }
+        return orderList;
     }
 
     @Autowired

@@ -27,8 +27,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(Integer id) {
-        productRepository.deleteById(id);
+    public Product deleteProductById(Integer id) throws ProductNotFoundException {
+        Optional<Product> optional = productRepository.findById(id);
+        if (optional.isPresent()) {
+            productRepository.deleteById(id);
+            return optional.get();
+        }
+        throw new ProductNotFoundException("Product not found");
     }
 
     @Override
@@ -38,10 +43,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProductById(Integer id, Product product) throws ProductNotFoundException {
-        Product oldProduct = this.getProductById(id);
-        oldProduct.setName(product.getName());
-        oldProduct.setCost(product.getCost());
-        return productRepository.save(oldProduct);
+        Optional<Product> optional = productRepository.findById(id);
+        if (optional.isPresent()) {
+            Product oldProduct = optional.get();
+            oldProduct.setName(product.getName());
+            oldProduct.setCost(product.getCost());
+            return productRepository.save(oldProduct);
+        }
+        throw new ProductNotFoundException("Product not found");
     }
 
     @Autowired

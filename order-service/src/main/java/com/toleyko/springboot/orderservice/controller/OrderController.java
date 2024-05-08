@@ -10,7 +10,6 @@ import com.toleyko.springboot.orderservice.service.KafkaToInventoryMessagePublis
 import com.toleyko.springboot.orderservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -35,18 +34,16 @@ public class OrderController {
     }
 
     @GetMapping("/{username}/orders")
-    public String getUserOrders(@PathVariable String username, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException, ForbiddenException {
+    public List<Order> getUserOrders(@PathVariable String username, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException, ForbiddenException, OrderNotFoundException {
         String authUsername = tokenHandler.getUsername(authorizationHeader);
-//        if (username.equals(authUsername)) {
-//            return orderService.getOrdersByUsername(username);
-//        }
-//        throw new ForbiddenException("Access denied");
-        return "Hi " + authUsername;
+        if (username.equals(authUsername) || tokenHandler.isManager(authorizationHeader)) {
+            return orderService.getOrdersByUsername(username);
+        }
+        throw new ForbiddenException("Access denied");
     }
 
     @PostMapping("/orders")
     public Order saveOrder(@RequestBody Order order, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
-        System.out.println("lol");
         String username = tokenHandler.getUsername(authorizationHeader);
         order.setUsername(username);
         Order order1 = orderService.saveOrder(order);
@@ -60,8 +57,8 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{id}")
-    public void deleteOrderById(@PathVariable Integer id) {
-        orderService.deleteOrderById(id);
+    public Order deleteOrderById(@PathVariable Integer id) throws OrderNotFoundException {
+        return orderService.deleteOrderById(id);
     }
 
     @Autowired

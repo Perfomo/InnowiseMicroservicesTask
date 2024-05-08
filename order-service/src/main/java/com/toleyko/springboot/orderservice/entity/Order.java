@@ -21,7 +21,7 @@ public class Order {
     @Column(name = "user_name")
     private String username;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_list", joinColumns = @JoinColumn(name = "id"))
     @MapKeyColumn(name = "product_name")
     @Column(name = "producNames")

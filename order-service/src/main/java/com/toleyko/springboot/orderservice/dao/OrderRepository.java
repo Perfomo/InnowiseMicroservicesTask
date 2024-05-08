@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     public List<Order> getOrderByUsername(String username);
+    public void deleteAllByUsername(String username);
 }

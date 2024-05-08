@@ -9,8 +9,9 @@ public interface InventoryService {
     public List<Remainder> getAllRemainders();
     public Remainder getRemainderById(Integer id) throws RemainderNotFoundException;
     public Remainder getRemainderByName(String name);
-    public void deleteRemainderById(Integer id);
+    public Remainder deleteRemainderById(Integer id) throws RemainderNotFoundException;
     public Remainder saveRemainder(Remainder remainder);
     public Remainder updateRemainderById(Integer id, Remainder remainder) throws RemainderNotFoundException;
     public Order handleOrder(Order order);
+    public Remainder updateRemainderLeftAmount(Integer id, Integer amount) throws RemainderNotFoundException;
 }

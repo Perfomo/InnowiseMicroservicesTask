@@ -16,6 +16,7 @@ spring:
       bootstrap-servers: localhost:9092
       group-id:
         - handled-orders-group-1
+        - deleted-users-orders-group-1
 
 server:
   port: 8085

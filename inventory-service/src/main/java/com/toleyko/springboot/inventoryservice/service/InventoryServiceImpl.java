@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
-
     private InventoryRepository inventoryRepository;
     @Override
     public List<Remainder> getAllRemainders() {
@@ -37,8 +36,13 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void deleteRemainderById(Integer id) {
-        inventoryRepository.deleteById(id);
+    public Remainder deleteRemainderById(Integer id) throws RemainderNotFoundException {
+        Optional<Remainder> optional = inventoryRepository.findById(id);
+        if (optional.isPresent()) {
+            inventoryRepository.deleteById(id);
+            return optional.get();
+        }
+        throw new RemainderNotFoundException("Product not found");
     }
 
     @Override
@@ -48,13 +52,27 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     public Remainder updateRemainderById(Integer id, Remainder remainder) throws RemainderNotFoundException {
-        Remainder oldRemainder = this.getRemainderById(id);
-        oldRemainder.setName(remainder.getName());
-        oldRemainder.setLeft(remainder.getLeft());
-        oldRemainder.setSold(remainder.getSold());
-        oldRemainder.setCost((remainder.getCost()));
-        inventoryRepository.save(oldRemainder);
-        return oldRemainder;
+        Optional<Remainder> optional = inventoryRepository.findById(id);
+        if (optional.isPresent()) {
+            Remainder oldRemainder = optional.get();
+            oldRemainder.setName(remainder.getName());
+            oldRemainder.setLeft(remainder.getLeft());
+            oldRemainder.setSold(remainder.getSold());
+            oldRemainder.setCost(remainder.getCost());
+            return inventoryRepository.save(oldRemainder);
+        }
+        throw new RemainderNotFoundException("Product not found");
+    }
+
+    @Override
+    public Remainder updateRemainderLeftAmount(Integer id, Integer amount) throws RemainderNotFoundException {
+        Optional<Remainder> optional = inventoryRepository.findById(id);
+        if (optional.isPresent()) {
+            Remainder oldRemainder = optional.get();
+            oldRemainder.setLeft(oldRemainder.getLeft() + amount);
+            return inventoryRepository.save(oldRemainder);
+        }
+        throw new RemainderNotFoundException("Product not found");
     }
 
     @Transactional

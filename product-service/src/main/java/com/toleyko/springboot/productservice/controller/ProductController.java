@@ -42,10 +42,10 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    public void deleteProductById(@PathVariable Integer id) throws JsonProcessingException, ProductNotFoundException {
-        String name = productService.getProductById(id).getName();
-        productService.deleteProductById(id);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"delete", name}));
+    public Product deleteProductById(@PathVariable Integer id) throws JsonProcessingException, ProductNotFoundException {
+        Product product = productService.deleteProductById(id);
+        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"delete", product.getName()}));
+        return product;
     }
 
     @Autowired

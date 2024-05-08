@@ -8,8 +8,9 @@ import java.util.List;
 public interface OrderService {
     public List<Order> getAllOrders();
     public Order getOrderById(Integer id) throws OrderNotFoundException;
-    public void deleteOrderById(Integer id);
+    public Order deleteOrderById(Integer id) throws OrderNotFoundException;
     public Order saveOrder(Order order);
     public Order updateOrderById(Integer id, Order order) throws OrderNotFoundException;
-    public List<Order> getOrdersByUsername(String username);
+    public List<Order> getOrdersByUsername(String username) throws OrderNotFoundException;
+    public void deleteOrderByUsername(String username);
 }

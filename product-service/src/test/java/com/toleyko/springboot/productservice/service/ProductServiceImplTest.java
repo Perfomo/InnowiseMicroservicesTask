@@ -25,7 +25,7 @@ public class ProductServiceImplTest {
     @Test
     public void getProductBuId_SuccessfulTest() throws ProductNotFoundException {
         Integer id = 1;
-        Product product = new Product().setId(id).setName("car").setCost(10);
+        Product product = new Product().setId(id).setName("car").setCost(10.1);
         Optional<Product> optional = Optional.of(product);
         when(productRepository.findById(id)).thenReturn(optional);
 

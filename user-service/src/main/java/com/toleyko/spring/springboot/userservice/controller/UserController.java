@@ -4,6 +4,7 @@ import com.toleyko.spring.springboot.userservice.dto.User;
 import com.toleyko.spring.springboot.userservice.handler.UserPermissionHandler;
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.service.KafkaToOrderMessagePublisher;
 import com.toleyko.spring.springboot.userservice.service.UserKeycloakService;
 import jakarta.ws.rs.ForbiddenException;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -17,6 +18,7 @@ import java.util.List;
 public class UserController {
     private UserKeycloakService userKeycloakService;
     private UserPermissionHandler userPermissionHandler;
+    private KafkaToOrderMessagePublisher publisher;
     @GetMapping("/users")
     public List<UserRepresentation> getAllUsers() throws ForbiddenException {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
@@ -51,6 +53,7 @@ public class UserController {
     public void deleteUserByUserName(@PathVariable String userName) throws ForbiddenException {
         if (userPermissionHandler.isPermitted(userName)) {
             userKeycloakService.deleteUser(userName);
+            publisher.sendMessageToTopic(userName);
             return;
         }
         throw new ForbiddenException("You are not a " + userName);
@@ -59,6 +62,11 @@ public class UserController {
     @GetMapping("/logout")
     public void logoutUser() {
         userKeycloakService.logoutUser();
+    }
+
+    @Autowired
+    public void setPublisher(KafkaToOrderMessagePublisher publisher) {
+        this.publisher = publisher;
     }
 
     @Autowired

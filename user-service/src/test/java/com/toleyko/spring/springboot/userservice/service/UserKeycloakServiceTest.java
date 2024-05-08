@@ -24,10 +24,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UserKeycloakServiceTest {
-
     private Keycloak keycloak;
     private UsersResource usersResource;
-
     @BeforeEach
     public void setUp() {
         this.keycloak = mock(Keycloak.class);
