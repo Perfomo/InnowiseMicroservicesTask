@@ -44,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
         if (optional.isPresent()) {
             Order oldOrder = optional.get();
             oldOrder.setStatus(order.getStatus());
-            oldOrder.setNames(order.getNames());
+            oldOrder.setProducts(order.getProducts());
             oldOrder.setCost(order.getCost());
             return orderRepository.save(oldOrder);
         }
@@ -53,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteOrderByUsername(String username) {
+        System.out.println("here");
         orderRepository.deleteAllByUsername(username);
     }
 

@@ -1,16 +1,17 @@
-package com.toleyko.springboot.inventoryservice.dto;
+package com.toleyko.springboot.orderservice.dto;
 
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import java.util.Map;
 
+@Embeddable
 @Data
 @Accessors(chain = true)
-public class Order {
-    private Integer id;
+public class OrderHistory {
+    private Integer orderId;
     private String status;
     private String username;
     private String userId;
-    private Map<String, Integer> products;
+    private String products;
     private Double cost;
 }

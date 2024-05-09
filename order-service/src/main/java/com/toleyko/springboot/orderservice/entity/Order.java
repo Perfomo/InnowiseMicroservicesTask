@@ -21,11 +21,14 @@ public class Order {
     @Column(name = "user_name")
     private String username;
 
+    @Column(name = "user_id")
+    private String userId;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_list", joinColumns = @JoinColumn(name = "id"))
-    @MapKeyColumn(name = "product_name")
-    @Column(name = "producNames")
-    private Map<String, Integer> names;
+    @MapKeyColumn(name = "product_id")
+    @Column(name = "products")
+    private Map<String, Integer> products;
 
     @Column(name = "cost")
     private Double cost;

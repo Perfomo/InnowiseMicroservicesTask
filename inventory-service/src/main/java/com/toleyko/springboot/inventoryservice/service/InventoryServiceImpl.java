@@ -80,13 +80,13 @@ public class InventoryServiceImpl implements InventoryService {
     public Order handleOrder(Order order) {
         try {
             double orderCost = 0;
-            for (Map.Entry<String, Integer> entry : order.getNames().entrySet()) {
-                String name = entry.getKey();
+            for (Map.Entry<String, Integer> entry : order.getProducts().entrySet()) {
+                String id = entry.getKey();
                 Integer amount = entry.getValue();
 
-                Remainder remainder = this.getRemainderByName(name);
+                Remainder remainder = this.getRemainderById(Integer.valueOf(id));
                 if (remainder == null || remainder.getLeft() < amount) {
-                    throw new InsufficientQuantityException("Not enough: " + name + "\tOr product not found");
+                    throw new InsufficientQuantityException("Not enough: " + id + "\tOr product not found");
                 }
                 remainder.setLeft(remainder.getLeft() - amount);
                 remainder.setSold(remainder.getSold() + amount);
@@ -95,7 +95,7 @@ public class InventoryServiceImpl implements InventoryService {
             }
             order.setCost(orderCost);
             order.setStatus("OK");
-        } catch (InsufficientQuantityException e) {
+        } catch (InsufficientQuantityException | RemainderNotFoundException e) {
             order.setStatus("ERROR");
             order.setCost(0.0);
         }

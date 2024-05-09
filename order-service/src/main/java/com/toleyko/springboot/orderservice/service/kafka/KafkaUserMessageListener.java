@@ -1,23 +1,22 @@
-package com.toleyko.springboot.orderservice.service;
+package com.toleyko.springboot.orderservice.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.orderservice.entity.Order;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KafkaInventoryMessageListener {
+public class KafkaUserMessageListener {
     private OrderService orderService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    @KafkaListener(topics = "handled-orders", groupId = "handled-orders-group-1")
-    public void consume(String message) throws JsonProcessingException, OrderNotFoundException {
+    @KafkaListener(topics = "deleted-users-orders", groupId = "deleted-users-orders-group-1")
+    public void consume(String message) {
         System.out.println(message);
-        Order order = objectMapper.readValue(message, Order.class);
-        orderService.updateOrderById(order.getId(), order);
-        System.out.println("Order: " + order + " saved");
+        orderService.deleteOrderByUsername(message);
+        System.out.println(message + "'s orders deleted");
     }
 
     @Autowired

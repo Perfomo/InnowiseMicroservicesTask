@@ -20,6 +20,11 @@ public class TokenHandler {
     public String getUsername(String authorizationHeader) throws JsonProcessingException {
         return this.getTokenPayload(authorizationHeader).get("preferred_username").asText();
     }
+
+    public String getUserId(String authorizationHeader) throws JsonProcessingException {
+        return this.getTokenPayload(authorizationHeader).get("sub").asText();
+    }
+
     public boolean isManager(String authorizationHeader) throws JsonProcessingException {
         JsonNode rolesNode = this.getTokenPayload(authorizationHeader)
                 .path("realm_access")

@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 public class UserKeycloakService {
     private Keycloak keycloak;
+    private KafkaToOrderMessagePublisher publisher;
     @Autowired
     public void setKeycloak(Keycloak keycloak) {
         this.keycloak = keycloak;
@@ -83,6 +84,7 @@ public class UserKeycloakService {
         UserRepresentation user = this.getUserByUsername(userName);
         keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).logout();
         keycloak.realm(KeycloakConfig.realm).users().delete(user.getId());
+        publisher.sendMessageToTopic(userName);
     }
 
     public void logoutUser() {
@@ -99,5 +101,10 @@ public class UserKeycloakService {
         user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
         user.setCreatedTimestamp(Time.currentTimeMillis());
         return user;
+    }
+
+    @Autowired
+    public void setPublisher(KafkaToOrderMessagePublisher publisher) {
+        this.publisher = publisher;
     }
 }

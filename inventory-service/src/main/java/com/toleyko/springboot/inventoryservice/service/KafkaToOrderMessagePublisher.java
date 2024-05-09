@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaToOrderMessagePublisher {
     private KafkaTemplate<String, Object> template;
     public void sendMessageToTopic(String message) {
+        System.out.println("Pub send order");
         CompletableFuture<SendResult<String, Object>> future = template.send("handled-orders", message);
         future.whenComplete((result, exc) -> {
             if (exc == null) {

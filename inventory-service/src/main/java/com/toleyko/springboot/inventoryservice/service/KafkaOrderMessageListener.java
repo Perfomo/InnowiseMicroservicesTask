@@ -14,6 +14,7 @@ public class KafkaOrderMessageListener {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @KafkaListener(topics = "sended-orders", groupId = "sended-orders-group-1")
     public void consume(String message) throws JsonProcessingException {
+        System.out.println("Lis rec order");
         System.out.println(message);
         Order order = objectMapper.readValue(message, Order.class);
         System.out.println("old order: " + order);

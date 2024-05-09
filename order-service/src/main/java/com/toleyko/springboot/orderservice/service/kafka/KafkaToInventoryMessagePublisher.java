@@ -1,4 +1,4 @@
-package com.toleyko.springboot.orderservice.service;
+package com.toleyko.springboot.orderservice.service.kafka;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -13,6 +13,7 @@ public class KafkaToInventoryMessagePublisher {
     private KafkaTemplate<String, Object> template;
 
     public void sendMessageToTopic(String message) {
+        System.out.println("Pub send");
         CompletableFuture<SendResult<String, Object>> future = template.send("sended-orders", message);
         future.whenComplete((result, exc) -> {
             if (exc == null) {
