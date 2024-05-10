@@ -2,11 +2,11 @@ package com.toleyko.spring.springboot.userservice.controller;
 
 import com.toleyko.spring.springboot.userservice.dto.User;
 import com.toleyko.spring.springboot.userservice.handler.UserPermissionHandler;
+import com.toleyko.spring.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
 import com.toleyko.spring.springboot.userservice.service.KafkaToOrderMessagePublisher;
 import com.toleyko.spring.springboot.userservice.service.UserKeycloakService;
-import jakarta.ws.rs.ForbiddenException;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

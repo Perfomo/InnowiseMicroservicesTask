@@ -21,6 +21,11 @@ public class InventoryController {
         return inventoryService.getRemainderById(id);
     }
 
+    @GetMapping("/inventory/name/{name}")
+    public Remainder getRemainderByName(@PathVariable String name) throws RemainderNotFoundException {
+        return inventoryService.getRemainderByName(name);
+    }
+
     @PostMapping("/inventory")
     public Remainder saveRemainder(@RequestBody Remainder remainder) {
         return inventoryService.saveRemainder(remainder);

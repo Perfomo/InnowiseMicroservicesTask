@@ -31,8 +31,12 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Remainder getRemainderByName(String name) {
-        return inventoryRepository.findByName(name);
+    public Remainder getRemainderByName(String name) throws RemainderNotFoundException {
+        Optional<Remainder> optional = inventoryRepository.findByName(name);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        throw new RemainderNotFoundException("Product not found");
     }
 
     @Override

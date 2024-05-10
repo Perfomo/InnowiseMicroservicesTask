@@ -1,9 +1,10 @@
-package com.toleyko.springboot.inventoryservice.service;
+package com.toleyko.springboot.inventoryservice.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.inventoryservice.entity.Remainder;
 import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
+import com.toleyko.springboot.inventoryservice.service.InventoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

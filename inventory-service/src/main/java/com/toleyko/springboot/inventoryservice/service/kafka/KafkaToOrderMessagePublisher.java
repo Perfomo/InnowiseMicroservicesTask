@@ -1,4 +1,4 @@
-package com.toleyko.springboot.inventoryservice.service;
+package com.toleyko.springboot.inventoryservice.service.kafka;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

@@ -5,7 +5,9 @@ import com.toleyko.spring.springboot.userservice.dto.User;
 import com.toleyko.spring.springboot.userservice.handler.GlobalUserHandler;
 import com.toleyko.spring.springboot.userservice.handler.UserPermissionHandler;
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
+import com.toleyko.spring.springboot.userservice.service.KafkaToOrderMessagePublisher;
 import com.toleyko.spring.springboot.userservice.service.UserKeycloakService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +43,8 @@ public class UserControllerTest {
     private UserKeycloakService userKeycloakService;
     @Mock
     private UserPermissionHandler userPermissionHandler;
+    @Mock
+    private KafkaToOrderMessagePublisher publisher;
     private MockMvc mockMvc;
 
     private UserRepresentation createTestUser(String username) {
@@ -60,13 +64,14 @@ public class UserControllerTest {
         UserController userController = new UserController();
         userController.setUserService(userKeycloakService);
         userController.setPermissionHandler(userPermissionHandler);
+        userController.setPublisher(publisher);
         mockMvc = MockMvcBuilders.standaloneSetup(userController)
                 .setControllerAdvice(new GlobalUserHandler())
                 .build();
     }
 
     @Test
-    public void getAllUsers_AuthorisedTest() throws Exception {
+    public void getAllUsers_SuccessfulTest() throws Exception {
         List<UserRepresentation> expectedUsers = new ArrayList<>();
         expectedUsers.add(this.createTestUser("user1"));
         expectedUsers.add(this.createTestUser("user2"));
@@ -84,11 +89,12 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].username").value("user1"))
                 .andExpect(jsonPath("$[1].username").value("user2"));
+
         verify(userKeycloakService, times(1)).getUsers();
     }
 
     @Test
-    public void getAllUsers_UnAuthorisedTest() throws Exception {
+    public void getAllUsers_ForbiddenExceptionTest() throws Exception {
         Authentication authentication = new UsernamePasswordAuthenticationToken("manager", "manager",
                 Collections.singletonList(new SimpleGrantedAuthority("User")));
 
@@ -97,7 +103,9 @@ public class UserControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users")
                         .with(authentication(authentication)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
+
         verify(userKeycloakService, times(0)).getUsers();
     }
 
@@ -129,7 +137,10 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(result -> Assertions.assertInstanceOf(UserAlreadyExistException.class, result.getResolvedException()))
+                .andExpect(result -> Assertions.assertEquals("msg", result.getResolvedException().getMessage()));
+
         verify(userKeycloakService, times(1)).createUser(user);
     }
 
@@ -143,7 +154,10 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertInstanceOf(BadUserDataException.class, result.getResolvedException()))
+                .andExpect(result -> Assertions.assertEquals("msg", result.getResolvedException().getMessage()));
+
         verify(userKeycloakService, times(1)).createUser(user);
     }
 
@@ -155,10 +169,14 @@ public class UserControllerTest {
         doReturn(true).when(userPermissionHandler).isPermitted(username);
         when(userKeycloakService.getUserByUsername(username)).thenReturn(userRepresentation);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username))
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").exists())
-                .andExpect(jsonPath("$.username").value(username));
+                .andExpect(jsonPath("$.username").value(username))
+                .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        Assertions.assertEquals(asJsonString(userRepresentation), responseBody);
         verify(userKeycloakService, times(1)).getUserByUsername(username);
     }
 
@@ -167,7 +185,9 @@ public class UserControllerTest {
         String username = "per";
         doReturn(false).when(userPermissionHandler).isPermitted(username);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/{username}", username))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
+
         verify(userKeycloakService, times(0)).getUserByUsername(username);
     }
 
@@ -180,12 +200,16 @@ public class UserControllerTest {
         doReturn(true).when(userPermissionHandler).isPermitted(username);
         when(userKeycloakService.updateUser(username, user)).thenReturn(userRepresentation);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").exists())
-                .andExpect(jsonPath("$.username").value(username));
+                .andExpect(jsonPath("$.username").value(username))
+                .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        Assertions.assertEquals(asJsonString(userRepresentation), responseBody);
         verify(userKeycloakService, times(1)).updateUser(username, user);
     }
 
@@ -195,9 +219,12 @@ public class UserControllerTest {
         User user = new User("per", "2@d", "pass", "name", "las");
         doReturn(false).when(userPermissionHandler).isPermitted(username);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)                      .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(user)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
+
         verify(userKeycloakService, times(0)).updateUser(username, user);
     }
 
@@ -206,6 +233,7 @@ public class UserControllerTest {
         String username = "per";
         doReturn(true).when(userPermissionHandler).isPermitted(username);
         doNothing().when(userKeycloakService).deleteUser(username);
+        doNothing().when(publisher).sendMessageToTopic(anyString());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/{username}", username))
                 .andExpect(status().isOk());
@@ -218,7 +246,9 @@ public class UserControllerTest {
         doReturn(false).when(userPermissionHandler).isPermitted(username);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/{username}", username))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
+
         verify(userKeycloakService, times(0)).deleteUser(username);
     }
 

@@ -26,6 +26,11 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
+    @GetMapping("/products/name/{name}")
+    public Product getProductByName(@PathVariable String name) throws ProductNotFoundException {
+        return productService.getProductByName(name);
+    }
+
     @PostMapping("/products")
     public Product saveProduct(@RequestBody Product product) throws JsonProcessingException {
         Product res = productService.saveProduct(product);

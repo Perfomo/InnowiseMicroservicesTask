@@ -27,6 +27,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product getProductByName(String name) throws ProductNotFoundException {
+        Optional<Product> optional = productRepository.findByName(name);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+        throw new ProductNotFoundException("Product not found");
+    }
+
+    @Override
     public Product deleteProductById(Integer id) throws ProductNotFoundException {
         Optional<Product> optional = productRepository.findById(id);
         if (optional.isPresent()) {

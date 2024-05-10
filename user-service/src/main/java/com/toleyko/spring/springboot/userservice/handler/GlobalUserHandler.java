@@ -1,9 +1,9 @@
 package com.toleyko.spring.springboot.userservice.handler;
 
 import com.toleyko.spring.springboot.userservice.handler.exception.BadUserDataException;
+import com.toleyko.spring.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.spring.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.spring.springboot.userservice.handler.exception.UserAlreadyExistException;
-import jakarta.ws.rs.ForbiddenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
