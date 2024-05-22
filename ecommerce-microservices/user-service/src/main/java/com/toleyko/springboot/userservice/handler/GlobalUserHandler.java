@@ -6,8 +6,12 @@ import com.toleyko.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalUserHandler {
@@ -45,5 +49,14 @@ public class GlobalUserHandler {
         UserIncorrectData data = new UserIncorrectData();
         data.setInfo(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException exception) {
+        Map<String, String> errors = new HashMap<>();
+        exception.getBindingResult().getFieldErrors().stream().forEachOrdered(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,6 +1,7 @@
 package com.toleyko.springboot.orderservice.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -25,6 +26,7 @@ public class Order {
     @Column(name = "user_id")
     private String userId;
 
+    @NotEmpty(message = "Products list is empty")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_list", joinColumns = @JoinColumn(name = "id"))
     @MapKeyColumn(name = "product_id")

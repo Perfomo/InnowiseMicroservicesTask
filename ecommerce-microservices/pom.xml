@@ -25,7 +25,7 @@
         <module>order-service</module>
         <module>inventory-service</module>
         <module>gateway-service</module>
-<!--        <module>config-service</module>-->
+        <module>config-service</module>
         <module>discovery-service</module>
     </modules>
 

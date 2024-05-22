@@ -75,9 +75,7 @@ public class UserKeycloakService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
-        System.out.println("yes");
         keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).update(user);
-        System.out.println("lol");
         return this.getUserByUsername(user.getUsername());
     }
 

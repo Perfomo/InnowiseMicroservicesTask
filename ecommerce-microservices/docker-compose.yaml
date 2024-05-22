@@ -1,0 +1,37 @@
+ 
+services:
+    product-service:
+        build: ./product-service
+        depends_on:
+            - discovery-service
+            - config-service
+
+    user-service:
+        build: ./user-service
+        depends_on:
+            - discovery-service
+            - config-service
+
+    order-service:
+        build: ./order-service
+        depends_on:
+            - discovery-service
+            - config-service
+
+    inventory-service:
+        build: ./inventory-service
+        depends_on:
+            - discovery-service
+            - config-service
+
+    gateway-service:
+        build: ./gateway-service
+        depends_on:
+            - discovery-service
+            - config-service
+
+    config-service:
+        build: ./config-service
+
+    discovery-service:
+        build: ./discovery-service

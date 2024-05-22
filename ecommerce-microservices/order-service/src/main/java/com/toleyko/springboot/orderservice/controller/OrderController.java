@@ -10,7 +10,9 @@ import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundExcept
 import com.toleyko.springboot.orderservice.service.OrderService;
 import com.toleyko.springboot.orderservice.service.OrdersHistoryService;
 import com.toleyko.springboot.orderservice.service.kafka.KafkaToInventoryMessagePublisher;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,7 +54,7 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public Order saveOrder(@RequestBody Order order, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
+    public Order saveOrder(@Valid @RequestBody Order order, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
         String username = tokenHandler.getUsername(authorizationHeader);
         String userId = tokenHandler.getUserId(authorizationHeader);
         order.setUsername(username);

@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -132,7 +133,7 @@ public class ProductControllerTest {
 
     @Test
     public void saveProduct_SuccessfulTest() throws Exception {
-        Product product = new Product().setId(1).setName("Kir").setCost(10.1);
+        Product product = new Product().setId(1).setName("pc").setCost(10.1);
         when(productService.saveProduct(product)).thenReturn(product);
         doNothing().when(publisher).sendMessageToTopic(anyString());
 
@@ -148,7 +149,7 @@ public class ProductControllerTest {
     }
     @Test
     public void saveProduct_JsonProcessingExceptionTest() throws Exception {
-        Product product = new Product().setId(1).setName("Kir").setCost(10.1);
+        Product product = new Product().setId(1).setName("pc").setCost(10.1);
         when(productService.saveProduct(product)).thenReturn(product);
 
         ObjectMapper objectMapper = mock(ObjectMapper.class);
@@ -162,6 +163,22 @@ public class ProductControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
 
         verify(productService, times(1)).saveProduct(product);
+    }
+    @Test
+    public void saveProduct_BeanValidationExceptionTest() throws Exception {
+        Product product = new Product().setId(1).setName("").setCost(0.0);
+        HashMap<String, String> expected = new HashMap<>();
+        expected.put("name", "Invalid name");
+        expected.put("cost", "Cost must be more than 0");
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(product)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
     }
 
     @Test
@@ -186,11 +203,12 @@ public class ProductControllerTest {
     @Test
     public void updateProduct_ProductNotFoundExceptionTest() throws Exception {
         Integer id = 1;
+        Product product = new Product().setId(id).setName("PC").setCost(2.4);
         when(productService.getProductById(id)).thenThrow(new ProductNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new Product())))
+                .content(asJsonString(product)))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> Assertions.assertInstanceOf(ProductNotFoundException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Not found", result.getResolvedException().getMessage()));
@@ -217,6 +235,22 @@ public class ProductControllerTest {
 
         verify(productService, times(1)).getProductById(id);
         verify(productService, times(1)).updateProductById(id, product);
+    }
+    @Test
+    public void updateProduct_BeanValidationExceptionTest() throws Exception {
+        Product product = new Product().setId(1).setName("").setCost(0.0);
+        HashMap<String, String> expected = new HashMap<>();
+        expected.put("name", "Invalid name");
+        expected.put("cost", "Cost must be more than 0");
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(product)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
     }
 
     @Test

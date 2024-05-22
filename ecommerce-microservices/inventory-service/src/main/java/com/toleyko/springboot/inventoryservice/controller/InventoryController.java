@@ -3,6 +3,7 @@ package com.toleyko.springboot.inventoryservice.controller;
 import com.toleyko.springboot.inventoryservice.entity.Remainder;
 import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
 import com.toleyko.springboot.inventoryservice.service.InventoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +29,12 @@ public class InventoryController {
     }
 
     @PostMapping("/inventory")
-    public Remainder saveRemainder(@RequestBody Remainder remainder) {
+    public Remainder saveRemainder(@Valid @RequestBody Remainder remainder) {
         return inventoryService.saveRemainder(remainder);
     }
 
     @PutMapping("/inventory/{id}")
-    public Remainder updateRemainder(@PathVariable Integer id, @RequestBody Remainder remainder) throws RemainderNotFoundException {
+    public Remainder updateRemainder(@PathVariable Integer id, @Valid @RequestBody Remainder remainder) throws RemainderNotFoundException {
         return inventoryService.updateRemainderById(id, remainder);
     }
 

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c0401210-437c-4ec9-ae2f-1f886d2ea513" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;contexts&quot;: [
+    {
+      &quot;name&quot;: &quot;minikube&quot;,
+      &quot;originalNamespace&quot;: &quot;default&quot;
+    }
+  ],
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="KubernetesSettings">
+    <option name="contextName" value="minikube" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2gUtO0CFF6jEew0dnSBIDIxLHEQ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.GlobalExceptionHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalOrderHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalProductHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalProductHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalUserHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalUserHandlerTest.handleException_ForbiddenExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalUserHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryControllerTest.saveRemainder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryControllerTest.updateRemainder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_JsonProcessingExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_SuccessfulTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrdersHistoryServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.saveProduct_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.updateProduct_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.updateProduct_ProductNotFoundExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_BadUserDataExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_SuccessfulCreationTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_UserAlreadyExistExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_BadUserDataExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_ForbiddenExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_SuccessfulTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserKeycloakServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [validate].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.user-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ConfigServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.DiscoveryServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EcommerceMicroservicesApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.InventoryServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/perfomo/Documents/JavaPrac/JavaInno/Microservices/InnoMicroservices/ecommerce-microservices/discovery-service&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/discovery-service" />
+      <recent name="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice" />
+      <recent name="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice" />
+      <recent name="$PROJECT_DIR$/inventory-service/src/test/java/com/toleyko/springboot/inventoryservice" />
+      <recent name="$PROJECT_DIR$/inventory-service/src/main/java/com/toleyko/springboot/inventoryservice" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/config-service/src/main/resources/configs" />
+      <recent name="$PROJECT_DIR$/config-service/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/main/java/com/toleyko/springboot/ecommercemicroservices" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.InventoryServiceTest">
+    <configuration name="GlobalExceptionHandlerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="inventory-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.toleyko.springboot.inventoryservice.handler.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.toleyko.springboot.inventoryservice.handler" />
+      <option name="MAIN_CLASS_NAME" value="com.toleyko.springboot.inventoryservice.handler.GlobalExceptionHandlerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="inventory-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.toleyko.springboot.inventoryservice.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.toleyko.springboot.inventoryservice.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.toleyko.springboot.inventoryservice.controller.InventoryControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryControllerTest.saveRemainder_BeanValidationExceptionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="inventory-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.toleyko.springboot.inventoryservice.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.toleyko.springboot.inventoryservice.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.toleyko.springboot.inventoryservice.controller.InventoryControllerTest" />
+      <option name="METHOD_NAME" value="saveRemainder_BeanValidationExceptionTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryControllerTest.updateRemainder_BeanValidationExceptionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="inventory-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.toleyko.springboot.inventoryservice.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.toleyko.springboot.inventoryservice.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.toleyko.springboot.inventoryservice.controller.InventoryControllerTest" />
+      <option name="METHOD_NAME" value="updateRemainder_BeanValidationExceptionTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="inventory-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.toleyko.springboot.inventoryservice.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.toleyko.springboot.inventoryservice.service" />
+      <option name="MAIN_CLASS_NAME" value="com.toleyko.springboot.inventoryservice.service.InventoryServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.configservice.ConfigServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DiscoveryServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="discovery-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.discoveryservice.DiscoveryServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EcommerceMicroservicesApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="ecommerce-microservices" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.ecommercemicroservices.EcommerceMicroservicesApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GatewayServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="gateway-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.gatewayservice.GatewayServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="inventory-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.inventoryservice.InventoryServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="order-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.orderservice.OrderServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProductServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="product-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.productservice.ProductServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="user-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.userservice.UserServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.InventoryServiceTest" />
+        <item itemvalue="JUnit.GlobalExceptionHandlerTest" />
+        <item itemvalue="JUnit.InventoryControllerTest" />
+        <item itemvalue="JUnit.InventoryControllerTest.updateRemainder_BeanValidationExceptionTest" />
+        <item itemvalue="JUnit.InventoryControllerTest.saveRemainder_BeanValidationExceptionTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-19.0.2-corretto-19.0.2-f644763e9732-f4b396da" />
+        <option value="jdk-21.0.2-openjdk-21.0.2-4caba194b151-78a6f59c" />
+        <option value="jdk-21.0.2-openjdk-21.0.2-f644763e9732-563d888c" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c0401210-437c-4ec9-ae2f-1f886d2ea513" name="Changes" comment="" />
+      <created>1715763949046</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1715763949046</updated>
+      <workItem from="1715763950292" duration="7457000" />
+      <workItem from="1715797580330" duration="592000" />
+      <workItem from="1715928696487" duration="10256000" />
+      <workItem from="1715941787933" duration="3236000" />
+      <workItem from="1716028469168" duration="4000" />
+      <workItem from="1716186581675" duration="3000" />
+      <workItem from="1716186689098" duration="11634000" />
+      <workItem from="1716273563254" duration="5102000" />
+      <workItem from="1716285483455" duration="9000" />
+      <workItem from="1716286471785" duration="4259000" />
+      <workItem from="1716358909531" duration="420000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

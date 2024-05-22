@@ -9,6 +9,7 @@ import com.toleyko.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
 import com.toleyko.springboot.userservice.service.UserKeycloakService;
 import com.toleyko.springboot.userservice.service.kafka.KafkaToOrderMessagePublisher;
+import org.apache.kafka.common.protocol.types.Field;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,17 +29,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.*;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@EnableWebSecurity
 public class UserControllerTest {
-
     @Mock
     private UserKeycloakService userKeycloakService;
     @Mock
@@ -110,7 +110,7 @@ public class UserControllerTest {
 
     @Test
     public void createUser_SuccessfulCreationTest() throws Exception {
-        User user = new User("Per","3@d","root", "Kir", "Tol");
+        User user = new User("Perfomo","3sd@gmail.com","root", "Kir", "Tol");
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUsername("Per");
         when(userKeycloakService.createUser(user)).thenReturn(userRepresentation);
@@ -128,7 +128,7 @@ public class UserControllerTest {
 
     @Test
     public void createUser_UserAlreadyExistExceptionTest() throws Exception {
-        User user = new User("Per","3@d","root", "Kir", "Tol");
+        User user = new User("Perfomo","3sd@gmail.com","root", "Kir", "Tol");
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUsername("Per");
         when(userKeycloakService.createUser(user)).thenThrow(new UserAlreadyExistException("msg"));
@@ -145,7 +145,7 @@ public class UserControllerTest {
 
     @Test
     public void createUser_BadUserDataExceptionTest() throws Exception {
-        User user = new User("Per","3@d","root", "Kir", "Tol");
+        User user = new User("Perfomo","3sd@gmail.com","root", "Kir", "Tol");
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setUsername("Per");
         when(userKeycloakService.createUser(user)).thenThrow(new BadUserDataException("msg"));
@@ -158,6 +158,25 @@ public class UserControllerTest {
                 .andExpect(result -> Assertions.assertEquals("msg", result.getResolvedException().getMessage()));
 
         verify(userKeycloakService, times(1)).createUser(user);
+    }
+    @Test
+    public void createUser_BeanValidationExceptionTest() throws Exception {
+        User user = new User("","@gmail.com","ro", "", "");
+        Map<String, String> expected = new HashMap<>();
+        expected.put("lastName", "Invalid lastname");
+        expected.put("firstName", "Invalid firstname");
+        expected.put("password", "Invalid password, length must be more that 3 and less than 16");
+        expected.put("email", "Invalid email");
+        expected.put("username", "Invalid username");
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(user)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
     }
 
     @Test
@@ -194,7 +213,7 @@ public class UserControllerTest {
     public void updateUser_SuccessfulTest() throws Exception {
         String username = "per";
         UserRepresentation userRepresentation = new UserRepresentation();
-        User user = new User("per", "2@d", "pass", "name", "las");
+        User user = new User("Perfomo","3sd@gmail.com","root", "Kir", "Tol");
         userRepresentation.setUsername(username);
         doReturn(true).when(userPermissionHandler).isPermitted(username);
         when(userKeycloakService.updateUser(username, user)).thenReturn(userRepresentation);
@@ -215,7 +234,7 @@ public class UserControllerTest {
     @Test
     public void updateUser_ForbiddenExceptionTest() throws Exception {
         String username = "per";
-        User user = new User("per", "2@d", "pass", "name", "las");
+        User user = new User("Perfomo","3sd@gmail.com","root", "Kir", "Tol");
         doReturn(false).when(userPermissionHandler).isPermitted(username);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
@@ -225,6 +244,38 @@ public class UserControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
 
         verify(userKeycloakService, times(0)).updateUser(username, user);
+    }
+
+    @Test
+    public void updateUser_BadUserDataExceptionTest() throws Exception {
+        String username = "Perfomo";
+        User user = new User(username,"3sd@gmail.com","root", "Kir", "Tol");
+        doReturn(true).when(userPermissionHandler).isPermitted(username);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(user)))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> Assertions.assertInstanceOf(BadUserDataException.class, result.getResolvedException()));
+    }
+    @Test
+    public void updateUser_BeanValidationExceptionTest() throws Exception {
+        User user = new User("","@gmail.com","ro", "", "");
+        HashMap<String, String> expected = new HashMap<>();
+        expected.put("firstName", "Invalid firstname");
+        expected.put("lastName", "Invalid lastname");
+        expected.put("password", "Invalid password, length must be more that 3 and less than 16");
+        expected.put("email", "Invalid email");
+        expected.put("username", "Invalid username");
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", "Perfomo")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(user)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
     }
 
     @Test

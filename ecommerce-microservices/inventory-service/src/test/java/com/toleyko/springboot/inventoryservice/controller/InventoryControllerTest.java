@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -143,6 +144,27 @@ public class InventoryControllerTest {
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertEquals(asJsonString(remainder), responseBody);
     }
+    @Test
+    public void saveRemainder_BeanValidationExceptionTest() throws Exception {
+        Remainder remainder = new Remainder()
+                .setName("")
+                .setSold(-1)
+                .setLeft(-1)
+                .setCost(0.0);
+        HashMap<String, String> expected = new HashMap<>();
+        expected.put("name", "Invalid name");
+        expected.put("left", "Left amount must be 0 or more");
+        expected.put("sold", "Sold amount must be 0 or more");
+        expected.put("cost", "Cost must be more than 0");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/inventory")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(remainder)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
+    }
 
     @Test
     public void updateRemainder_SuccessfulTest() throws Exception {
@@ -175,6 +197,27 @@ public class InventoryControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(RemainderNotFoundException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Not found", result.getResolvedException().getMessage()));
         verify(inventoryService, times(1)).updateRemainderById(id, remainder);
+    }
+    @Test
+    public void updateRemainder_BeanValidationExceptionTest() throws Exception {
+        Remainder remainder = new Remainder()
+                .setName("")
+                .setSold(-1)
+                .setLeft(-1)
+                .setCost(0.0);
+        HashMap<String, String> expected = new HashMap<>();
+        expected.put("name", "Invalid name");
+        expected.put("left", "Left amount must be 0 or more");
+        expected.put("sold", "Sold amount must be 0 or more");
+        expected.put("cost", "Cost must be more than 0");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/inventory/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(remainder)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
     }
 
     @Test

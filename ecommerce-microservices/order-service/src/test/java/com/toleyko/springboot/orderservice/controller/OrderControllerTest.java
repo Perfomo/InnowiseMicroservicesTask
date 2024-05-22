@@ -11,6 +11,8 @@ import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundExcept
 import com.toleyko.springboot.orderservice.service.OrderServiceImpl;
 import com.toleyko.springboot.orderservice.service.OrdersHistoryService;
 import com.toleyko.springboot.orderservice.service.kafka.KafkaToInventoryMessagePublisher;
+import org.apache.kafka.common.protocol.types.Field;
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -246,6 +250,9 @@ public class OrderControllerTest {
         order.setCost(1.2);
         order.setUserId("1");
         order.setUsername("user");
+        Map<String, Integer> products = new HashMap<>();
+        products.put("2",2);
+        order.setProducts(products);
         when(tokenHandler.getUsername(anyString())).thenReturn("user");
         when(tokenHandler.getUserId(anyString())).thenReturn(String.valueOf(1));
         when(orderService.saveOrder(order)).thenReturn(order);
@@ -266,6 +273,9 @@ public class OrderControllerTest {
     public void saveOrder_JsonProcessingExceptionTest() throws Exception {
         Order order = new Order();
         order.setCost(1.2);
+        Map<String, Integer> products = new HashMap<>();
+        products.put("2",2);
+        order.setProducts(products);
         when(tokenHandler.getUsername(anyString())).thenThrow(JsonProcessingException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
@@ -276,6 +286,22 @@ public class OrderControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
 
         verify(orderService, times(0)).saveOrder(order);
+    }
+    @Test
+    public void saveOrder_BeanValidationExceptionTest() throws Exception {
+        Order order = new Order();
+        order.setStatus("Test");
+        HashMap<String, String> expected = new HashMap<>();
+        expected.put("products", "Products list is empty");
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(order)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        String responseBody = result.getResponse().getContentAsString();
+        HashMap<String, String> resultMap = new ObjectMapper().readValue(responseBody, HashMap.class);
+        Assertions.assertEquals(expected, resultMap);
     }
 
     @Test

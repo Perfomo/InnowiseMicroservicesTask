@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: bestuser
+    username: bestuser
+    url: jdbc:postgresql://localhost:9090/postgresDB
+  jpa:
+    hibernate:
+      ddl-auto: create
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id:
+        - handled-orders-group-1
+        - deleted-users-orders-group-1
+
+server:
+  port: ${ORDER_SERVICE_PORT:8085}
+
+eureka:
+  client:
+    prefer-same-zone-eureka: true
+    healthcheck:
+      enabled: true
+    instance-info-replication-interval-seconds: 2
+    service-url:
+      defaultZone: http://localhost:${EUREKA_SERVICE_PORT:8181}/eureka/
+  instance:
+    prefer-ip-address: true

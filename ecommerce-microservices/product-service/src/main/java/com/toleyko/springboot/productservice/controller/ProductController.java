@@ -6,6 +6,7 @@ import com.toleyko.springboot.productservice.entity.Product;
 import com.toleyko.springboot.productservice.handlers.exception.ProductNotFoundException;
 import com.toleyko.springboot.productservice.service.KafkaToInventoryMessagePublisher;
 import com.toleyko.springboot.productservice.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -32,14 +33,14 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product saveProduct(@RequestBody Product product) throws JsonProcessingException {
+    public Product saveProduct(@Valid @RequestBody Product product) throws JsonProcessingException {
         Product res = productService.saveProduct(product);
         publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"save", res.getName(), res.getCost().toString()}));
         return res;
     }
 
     @PutMapping("/products/{id}")
-    public Product updateProduct(@PathVariable Integer id, @RequestBody Product product) throws ProductNotFoundException, JsonProcessingException {
+    public Product updateProduct(@PathVariable Integer id, @Valid @RequestBody Product product) throws ProductNotFoundException, JsonProcessingException {
         String oldName = productService.getProductById(id).getName();
         Product res = productService.updateProductById(id, product);
         publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"update", oldName +"~"+ res.getName(), res.getCost().toString()}));

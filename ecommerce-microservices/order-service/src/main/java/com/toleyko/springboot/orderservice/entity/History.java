@@ -2,6 +2,7 @@ package com.toleyko.springboot.orderservice.entity;
 
 import com.toleyko.springboot.orderservice.dto.OrderHistory;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
