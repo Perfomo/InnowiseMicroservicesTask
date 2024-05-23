@@ -1,37 +1,79 @@
- 
+
+#    product-service:
+#        build: ./product-service
+#        depends_on:
+#            - discovery-service
+#            - config-service
+#
+#    user-service:
+#        build: ./user-service
+#        depends_on:
+#            - discovery-service
+#            - config-service
+#
+#    order-service:
+#        build: ./order-service
+#        depends_on:
+#            - discovery-service
+#            - config-service
+#
+#    inventory-service:
+#        build: ./inventory-service
+#        depends_on:
+#            - discovery-service
+#            - config-service
+#
 services:
-    product-service:
-        build: ./product-service
-        depends_on:
-            - discovery-service
-            - config-service
 
-    user-service:
-        build: ./user-service
-        depends_on:
-            - discovery-service
-            - config-service
+    keycloak:
+        image: my_keycloak_image:latest
+        environment:
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=admin
+        command: start-dev
+        ports:
+            - 8180:8180
+#        networks:
+#            - my-network
 
-    order-service:
-        build: ./order-service
-        depends_on:
-            - discovery-service
-            - config-service
+    discovery-service:
+        environment:
+            - DISCOVERY_SERVICE_PORT=8181
+        ports:
+            - 8181:8181
+        build: ./discovery-service
+        networks:
+            - my-network
 
-    inventory-service:
-        build: ./inventory-service
+    config-service:
+        environment:
+            - GATEWAY_SERVICE_PORT=8081
+            - USER_SERVICE_PORT=8082
+            - PRODUCT_SERVICE_PORT=8083
+            - INVENTORY_SERVICE_PORT=8084
+            - ORDER_SERVICE_PORT=8085
+            - CONFIG_SERVICE_PORT=8086
+            - DISCOVERY_SERVICE_PORT=8181
+        build: ./config-service
+        ports:
+            - 8080:8086
         depends_on:
             - discovery-service
-            - config-service
+        networks:
+            - my-network
 
     gateway-service:
+        environment:
+            - CONFIG_SERVICE_PORT=8086
+        ports:
+            - 8081:8081
         build: ./gateway-service
         depends_on:
             - discovery-service
             - config-service
+            - keycloak
+        networks:
+            - my-network
 
-    config-service:
-        build: ./config-service
-
-    discovery-service:
-        build: ./discovery-service
+networks:
+    my-network:

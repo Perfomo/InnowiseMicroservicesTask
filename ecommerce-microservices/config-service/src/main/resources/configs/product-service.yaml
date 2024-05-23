@@ -23,6 +23,6 @@ eureka:
       enabled: true
     instance-info-replication-interval-seconds: 2
     service-url:
-      defaultZone: http://localhost:${EUREKA_SERVICE_PORT:8181}/eureka/
+      defaultZone: http://localhost:${DISCOVERY_SERVICE_PORT:8181}/eureka/
   instance:
     prefer-ip-address: true
