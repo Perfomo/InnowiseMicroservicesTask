@@ -1,15 +1,3 @@
-
-#    product-service:
-#        build: ./product-service
-#        depends_on:
-#            - discovery-service
-#            - config-service
-#
-#    user-service:
-#        build: ./user-service
-#        depends_on:
-#            - discovery-service
-#            - config-service
 #
 #    order-service:
 #        build: ./order-service
@@ -17,24 +5,35 @@
 #            - discovery-service
 #            - config-service
 #
-#    inventory-service:
-#        build: ./inventory-service
-#        depends_on:
-#            - discovery-service
-#            - config-service
-#
+
 services:
 
     keycloak:
-        image: my_keycloak_image:latest
+        image: docker_keycloak:1
         environment:
             - KEYCLOAK_ADMIN=admin
             - KEYCLOAK_ADMIN_PASSWORD=admin
         command: start-dev
         ports:
-            - 8180:8180
-#        networks:
-#            - my-network
+            - 8080:8080
+        networks:
+            - my-network
+
+    postgres:
+        image: postgres:15
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=bestuser
+            - POSTGRES_PASSWORD=bestuser
+            - POSTGRES_DB=postgresDB
+        networks:
+            - my-network
+
+    kafka:
+        image: apache/kafka:3.7.0
+        networks:
+            - my-network
 
     discovery-service:
         environment:
@@ -56,7 +55,7 @@ services:
             - DISCOVERY_SERVICE_PORT=8181
         build: ./config-service
         ports:
-            - 8080:8086
+            - 8086:8086
         depends_on:
             - discovery-service
         networks:
@@ -65,6 +64,8 @@ services:
     gateway-service:
         environment:
             - CONFIG_SERVICE_PORT=8086
+            - DISCOVERY_SERVICE_PORT=8181
+            - USER_SERVICE_PORT=8082
         ports:
             - 8081:8081
         build: ./gateway-service
@@ -72,6 +73,55 @@ services:
             - discovery-service
             - config-service
             - keycloak
+        extra_hosts:
+            - "keycloak:10.201.46.94"
+        networks:
+            - my-network
+
+    user-service:
+        environment:
+            - CONFIG_SERVICE_PORT=8086
+            - DISCOVERY_SERVICE_PORT=8181
+        build: ./user-service
+        ports:
+            - 8082:8082
+        extra_hosts:
+            - "keycloak:10.201.46.94"
+        depends_on:
+            - discovery-service
+            - config-service
+            - keycloak
+            - gateway-service
+        networks:
+            - my-network
+
+    inventory-service:
+        build: ./inventory-service
+        ports:
+            - 8084:8084
+        environment:
+            - CONFIG_SERVICE_PORT=8086
+            - DISCOVERY_SERVICE_PORT=8181
+        depends_on:
+            - discovery-service
+            - config-service
+            - gateway-service
+            - postgres
+        networks:
+            - my-network
+
+    product-service:
+        build: ./product-service
+        ports:
+            - 8085:8085
+        environment:
+            - CONFIG_SERVICE_PORT=8086
+            - DISCOVERY_SERVICE_PORT=8181
+        depends_on:
+            - discovery-service
+            - config-service
+            - gateway-service
+            - postgres
         networks:
             - my-network
 

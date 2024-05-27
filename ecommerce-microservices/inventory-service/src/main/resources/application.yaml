@@ -3,7 +3,7 @@ spring:
     name: inventory-service
   cloud:
     config:
-      uri: http://localhost:8086
+      uri: http://config-service:${CONFIG_SERVICE_PORT:8086}
       enabled: true
   config:
-    import: configserver:http://localhost:8086/inventory-service
+    import: configserver:http://config-service:${CONFIG_SERVICE_PORT:8086}

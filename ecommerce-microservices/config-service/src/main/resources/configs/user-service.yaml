@@ -3,16 +3,16 @@ spring:
     name: user-service
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: kafka:9092
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/microServsRealm
+          issuer-uri: http://10.201.46.94:8080/realms/microServsRealm
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8180/realms/microServsRealm
+            issuer-uri: http://10.201.46.94:8080/realms/microServsRealm
             user-name-attribute: preferred_username
         registration:
           keycloak:
@@ -30,6 +30,6 @@ eureka:
       enabled: true
     instance-info-replication-interval-seconds: 2
     service-url:
-      defaultZone: http://localhost:${DISCOVERY_SERVICE_PORT:8181}/eureka/
+      defaultZone: http://discovery-service:${DISCOVERY_SERVICE_PORT:8181}/eureka/
   instance:
     prefer-ip-address: true

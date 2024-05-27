@@ -8,8 +8,8 @@ server:
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+#    register-with-eureka: false
+#    fetch-registry: false
     region: region1
     serviceUrl:
       zone1: http://localhost:${DISCOVERY_SERVICE_PORT:8181}/eureka/
