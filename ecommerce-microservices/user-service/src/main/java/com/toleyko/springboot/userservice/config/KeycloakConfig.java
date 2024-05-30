@@ -9,12 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakConfig {
 
-    private final static String serverUrl = "http://10.201.46.94:8080";
+    private final static String serverUrl = "http://172.17.0.1:8080";
     public final static String realm = "microServsRealm";
     private final static String clientId = "admin-cli";
     private final static String clientSecret = "zllYBgoqRezWpkNlXMYgx7iRZG9at1er";
-    private final static String userName = "admin";
-    private final static String password = "admin";
 
     @Bean
     public Keycloak KeycloakInst() {

@@ -8,11 +8,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://10.201.46.94:8080/realms/microServsRealm
+          issuer-uri: http://172.17.0.1:8080/realms/microServsRealm
       client:
         provider:
           keycloak:
-            issuer-uri: http://10.201.46.94:8080/realms/microServsRealm
+            issuer-uri: http://172.17.0.1:8080/realms/microServsRealm
             user-name-attribute: preferred_username
         registration:
           keycloak:

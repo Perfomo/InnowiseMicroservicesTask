@@ -301,5 +301,4 @@ public class UserControllerTest {
 
         verify(userKeycloakService, times(0)).deleteUser(username);
     }
-
 }
