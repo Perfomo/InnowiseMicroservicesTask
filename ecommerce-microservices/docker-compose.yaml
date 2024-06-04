@@ -1,7 +1,7 @@
 services:
 
     keycloak:
-        image: docker_keycloak:1
+        image: docker_keycloak:3
         environment:
             - KEYCLOAK_ADMIN=admin
             - KEYCLOAK_ADMIN_PASSWORD=admin
@@ -56,12 +56,6 @@ services:
 
     config-service:
         environment:
-            - GATEWAY_SERVICE_PORT=8081
-            - USER_SERVICE_PORT=8082
-            - PRODUCT_SERVICE_PORT=8083
-            - INVENTORY_SERVICE_PORT=8084
-            - ORDER_SERVICE_PORT=8085
-            - CONFIG_SERVICE_PORT=8086
             - DISCOVERY_SERVICE_PORT=8181
         build: ./config-service
         ports:
@@ -76,9 +70,13 @@ services:
 
     gateway-service:
         environment:
-            - CONFIG_SERVICE_PORT=8086
             - DISCOVERY_SERVICE_PORT=8181
+            - GATEWAY_SERVICE_PORT=8081
             - USER_SERVICE_PORT=8082
+            - PRODUCT_SERVICE_PORT=8083
+            - INVENTORY_SERVICE_PORT=8084
+            - ORDER_SERVICE_PORT=8085
+            - CONFIG_SERVICE_PORT=8086
         ports:
             - 8081:8081
         build: ./gateway-service
@@ -96,6 +94,8 @@ services:
         environment:
             - CONFIG_SERVICE_PORT=8086
             - DISCOVERY_SERVICE_PORT=8181
+            - USER_SERVICE_PORT=8082
+            - GATEWAY_SERVICE_PORT=8081
         build: ./user-service
         ports:
             - 8082:8082
@@ -115,6 +115,7 @@ services:
         ports:
             - 8084:8084
         environment:
+            - INVENTORY_SERVICE_PORT=8084
             - CONFIG_SERVICE_PORT=8086
             - DISCOVERY_SERVICE_PORT=8181
         depends_on:
@@ -130,6 +131,7 @@ services:
         ports:
             - 8083:8083
         environment:
+            - PRODUCT_SERVICE_PORT=8083
             - CONFIG_SERVICE_PORT=8086
             - DISCOVERY_SERVICE_PORT=8181
         depends_on:
@@ -145,6 +147,7 @@ services:
         ports:
             - 8085:8085
         environment:
+            - ORDER_SERVICE_PORT=8085
             - CONFIG_SERVICE_PORT=8086
             - DISCOVERY_SERVICE_PORT=8181
         depends_on:

@@ -86,11 +86,6 @@ public class UserKeycloakService {
         publisher.sendMessageToTopic(userName);
     }
 
-    public void logoutUser() {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        keycloak.realm(KeycloakConfig.realm).users().get(id).logout();
-    }
-
     private UserRepresentation createUserRepresentation(User userDTO) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(userDTO.getUsername());

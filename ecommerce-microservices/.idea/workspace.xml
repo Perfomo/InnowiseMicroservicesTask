@@ -7,17 +7,24 @@
     <list default="true" id="c0401210-437c-4ec9-ae2f-1f886d2ea513" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/configs/gateway-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/configs/gateway-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/configs/user-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/configs/user-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/discovery-service/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/OrderServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/OrderServiceApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/config/KeycloakConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/config/KeycloakConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/test/java/com/toleyko/springboot/userservice/controller/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/test/java/com/toleyko/springboot/userservice/controller/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/java/com/toleyko/springboot/gatewayservice/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/src/main/java/com/toleyko/springboot/gatewayservice/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/handler/UserPermissionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/handler/UserPermissionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/service/UserKeycloakService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/service/UserKeycloakService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -56,113 +63,114 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.discovery-service/Dockerfile.executor": "Run",
-    "Docker.docker-compose.yaml.config-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.discovery-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.gateway-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.inventory-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.kafka: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.keycloak: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.order-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.postgres: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.product-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.user-service: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml.zookeeper: Compose Deployment.executor": "Run",
-    "Docker.docker-compose.yaml: Compose Deployment.executor": "Run",
-    "JUnit.GlobalExceptionHandlerTest.executor": "Run",
-    "JUnit.GlobalOrderHandlerTest.executor": "Run",
-    "JUnit.GlobalProductHandlerTest.executor": "Run",
-    "JUnit.GlobalProductHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor": "Run",
-    "JUnit.GlobalUserHandlerTest.executor": "Run",
-    "JUnit.GlobalUserHandlerTest.handleException_ForbiddenExceptionTest.executor": "Run",
-    "JUnit.GlobalUserHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor": "Run",
-    "JUnit.InventoryControllerTest.executor": "Run",
-    "JUnit.InventoryControllerTest.saveRemainder_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.InventoryControllerTest.updateRemainder_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.InventoryServiceTest.executor": "Run",
-    "JUnit.OrderControllerTest.executor": "Run",
-    "JUnit.OrderControllerTest.saveOrder_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.OrderControllerTest.saveOrder_JsonProcessingExceptionTest.executor": "Run",
-    "JUnit.OrderControllerTest.saveOrder_SuccessfulTest.executor": "Run",
-    "JUnit.OrderHandlerTest.executor": "Run",
-    "JUnit.OrderServiceImplTest.executor": "Run",
-    "JUnit.OrdersHistoryServiceImplTest.executor": "Run",
-    "JUnit.ProductControllerTest.executor": "Run",
-    "JUnit.ProductControllerTest.saveProduct_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.ProductControllerTest.updateProduct_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.ProductControllerTest.updateProduct_ProductNotFoundExceptionTest.executor": "Run",
-    "JUnit.ProductServiceImplTest.executor": "Run",
-    "JUnit.UserControllerTest.createUser_BadUserDataExceptionTest.executor": "Run",
-    "JUnit.UserControllerTest.createUser_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.UserControllerTest.createUser_SuccessfulCreationTest.executor": "Run",
-    "JUnit.UserControllerTest.createUser_UserAlreadyExistExceptionTest.executor": "Run",
-    "JUnit.UserControllerTest.executor": "Run",
-    "JUnit.UserControllerTest.test.executor": "Run",
-    "JUnit.UserControllerTest.updateUser_BadUserDataExceptionTest.executor": "Run",
-    "JUnit.UserControllerTest.updateUser_BeanValidationExceptionTest.executor": "Run",
-    "JUnit.UserControllerTest.updateUser_ForbiddenExceptionTest.executor": "Run",
-    "JUnit.UserControllerTest.updateUser_SuccessfulTest.executor": "Run",
-    "JUnit.UserKeycloakServiceTest.executor": "Run",
-    "Maven.config-service [clean].executor": "Run",
-    "Maven.config-service [compile].executor": "Run",
-    "Maven.config-service [package].executor": "Run",
-    "Maven.config-service [test].executor": "Run",
-    "Maven.discovery-service [clean].executor": "Run",
-    "Maven.discovery-service [package].executor": "Run",
-    "Maven.discovery-service [test].executor": "Run",
-    "Maven.discovery-service [validate].executor": "Run",
-    "Maven.gateway-service [clean].executor": "Run",
-    "Maven.gateway-service [package].executor": "Run",
-    "Maven.gateway-service [test].executor": "Run",
-    "Maven.inventory-service [clean].executor": "Run",
-    "Maven.inventory-service [compile].executor": "Run",
-    "Maven.inventory-service [package].executor": "Run",
-    "Maven.order-service [clean].executor": "Run",
-    "Maven.order-service [package].executor": "Run",
-    "Maven.order-service [test].executor": "Run",
-    "Maven.product-service [clean].executor": "Run",
-    "Maven.product-service [package].executor": "Run",
-    "Maven.user-service [clean].executor": "Run",
-    "Maven.user-service [package].executor": "Run",
-    "Maven.user-service [test].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.ConfigServiceApplication.executor": "Run",
-    "Spring Boot.DiscoveryServiceApplication.executor": "Run",
-    "Spring Boot.EcommerceMicroservicesApplication.executor": "Run",
-    "Spring Boot.GatewayServiceApplication.executor": "Run",
-    "Spring Boot.InventoryServiceApplication.executor": "Run",
-    "Spring Boot.OrderServiceApplication.executor": "Run",
-    "Spring Boot.ProductServiceApplication.executor": "Run",
-    "Spring Boot.UserServiceApplication.executor": "Run",
-    "git-widget-placeholder": "main",
-    "jdk.selected.JAVA_MODULE": "21",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/perfomo/Documents/JavaPrac/JavaInno/Microservices/InnoMicroservices/InnowiseMicroservicesTask/ecommerce-microservices/order-service",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "MavenSettings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.discovery-service/Dockerfile.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.config-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.discovery-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.gateway-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.inventory-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.kafka: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.keycloak: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.order-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.postgres: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.product-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.user-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml.zookeeper: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalExceptionHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalOrderHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalProductHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalProductHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalUserHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalUserHandlerTest.handleException_ForbiddenExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalUserHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryControllerTest.saveRemainder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryControllerTest.updateRemainder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.InventoryServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_JsonProcessingExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_SuccessfulTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrdersHistoryServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.saveProduct_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.updateProduct_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.updateProduct_ProductNotFoundExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_BadUserDataExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_SuccessfulCreationTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.createUser_UserAlreadyExistExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.test.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_BadUserDataExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_ForbiddenExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.updateUser_SuccessfulTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserKeycloakServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-service [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-service [validate].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.gateway-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.gateway-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.gateway-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.inventory-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.inventory-service [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.inventory-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.order-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.order-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.order-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.product-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.product-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.user-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.user-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.user-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.user-service [verify].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ConfigServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.DiscoveryServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EcommerceMicroservicesApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.GatewayServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.InventoryServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.OrderServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ProductServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/perfomo/Documents/JavaPrac/JavaInno/Microservices/InnoMicroservices/InnowiseMicroservicesTask/ecommerce-microservices/order-service&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -189,7 +197,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yaml.order-service: Compose Deployment">
+  <component name="RunManager" selected="Docker.docker-compose.yaml.user-service: Compose Deployment">
     <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="config-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.configservice.ConfigServiceApplication" />
@@ -325,10 +333,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.docker-compose.yaml.user-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.order-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.product-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.inventory-service: Compose Deployment" />
-        <item itemvalue="Docker.docker-compose.yaml.user-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.gateway-service: Compose Deployment" />
       </list>
     </recent_temporary>
@@ -374,10 +382,21 @@
       <workItem from="1716791992794" duration="11823000" />
       <workItem from="1716807060052" duration="2810000" />
       <workItem from="1717065833282" duration="3410000" />
+      <workItem from="1717139518070" duration="544000" />
+      <workItem from="1717140593287" duration="4588000" />
+      <workItem from="1717145542488" duration="8749000" />
+      <workItem from="1717396967693" duration="11015000" />
+      <workItem from="1717410847536" duration="3871000" />
+      <workItem from="1717485061983" duration="7694000" />
+      <workItem from="1717493152517" duration="3522000" />
+      <workItem from="1717498643511" duration="2364000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.env" />
   </component>
 </project>

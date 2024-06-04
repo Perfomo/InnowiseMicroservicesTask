@@ -7,17 +7,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Component
 public class UserPermissionHandler {
-    private UserKeycloakService userKeycloakService;
     public boolean isPermitted(String userName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserRepresentation user = userKeycloakService.getUserByUsername(userName);
-        return user.getUsername().equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
-    }
-
-    @Autowired
-    public void setUserService(UserKeycloakService userKeycloakService) {
-        this.userKeycloakService = userKeycloakService;
+        System.out.println(authentication.getName());
+        System.out.println(authentication.getPrincipal());
+        System.out.println(authentication.getCredentials());
+        System.out.println(authentication.getDetails());
+        return userName.equals(authentication.getName()) || authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
     }
 }

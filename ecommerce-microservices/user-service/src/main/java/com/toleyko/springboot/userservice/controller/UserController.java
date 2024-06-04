@@ -7,12 +7,16 @@ import com.toleyko.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
 import com.toleyko.springboot.userservice.service.UserKeycloakService;
 import com.toleyko.springboot.userservice.service.kafka.KafkaToOrderMessagePublisher;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,6 +25,10 @@ public class UserController {
     private UserKeycloakService userKeycloakService;
     private UserPermissionHandler userPermissionHandler;
     private KafkaToOrderMessagePublisher publisher;
+
+    @Value("${GATEWAY_SERVICE_PORT}")
+    private String gatewayPort;
+
     @GetMapping("/users")
     public List<UserRepresentation> getAllUsers() throws ForbiddenException {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
@@ -65,8 +73,10 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public void logoutUser() {
-        userKeycloakService.logoutUser();
+    public RedirectView logout() {
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("http://172.17.0.1:" + gatewayPort + "/logout");
+        return redirectView;
     }
 
     @Autowired

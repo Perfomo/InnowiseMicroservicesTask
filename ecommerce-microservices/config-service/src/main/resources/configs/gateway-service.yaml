@@ -1,4 +1,5 @@
 spring:
+  GATEWAY_SERVICE_PORT: ${GATEWAY_SERVICE_PORT}
   application:
     name: gateway-service
   cloud:
@@ -13,21 +14,21 @@ spring:
               - RewritePath=/users/(?<segment>.*), /$\{segment}
 
           - id: product-service
-            uri: http://product-service:${PRODUCT_SERVICE_PORT:8083}/
+            uri: http://172.17.0.1:${PRODUCT_SERVICE_PORT:8083}/
             predicates:
               - Path=/products/**
             filters:
               - RewritePath=/products/(?<segment>.*), /$\{segment}
 
           - id: inventory-service
-            uri: http://inventory-service:${INVENTORY_SERVICE_PORT:8084}/
+            uri: http://172.17.0.1:${INVENTORY_SERVICE_PORT:8084}/
             predicates:
               - Path=/inventory/**
             filters:
               - RewritePath=/inventory/(?<segment>.*), /$\{segment}
 
           - id: order-service
-            uri: http://order-service:${ORDER_SERVICE_PORT:8085}/
+            uri: http://172.17.0.1:${ORDER_SERVICE_PORT:8085}/
             predicates:
               - Path=/orders/**
             filters:
@@ -62,3 +63,4 @@ eureka:
       defaultZone: http://discovery-service:${DISCOVERY_SERVICE_PORT:8181}/eureka/
   instance:
     prefer-ip-address: true
+
