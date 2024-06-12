@@ -12,6 +12,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://172.17.0.1:8080/realms/microServsRealm
 
 server:
   port: ${PRODUCT_SERVICE_PORT:8083}

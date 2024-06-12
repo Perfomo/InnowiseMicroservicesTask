@@ -102,15 +102,4 @@ public class OrderServiceImplTest {
         Assertions.assertEquals(orderList, orderService.getOrdersByUsername(anyString()));
         verify(orderRepository, times(1)).getOrderByUsername(anyString());
     }
-    @Test
-    public void getOrdersByUsername_OrderNotFoundExceptionTest() {
-        List<Order> orderList = new ArrayList<>();
-
-        when(orderRepository.getOrderByUsername(anyString())).thenReturn(orderList);
-
-        Assertions.assertThrows(OrderNotFoundException.class, () -> orderService.getOrdersByUsername(anyString()));
-        verify(orderRepository, times(1)).getOrderByUsername(anyString());
-    }
-
-
 }

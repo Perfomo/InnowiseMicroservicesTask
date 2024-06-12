@@ -29,19 +29,22 @@ public class SecurityConfig {
     private String gatewayPort;
     @Bean
     public SecurityFilterChain spSecurityWebFilterChain(HttpSecurity http) throws Exception {
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-        http.csrf(c -> c.ignoringRequestMatchers("/users/api/users", HttpMethod.POST));
-        http.authorizeHttpRequests(c -> c.requestMatchers("/users/api/users", HttpMethod.POST).permitAll()
-                .requestMatchers("/error").permitAll()
-                .requestMatchers("/homepage").permitAll()
-                .requestMatchers("/api/logout").authenticated());
+        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .csrf(c -> c.ignoringRequestMatchers("/users/api/users", HttpMethod.POST))
+                .authorizeHttpRequests(c -> c
+                        .requestMatchers("/users/api/users", HttpMethod.POST).permitAll()
+                    .requestMatchers("/error").permitAll()
+                    .requestMatchers("/homepage").permitAll()
+                    .requestMatchers("/api/logout").authenticated());
         http.oauth2Login(Customizer.withDefaults());
-        http.authorizeHttpRequests(c -> c.requestMatchers("/users/**").authenticated());
-                http.authorizeHttpRequests(c -> c.requestMatchers("/products/**").hasRole("MANAGER"));
-        http.authorizeHttpRequests(c -> c.requestMatchers("/inventory/**").hasRole("MANAGER"));
-        http.authorizeHttpRequests(c -> c.requestMatchers("/orders/api/orders", HttpMethod.POST).authenticated());
-        http.authorizeHttpRequests(c -> c.requestMatchers("/orders/api/*/orders", HttpMethod.GET).authenticated());
-        http.authorizeHttpRequests(c -> c.requestMatchers("/orders/**").hasRole("MANAGER"));
+        http.authorizeHttpRequests(c -> c
+                .requestMatchers("/users/**").authenticated()
+                .requestMatchers("/products/**").hasRole("MANAGER")
+                .requestMatchers("/inventory/**").hasRole("MANAGER")
+                .requestMatchers("/orders/api/orders", HttpMethod.POST).authenticated()
+                .requestMatchers("/orders/api/*/orders", HttpMethod.GET).authenticated()
+                .requestMatchers("/orders/**").hasRole("MANAGER"));
+
         http.logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessHandler((request, response, authentication) -> {
@@ -51,7 +54,6 @@ public class SecurityConfig {
                         String idTokenValue = idToken.getTokenValue();
                         String logoutUrl = "http://172.17.0.1:8080/realms/microServsRealm/protocol/openid-connect/logout";
                         String postLogoutRedirectUri = "http://172.17.0.1:" + gatewayPort +"/homepage";
-
                         response.setStatus(HttpServletResponse.SC_OK);
                         response.sendRedirect(logoutUrl +
                                 "?post_logout_redirect_uri=" + postLogoutRedirectUri +

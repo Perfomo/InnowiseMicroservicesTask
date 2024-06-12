@@ -7,7 +7,6 @@ import com.toleyko.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
 import com.toleyko.springboot.userservice.service.UserKeycloakService;
 import com.toleyko.springboot.userservice.service.kafka.KafkaToOrderMessagePublisher;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -54,7 +51,7 @@ public class UserController {
     @PutMapping("/users/{userName}")
     public UserRepresentation updateUser(@PathVariable String userName, @Valid @RequestBody User user) throws ForbiddenException, BadUserDataException {
         if (userPermissionHandler.isPermitted(userName)) {
-            if (!userName.equals(user.getUsername())) {
+            if (userName.equals(user.getUsername())) {
                 return userKeycloakService.updateUser(userName, user);
             }
             throw new BadUserDataException("Username changing is not permitted");

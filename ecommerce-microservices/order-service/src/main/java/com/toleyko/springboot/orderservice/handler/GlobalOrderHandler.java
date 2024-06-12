@@ -2,6 +2,7 @@ package com.toleyko.springboot.orderservice.handler;
 
 import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +34,13 @@ public class GlobalOrderHandler {
         OrderError error = new OrderError();
         error.setInfo(e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<OrderError> handleException(TokenDataExtractionException e) {
+        OrderError error = new OrderError();
+        error.setInfo(e.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler

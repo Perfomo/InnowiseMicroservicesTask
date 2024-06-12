@@ -5,20 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.orderservice.entity.History;
 import com.toleyko.springboot.orderservice.entity.Order;
 import com.toleyko.springboot.orderservice.handler.GlobalOrderHandler;
-import com.toleyko.springboot.orderservice.handler.TokenHandler;
 import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.handler.PermissionHandler;
+import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import com.toleyko.springboot.orderservice.service.OrderServiceImpl;
 import com.toleyko.springboot.orderservice.service.OrdersHistoryService;
 import com.toleyko.springboot.orderservice.service.kafka.KafkaToInventoryMessagePublisher;
-import org.apache.kafka.common.protocol.types.Field;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -36,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class OrderControllerTest {
     @Mock
-    private TokenHandler tokenHandler;
+    private PermissionHandler permissionHandler;
     @Mock
     private OrderServiceImpl orderService;
     @Mock
@@ -50,7 +48,7 @@ public class OrderControllerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         orderController.setOrderService(orderService);
-        orderController.setTokenHandler(tokenHandler);
+        orderController.setPermissionHandler(permissionHandler);
         orderController.setPublisher(publisher);
         orderController.setOrdersHistoryService(ordersHistoryService);
         mockMvc = MockMvcBuilders
@@ -79,45 +77,41 @@ public class OrderControllerTest {
         List<Order> expected = new ArrayList<>();
         expected.add(new Order().setStatus("ok").setCost(2.3));
         expected.add(new Order().setStatus("p").setCost(10.0));
-        when(tokenHandler.isManager(anyString())).thenReturn(true);
+        when(permissionHandler.isManager()).thenReturn(true);
         when(orderService.getAllOrders()).thenReturn(expected);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/orders")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/orders"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].status").value("ok"))
                 .andExpect(jsonPath("$[0].cost").value(2.3))
                 .andExpect(jsonPath("$[1].status").value("p"))
                 .andExpect(jsonPath("$[1].cost").value(10.0));
 
-        verify(tokenHandler, times(1)).isManager(anyString());
+        verify(permissionHandler, times(1)).isManager();
         verify(orderService, times(1)).getAllOrders();
     }
-
     @Test
     public void getAllOrders_ForbiddenExceptionTest() throws Exception {
-        when(tokenHandler.isManager(anyString())).thenReturn(false);
+        when(permissionHandler.isManager()).thenReturn(false);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/orders")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/orders"))
                 .andExpect(status().isForbidden())
                 .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Access denied", result.getResolvedException().getMessage()));
 
-        verify(tokenHandler, times(1)).isManager(anyString());
+        verify(permissionHandler, times(1)).isManager();
         verify(orderService, times(0)).getAllOrders();
     }
-
     @Test
-    public void getAllOrders_JsonProcessingExceptionTest() throws Exception {
-        when(tokenHandler.isManager(anyString())).thenThrow(JsonProcessingException.class);
+    public void getAllOrders_TokenDataExtractionExceptionTest() throws Exception {
+        when(permissionHandler.isManager()).thenThrow(new TokenDataExtractionException("Token"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/orders")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere"))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/orders"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(result -> Assertions.assertInstanceOf(TokenDataExtractionException.class, result.getResolvedException()))
+                .andExpect(result -> Assertions.assertEquals("Token", result.getResolvedException().getMessage()));
 
-        verify(tokenHandler, times(1)).isManager(anyString());
+        verify(permissionHandler, times(1)).isManager();
         verify(orderService, times(0)).getAllOrders();
     }
 
@@ -163,17 +157,16 @@ public class OrderControllerTest {
         Order order2 = new Order().setId(2);
         expected.add(order1);
         expected.add(order2);
-        when(tokenHandler.getUsername(anyString())).thenReturn("us");
+        when(permissionHandler.getUsername()).thenReturn("us");
         when(orderService.getOrdersByUsername(anyString())).thenReturn(expected);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/{username}/orders", username)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, anyString()))
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(status().isOk());
 
-        verify(tokenHandler, times(1)).getUsername(anyString());
+        verify(permissionHandler, times(1)).getUsername();
         verify(orderService, times(1)).getOrdersByUsername(anyString());
     }
     @Test
@@ -184,64 +177,62 @@ public class OrderControllerTest {
         Order order2 = new Order().setId(2);
         expected.add(order1);
         expected.add(order2);
-        when(tokenHandler.getUsername(anyString())).thenReturn("us");
-        when(tokenHandler.isManager(anyString())).thenReturn(true);
+        when(permissionHandler.getUsername()).thenReturn("us");
+        when(permissionHandler.isManager()).thenReturn(true);
         when(orderService.getOrdersByUsername(anyString())).thenReturn(expected);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/{username}/orders", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, anyString()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(status().isOk());
 
-        verify(tokenHandler, times(1)).getUsername(anyString());
-        verify(tokenHandler, times(1)).isManager(anyString());
+        verify(permissionHandler, times(1)).getUsername();
+        verify(permissionHandler, times(1)).isManager();
         verify(orderService, times(1)).getOrdersByUsername(anyString());
-    }
-    @Test
-    public void getUserOrders_JsonProcessingExceptionTest() throws Exception {
-        String username = "notus";
-        when(tokenHandler.getUsername(anyString())).thenThrow(JsonProcessingException.class);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/{username}/orders", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, anyString()))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
-
-        verify(tokenHandler, times(1)).getUsername(anyString());
     }
     @Test
     public void getUserOrders_ForbiddenExceptionTest() throws Exception {
         String username = "notus";
-        when(tokenHandler.getUsername(anyString())).thenReturn("us");
-        when(tokenHandler.isManager(anyString())).thenReturn(false);
+        when(permissionHandler.getUsername()).thenReturn("us");
+        when(permissionHandler.isManager()).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/{username}/orders", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, anyString()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
 
-        verify(tokenHandler, times(1)).getUsername(anyString());
-        verify(tokenHandler, times(1)).isManager(anyString());
+        verify(permissionHandler, times(1)).getUsername();
+        verify(permissionHandler, times(1)).isManager();
     }
     @Test
     public void getUserOrders_OrderNotFoundExceptionTest() throws Exception {
         String username = "us";
-        when(tokenHandler.getUsername(anyString())).thenReturn("us");
+        when(permissionHandler.getUsername()).thenReturn("us");
         when(orderService.getOrdersByUsername(anyString())).thenThrow(new OrderNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/{username}/orders", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, anyString()))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> Assertions.assertInstanceOf(OrderNotFoundException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Not found", result.getResolvedException().getMessage()));
 
-        verify(tokenHandler, times(1)).getUsername(anyString());
+        verify(permissionHandler, times(1)).getUsername();
         verify(orderService, times(1)).getOrdersByUsername(anyString());
+    }
+    @Test
+    public void getUserOrders_TokenDataExtractionExceptionTest() throws Exception {
+        String username = "us";
+        when(permissionHandler.getUsername()).thenThrow(new TokenDataExtractionException("Token"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/{username}/orders", username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(result -> Assertions.assertInstanceOf(TokenDataExtractionException.class, result.getResolvedException()))
+                .andExpect(result -> Assertions.assertEquals("Token", result.getResolvedException().getMessage()));
+
+        verify(permissionHandler, times(1)).getUsername();
+        verify(orderService, times(0)).getOrdersByUsername(anyString());
     }
 
     @Test
@@ -253,13 +244,12 @@ public class OrderControllerTest {
         Map<String, Integer> products = new HashMap<>();
         products.put("2",2);
         order.setProducts(products);
-        when(tokenHandler.getUsername(anyString())).thenReturn("user");
-        when(tokenHandler.getUserId(anyString())).thenReturn(String.valueOf(1));
+        when(permissionHandler.getUsername()).thenReturn("user");
+        when(permissionHandler.getUserId()).thenReturn(String.valueOf(1));
         when(orderService.saveOrder(order)).thenReturn(order);
         doNothing().when(publisher).sendMessageToTopic(anyString());
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(order)))
                 .andExpect(status().isOk())
@@ -270,20 +260,19 @@ public class OrderControllerTest {
         Assertions.assertEquals(asJsonString(order), responseBody);
     }
     @Test
-    public void saveOrder_JsonProcessingExceptionTest() throws Exception {
+    public void saveOrder_TokenDataExtractionExceptionTest() throws Exception {
         Order order = new Order();
         order.setCost(1.2);
         Map<String, Integer> products = new HashMap<>();
         products.put("2",2);
         order.setProducts(products);
-        when(tokenHandler.getUsername(anyString())).thenThrow(JsonProcessingException.class);
+        when(permissionHandler.getUsername()).thenThrow(TokenDataExtractionException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(order)))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
+                .andExpect(status().isUnauthorized())
+                .andExpect(result -> Assertions.assertInstanceOf(TokenDataExtractionException.class, result.getResolvedException()));
 
         verify(orderService, times(0)).saveOrder(order);
     }
@@ -294,7 +283,6 @@ public class OrderControllerTest {
         HashMap<String, String> expected = new HashMap<>();
         expected.put("products", "Products list is empty");
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/orders")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer yourAuthorizationTokenHere")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(order)))
                 .andExpect(status().isBadRequest())

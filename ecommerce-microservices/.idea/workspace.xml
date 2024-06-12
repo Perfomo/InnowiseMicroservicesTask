@@ -6,13 +6,28 @@
   <component name="ChangeListManager">
     <list default="true" id="c0401210-437c-4ec9-ae2f-1f886d2ea513" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/configs/gateway-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/configs/gateway-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/configs/inventory-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/configs/inventory-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/configs/order-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/configs/order-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/configs/product-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/configs/product-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gateway-service/src/main/java/com/toleyko/springboot/gatewayservice/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/src/main/java/com/toleyko/springboot/gatewayservice/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/main/java/com/toleyko/springboot/inventoryservice/controller/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/main/java/com/toleyko/springboot/inventoryservice/controller/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/test/java/com/toleyko/springboot/inventoryservice/controller/InventoryControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/test/java/com/toleyko/springboot/inventoryservice/controller/InventoryControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory-service/src/test/java/com/toleyko/springboot/inventoryservice/handler/OrderHandlerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventory-service/src/test/java/com/toleyko/springboot/inventoryservice/handler/OrderHandlerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/handler/GlobalOrderHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/handler/GlobalOrderHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/handler/TokenHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/service/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice/service/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/controller/OrderControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/controller/OrderControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/handler/GlobalOrderHandlerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/handler/GlobalOrderHandlerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/service/OrderServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/test/java/com/toleyko/springboot/orderservice/service/OrderServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/controller/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/handler/UserPermissionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/handler/UserPermissionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/service/UserKeycloakService.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/toleyko/springboot/userservice/service/UserKeycloakService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/src/test/java/com/toleyko/springboot/userservice/controller/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/test/java/com/toleyko/springboot/userservice/controller/UserControllerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,8 +93,10 @@
     &quot;Docker.docker-compose.yaml.user-service: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.docker-compose.yaml.zookeeper: Compose Deployment.executor&quot;: &quot;Run&quot;,
     &quot;Docker.docker-compose.yaml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.generated-requests | #1.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GlobalExceptionHandlerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GlobalOrderHandlerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GlobalOrderHandlerTest.handleException_TokenDataExtractionExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GlobalProductHandlerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GlobalProductHandlerTest.handleValidationException_MethodArgumentNotValidExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.GlobalUserHandlerTest.executor&quot;: &quot;Run&quot;,
@@ -89,14 +106,27 @@
     &quot;JUnit.InventoryControllerTest.saveRemainder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.InventoryControllerTest.updateRemainder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.InventoryServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LogoutControllerTest.logoutTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LogoutControllerTest.showHomepageTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrderControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getAllOrders_ForbiddenExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getAllOrders_SuccessfulTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getAllOrders_TokenDataExtractionExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getOrderById_OrderNotFoundExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getUserOrders_ForbiddenExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getUserOrders_OrderNotFoundExceptionTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getUserOrders_SuccessfulTest1.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getUserOrders_SuccessfulTest2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.getUserOrders_TokenDataExtractionExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrderControllerTest.saveOrder_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrderControllerTest.saveOrder_JsonProcessingExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrderControllerTest.saveOrder_SuccessfulTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OrderControllerTest.saveOrder_TokenDataExtractionExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrderHandlerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrderServiceImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.OrdersHistoryServiceImplTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.ProductControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductControllerTest.getAllProducts_SuccessfulTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.ProductControllerTest.saveProduct_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.ProductControllerTest.updateProduct_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.ProductControllerTest.updateProduct_ProductNotFoundExceptionTest.executor&quot;: &quot;Run&quot;,
@@ -106,6 +136,7 @@
     &quot;JUnit.UserControllerTest.createUser_SuccessfulCreationTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.createUser_UserAlreadyExistExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserControllerTest.logoutTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.test.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.updateUser_BadUserDataExceptionTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.UserControllerTest.updateUser_BeanValidationExceptionTest.executor&quot;: &quot;Run&quot;,
@@ -127,9 +158,11 @@
     &quot;Maven.inventory-service [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.inventory-service [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.order-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.order-service [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.order-service [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.order-service [test].executor&quot;: &quot;Run&quot;,
     &quot;Maven.product-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.product-service [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.product-service [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.user-service [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.user-service [package].executor&quot;: &quot;Run&quot;,
@@ -152,7 +185,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;jdk.selected.JAVA_MODULE&quot;: &quot;21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/perfomo/Documents/JavaPrac/JavaInno/Microservices/InnoMicroservices/InnowiseMicroservicesTask/ecommerce-microservices/order-service&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/perfomo/Documents/JavaPrac/JavaInno/Microservices/InnoMicroservices/InnowiseMicroservicesTask/ecommerce-microservices/order-service/src/main/java/com/toleyko/springboot/orderservice&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -176,16 +209,22 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/order-service/src/main/java/com/toleyko/springboot/orderservice" />
+      <recent name="$PROJECT_DIR$/inventory-service/src/main/java/com/toleyko/springboot/inventoryservice" />
+      <recent name="$PROJECT_DIR$/product-service/src/main/java/com/toleyko/springboot/productservice" />
       <recent name="$PROJECT_DIR$/order-service" />
       <recent name="$PROJECT_DIR$/product-service" />
-      <recent name="$PROJECT_DIR$/inventory-service" />
-      <recent name="$PROJECT_DIR$/user-service" />
-      <recent name="$PROJECT_DIR$/gateway-service" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/config-service/src/main/resources/configs" />
       <recent name="$PROJECT_DIR$/config-service/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/main/java/com/toleyko/springboot/ecommercemicroservices" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.toleyko.springboot.orderservice.handler" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.toleyko.springboot.productservice.config" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -196,8 +235,13 @@
         <option value="SpringBootApplicationConfigurationType" />
       </set>
     </option>
+    <option name="excludedTypes">
+      <set>
+        <option value="HttpClient.HttpRequestRunConfigurationType" />
+      </set>
+    </option>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yaml.user-service: Compose Deployment">
+  <component name="RunManager" selected="Docker.docker-compose.yaml.order-service: Compose Deployment">
     <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="config-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.toleyko.springboot.configservice.ConfigServiceApplication" />
@@ -333,10 +377,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Docker.docker-compose.yaml.user-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.order-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.product-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.inventory-service: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose.yaml.user-service: Compose Deployment" />
         <item itemvalue="Docker.docker-compose.yaml.gateway-service: Compose Deployment" />
       </list>
     </recent_temporary>
@@ -390,6 +434,10 @@
       <workItem from="1717485061983" duration="7694000" />
       <workItem from="1717493152517" duration="3522000" />
       <workItem from="1717498643511" duration="2364000" />
+      <workItem from="1718090597091" duration="9483000" />
+      <workItem from="1718102783735" duration="5829000" />
+      <workItem from="1718178242765" duration="9145000" />
+      <workItem from="1718189740616" duration="1356000" />
     </task>
     <servers />
   </component>

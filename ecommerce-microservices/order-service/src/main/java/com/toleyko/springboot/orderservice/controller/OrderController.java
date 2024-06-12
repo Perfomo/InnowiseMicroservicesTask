@@ -4,27 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.orderservice.entity.History;
 import com.toleyko.springboot.orderservice.entity.Order;
-import com.toleyko.springboot.orderservice.handler.TokenHandler;
 import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.handler.PermissionHandler;
+import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import com.toleyko.springboot.orderservice.service.OrderService;
 import com.toleyko.springboot.orderservice.service.OrdersHistoryService;
 import com.toleyko.springboot.orderservice.service.kafka.KafkaToInventoryMessagePublisher;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class OrderController {
     private OrderService orderService;
-    private TokenHandler tokenHandler;
     private KafkaToInventoryMessagePublisher publisher;
     private ObjectMapper objectMapper = new ObjectMapper();
     private OrdersHistoryService ordersHistoryService;
+    private PermissionHandler permissionHandler;
 
     @GetMapping("/history")
     public List<History> getHistory() {
@@ -32,8 +31,8 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<Order> getAllOrders(@RequestHeader("Authorization") String authorizationHeader) throws ForbiddenException, JsonProcessingException {
-        if (tokenHandler.isManager(authorizationHeader)) {
+    public List<Order> getAllOrders() throws ForbiddenException, TokenDataExtractionException {
+        if (permissionHandler.isManager()) {
             return orderService.getAllOrders();
         }
         throw new ForbiddenException("Access denied");
@@ -45,18 +44,17 @@ public class OrderController {
     }
 
     @GetMapping("/{username}/orders")
-    public List<Order> getUserOrders(@PathVariable String username, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException, ForbiddenException, OrderNotFoundException {
-        String authUsername = tokenHandler.getUsername(authorizationHeader);
-        if (username.equals(authUsername) || tokenHandler.isManager(authorizationHeader)) {
+    public List<Order> getUserOrders(@PathVariable String username) throws OrderNotFoundException, ForbiddenException, TokenDataExtractionException {
+        String authUsername = permissionHandler.getUsername();
+        if (username.equals(authUsername) || permissionHandler.isManager()) {
             return orderService.getOrdersByUsername(username);
         }
         throw new ForbiddenException("Access denied");
     }
-
     @PostMapping("/orders")
-    public Order saveOrder(@Valid @RequestBody Order order, @RequestHeader("Authorization") String authorizationHeader) throws JsonProcessingException {
-        String username = tokenHandler.getUsername(authorizationHeader);
-        String userId = tokenHandler.getUserId(authorizationHeader);
+    public Order saveOrder(@Valid @RequestBody Order order) throws TokenDataExtractionException, JsonProcessingException {
+        String username = permissionHandler.getUsername();
+        String userId = permissionHandler.getUserId();
         order.setUsername(username);
         order.setUserId(userId);
         Order order1 = orderService.saveOrder(order);
@@ -75,11 +73,6 @@ public class OrderController {
     }
 
     @Autowired
-    public void setTokenHandler(TokenHandler tokenHandler) {
-        this.tokenHandler = tokenHandler;
-    }
-
-    @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -92,5 +85,10 @@ public class OrderController {
     @Autowired
     public void setOrdersHistoryService(OrdersHistoryService ordersHistoryService) {
         this.ordersHistoryService = ordersHistoryService;
+    }
+
+    @Autowired
+    public void setPermissionHandler(PermissionHandler permissionHandler) {
+        this.permissionHandler = permissionHandler;
     }
 }

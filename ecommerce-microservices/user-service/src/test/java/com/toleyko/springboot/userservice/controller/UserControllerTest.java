@@ -211,7 +211,7 @@ public class UserControllerTest {
 
     @Test
     public void updateUser_SuccessfulTest() throws Exception {
-        String username = "per";
+        String username = "Perfomo";
         UserRepresentation userRepresentation = new UserRepresentation();
         User user = new User("Perfomo","3sd@gmail.com","root", "Kir", "Tol");
         userRepresentation.setUsername(username);
@@ -249,7 +249,7 @@ public class UserControllerTest {
     @Test
     public void updateUser_BadUserDataExceptionTest() throws Exception {
         String username = "Perfomo";
-        User user = new User(username,"3sd@gmail.com","root", "Kir", "Tol");
+        User user = new User("Per","3sd@gmail.com","root", "Kir", "Tol");
         doReturn(true).when(userPermissionHandler).isPermitted(username);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
@@ -289,7 +289,6 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
         verify(userKeycloakService, times(1)).deleteUser(username);
     }
-
     @Test
     public void deleteUserByUserName_ForbiddenExceptionTest() throws Exception {
         String username = "per";
@@ -300,5 +299,11 @@ public class UserControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(ForbiddenException.class, result.getResolvedException()));
 
         verify(userKeycloakService, times(0)).deleteUser(username);
+    }
+
+    @Test
+    public void logoutTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/logout"))
+                .andExpect(status().is(302));
     }
 }

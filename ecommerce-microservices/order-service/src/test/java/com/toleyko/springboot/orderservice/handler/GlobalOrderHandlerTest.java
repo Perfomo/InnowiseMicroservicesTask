@@ -2,6 +2,7 @@ package com.toleyko.springboot.orderservice.handler;
 
 import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -9,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +36,15 @@ public class GlobalOrderHandlerTest {
 
         Assertions.assertEquals(orderError, response.getBody());
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    public void handleException_TokenDataExtractionExceptionTest() {
+        ResponseEntity<OrderError> response = globalOrderHandler.handleException(new TokenDataExtractionException("Token"));
+        orderError.setInfo("Token");
+
+        Assertions.assertEquals(orderError, response.getBody());
+        Assertions.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
     @Test

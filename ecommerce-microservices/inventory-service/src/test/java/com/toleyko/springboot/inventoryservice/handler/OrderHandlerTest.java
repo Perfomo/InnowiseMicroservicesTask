@@ -20,7 +20,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class OrderHandlerTest {
-
     @Mock
     private InventoryService inventoryService;
     @Mock
