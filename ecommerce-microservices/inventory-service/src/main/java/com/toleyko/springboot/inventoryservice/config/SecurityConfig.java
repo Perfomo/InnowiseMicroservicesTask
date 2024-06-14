@@ -18,7 +18,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain SecurityWebFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(c -> c.anyRequest().hasRole("MANAGER"))
+        http.authorizeHttpRequests(c -> c
+                        .requestMatchers("/actuator/**").permitAll()
+                        .anyRequest().hasRole("MANAGER"))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }

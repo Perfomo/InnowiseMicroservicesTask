@@ -31,6 +31,7 @@ public class SecurityConfig {
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf(c -> c.ignoringRequestMatchers("/api/users"))
                 .authorizeHttpRequests(c -> c
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/users", HttpMethod.POST).permitAll());
         http.oauth2Login(Customizer.withDefaults());
         http.authorizeHttpRequests(c -> c

@@ -40,6 +40,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(c -> c
                 .requestMatchers("/users/**").authenticated()
                 .requestMatchers("/products/**").hasRole("MANAGER")
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("actuator/**").permitAll()
                 .requestMatchers("/inventory/**").hasRole("MANAGER")
                 .requestMatchers("/orders/api/orders", HttpMethod.POST).authenticated()
                 .requestMatchers("/orders/api/*/orders", HttpMethod.GET).authenticated()
