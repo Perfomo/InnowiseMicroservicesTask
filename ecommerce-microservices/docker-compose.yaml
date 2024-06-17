@@ -11,11 +11,6 @@ services:
             - "user-service:172.17.0.1"
         ports:
             - 8080:8080
-#        healthcheck:
-#            test: [ "CMD-SHELL", "bash test.sh" ]
-#            interval: 30s
-#            timeout: 5s
-#            retries: 3
         networks:
             - my-network
 
