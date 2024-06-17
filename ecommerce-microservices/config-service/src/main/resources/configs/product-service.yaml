@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: product-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: bestuser
+    username: bestuser
+    url: jdbc:postgresql://postgres:5432/postgresDB
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+  jpa:
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://172.17.0.1:8080/realms/microServsRealm
+
+server:
+  port: ${PRODUCT_SERVICE_PORT:8083}
+
+eureka:
+  client:
+    prefer-same-zone-eureka: true
+    healthcheck:
+      enabled: true
+    instance-info-replication-interval-seconds: 2
+    service-url:
+      defaultZone: http://discovery-service:${DISCOVERY_SERVICE_PORT:8181}/eureka/
+  instance:
+    prefer-ip-address: true
