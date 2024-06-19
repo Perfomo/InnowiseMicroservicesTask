@@ -18,33 +18,37 @@ import java.util.Arrays;
 public class KafkaProductMessageListener {
     private InventoryServiceImpl inventoryService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     @KafkaListener(topics = "all-products", groupId = "all-products-group-1")
-    public void consume(String message) throws RemainderNotFoundException, JsonProcessingException {
-        String[] msgArr = objectMapper.readValue(message, String[].class);
-        switch (msgArr[0]) {
-            case "save" -> {
-                Remainder remainder = new Remainder()
-                        .setName(msgArr[1])
-                        .setLeft(0)
-                        .setSold(0)
-                        .setCost(new BigDecimal(msgArr[2]));
-                inventoryService.saveRemainder(remainder);
-                log.info(remainder + " - saved");
-            }
+    public void consume(String message) {
+        try {
+            String[] msgArr = objectMapper.readValue(message, String[].class);
+            switch (msgArr[0]) {
+                case "save" -> {
+                    Remainder remainder = new Remainder()
+                            .setName(msgArr[1])
+                            .setLeft(0)
+                            .setSold(0)
+                            .setCost(new BigDecimal(msgArr[2]));
+                    inventoryService.saveRemainder(remainder);
+                    log.info(remainder + " - saved");
+                }
 
-            case "update" -> {
-                String[] names = msgArr[1].split("~");
-                Remainder oldRemainder = inventoryService.getRemainderByName(names[0]);
-                inventoryService.updateRemainderById(oldRemainder.getId(), oldRemainder.setName(names[1]).setCost(new BigDecimal(msgArr[2])));
-                log.info(oldRemainder + " - updated");
-            }
+                case "update" -> {
+                    String[] names = msgArr[1].split("~");
+                    Remainder oldRemainder = inventoryService.getRemainderByName(names[0]);
+                    inventoryService.updateRemainderById(oldRemainder.getId(), oldRemainder.setName(names[1]).setCost(new BigDecimal(msgArr[2])));
+                    log.info(oldRemainder + " - updated");
+                }
 
-            case "delete" -> {
-                Long id = inventoryService.getRemainderByName(msgArr[1]).getId();
-                inventoryService.deleteRemainderById(id);
-                log.info("remainder with id = " + id + " - deleted");
+                case "delete" -> {
+                    Long id = inventoryService.getRemainderByName(msgArr[1]).getId();
+                    inventoryService.deleteRemainderById(id);
+                    log.info("remainder with id = " + id + " - deleted");
+                }
             }
+        }
+        catch (RemainderNotFoundException | JsonProcessingException e) {
+            log.error("KafkaProductMessageListener -> " + e.getMessage());
         }
     }
 }

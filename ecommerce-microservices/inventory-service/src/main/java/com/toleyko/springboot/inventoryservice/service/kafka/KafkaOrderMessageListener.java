@@ -17,12 +17,17 @@ public class KafkaOrderMessageListener {
     private KafkaToOrderMessagePublisher publisher;
     private final ObjectMapper objectMapper = new ObjectMapper();
     @KafkaListener(topics = "sended-orders", groupId = "sended-orders-group-1")
-    public void consume(String message) throws JsonProcessingException {
-        log.info(message);
-        OrderDto order = objectMapper.readValue(message, OrderDto.class);
-        log.info("old order: " + order);
-        OrderDto newOrder = orderHandler.handleOrder(order);
-        log.info("new order: " + newOrder);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(newOrder));
+    public void consume(String message) {
+        try {
+            log.info(message);
+            OrderDto order = objectMapper.readValue(message, OrderDto.class);
+            log.info("old order: " + order);
+            OrderDto newOrder = orderHandler.handleOrder(order);
+            log.info("new order: " + newOrder);
+            publisher.sendMessageToTopic(objectMapper.writeValueAsString(newOrder));
+        }
+        catch (Exception e) {
+            log.error("KafkaOrderMessageListener -> " + e.getMessage());
+        }
     }
 }
