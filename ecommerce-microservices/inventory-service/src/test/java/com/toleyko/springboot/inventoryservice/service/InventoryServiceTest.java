@@ -15,16 +15,12 @@ import static org.mockito.Mockito.*;
 
 public class InventoryServiceTest {
     private final InventoryRepository inventoryRepository = mock(InventoryRepository.class);
-    private final InventoryServiceImpl inventoryService = new InventoryServiceImpl();
+    private final InventoryServiceImpl inventoryService = new InventoryServiceImpl(inventoryRepository);
 
-    @BeforeEach
-    public void setUp() {
-        inventoryService.setRemainderRepository(inventoryRepository);
-    }
     @Test
     public void getRemainderById_SuccessfulTest() throws RemainderNotFoundException {
-        Integer id = 1;
-        Remainder remainder = new Remainder().setId(1).setName("PC").setLeft(1).setSold(1);
+        Long id = 1L;
+        Remainder remainder = new Remainder().setId(1L).setName("PC").setLeft(1).setSold(1);
         Optional<Remainder> optional = Optional.of(remainder);
         when(inventoryRepository.findById(id)).thenReturn(optional);
 
@@ -34,16 +30,16 @@ public class InventoryServiceTest {
     @Test
     public void getRemainderById_RemainderNotFoundExceptionTest() {
         Optional<Remainder> optional = Optional.empty();
-        when(inventoryRepository.findById(1)).thenReturn(optional);
+        when(inventoryRepository.findById(1L)).thenReturn(optional);
 
-        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.getRemainderById(1));
-        verify(inventoryRepository, times(1)).findById(anyInt());
+        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.getRemainderById(1L));
+        verify(inventoryRepository, times(1)).findById(anyLong());
     }
 
     @Test
     public void getRemainderByName_SuccessfulTest() throws RemainderNotFoundException {
         String name = "name";
-        Remainder remainder = new Remainder().setId(1).setName(name).setLeft(1).setSold(1);
+        Remainder remainder = new Remainder().setId(1L).setName(name).setLeft(1).setSold(1);
         Optional<Remainder> optional = Optional.of(remainder);
         when(inventoryRepository.findByName(name)).thenReturn(optional);
 
@@ -61,7 +57,7 @@ public class InventoryServiceTest {
 
     @Test
     public void deleteRemainderById_SuccessfulTest() throws RemainderNotFoundException {
-        Integer id = 1;
+        Long id = 1L;
         Remainder remainder = new Remainder().setId(id).setName("name").setLeft(1).setSold(1);
         Optional<Remainder> optional = Optional.of(remainder);
         when(inventoryRepository.findById(id)).thenReturn(optional);
@@ -74,16 +70,16 @@ public class InventoryServiceTest {
     @Test
     public void deleteRemainderById_RemainderNotFoundExceptionTest() {
         Optional<Remainder> optional = Optional.empty();
-        when(inventoryRepository.findById(anyInt())).thenReturn(optional);
+        when(inventoryRepository.findById(anyLong())).thenReturn(optional);
 
-        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.deleteRemainderById(anyInt()));
-        verify(inventoryRepository, times(1)).findById(anyInt());
-        verify(inventoryRepository, times(0)).deleteById(anyInt());
+        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.deleteRemainderById(anyLong()));
+        verify(inventoryRepository, times(1)).findById(anyLong());
+        verify(inventoryRepository, times(0)).deleteById(anyLong());
     }
 
     @Test
     public void updateRemainderById_SuccessfulTest() throws RemainderNotFoundException {
-        Integer id = 1;
+        Long id = 1L;
         Remainder remainder = new Remainder().setId(id).setName("name").setLeft(1).setSold(1);
         Optional<Remainder> optional = Optional.of(remainder);
         when(inventoryRepository.findById(id)).thenReturn(optional);
@@ -96,16 +92,16 @@ public class InventoryServiceTest {
     @Test
     public void updateRemainderById_RemainderNotFoundExceptionTest() {
         Optional<Remainder> optional = Optional.empty();
-        when(inventoryRepository.findById(anyInt())).thenReturn(optional);
+        when(inventoryRepository.findById(anyLong())).thenReturn(optional);
 
-        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.updateRemainderById(anyInt(), new Remainder()));
-        verify(inventoryRepository, times(1)).findById(anyInt());
+        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.updateRemainderById(anyLong(), new Remainder()));
+        verify(inventoryRepository, times(1)).findById(anyLong());
         verify(inventoryRepository, times(0)).save(new Remainder());
     }
 
     @Test
     public void updateRemainderLeftAmount_SuccessfulTest() throws RemainderNotFoundException {
-        Integer id = 1;
+        Long id = 1L;
         Remainder remainder = new Remainder().setId(id).setName("name").setLeft(1).setSold(1);
         Optional<Remainder> optional = Optional.of(remainder);
         when(inventoryRepository.findById(id)).thenReturn(optional);
@@ -118,10 +114,10 @@ public class InventoryServiceTest {
     @Test
     public void updateRemainderLeftAmount_RemainderNotFoundExceptionTest() {
         Optional<Remainder> optional = Optional.empty();
-        when(inventoryRepository.findById(anyInt())).thenReturn(optional);
+        when(inventoryRepository.findById(anyLong())).thenReturn(optional);
 
-        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.updateRemainderLeftAmount(anyInt(), 5));
-        verify(inventoryRepository, times(1)).findById(anyInt());
+        Assertions.assertThrows(RemainderNotFoundException.class, () -> inventoryService.updateRemainderLeftAmount(anyLong(), 5));
+        verify(inventoryRepository, times(1)).findById(anyLong());
         verify(inventoryRepository, times(0)).save(new Remainder());
     }
 

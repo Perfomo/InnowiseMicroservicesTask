@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.inventoryservice.entity.Remainder;
 import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
 import com.toleyko.springboot.inventoryservice.service.InventoryServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
+import java.math.BigDecimal;
 import java.util.Arrays;
 
+@AllArgsConstructor
+@Slf4j
 @Service
 public class KafkaProductMessageListener {
     private InventoryServiceImpl inventoryService;
@@ -19,32 +22,29 @@ public class KafkaProductMessageListener {
     @KafkaListener(topics = "all-products", groupId = "all-products-group-1")
     public void consume(String message) throws RemainderNotFoundException, JsonProcessingException {
         String[] msgArr = objectMapper.readValue(message, String[].class);
-        System.out.println("msgArr - " + Arrays.toString(msgArr));
         switch (msgArr[0]) {
-            case "save":
-                Remainder remainder = new Remainder().setName(msgArr[1]).setLeft(0).setSold(0).setCost(Double.valueOf(msgArr[2]));
+            case "save" -> {
+                Remainder remainder = new Remainder()
+                        .setName(msgArr[1])
+                        .setLeft(0)
+                        .setSold(0)
+                        .setCost(new BigDecimal(msgArr[2]));
                 inventoryService.saveRemainder(remainder);
-                System.out.println(remainder + " - saved");
-                break;
+                log.info(remainder + " - saved");
+            }
 
-            case "update":
+            case "update" -> {
                 String[] names = msgArr[1].split("~");
-                System.out.println("names - " + Arrays.toString(names));
                 Remainder oldRemainder = inventoryService.getRemainderByName(names[0]);
-                inventoryService.updateRemainderById(oldRemainder.getId(), oldRemainder.setName(names[1]).setCost(Double.valueOf(msgArr[2])));
-                System.out.println(oldRemainder + " - updated");
-                break;
+                inventoryService.updateRemainderById(oldRemainder.getId(), oldRemainder.setName(names[1]).setCost(new BigDecimal(msgArr[2])));
+                log.info(oldRemainder + " - updated");
+            }
 
-            case "delete":
-                Integer id = inventoryService.getRemainderByName(msgArr[1]).getId();
+            case "delete" -> {
+                Long id = inventoryService.getRemainderByName(msgArr[1]).getId();
                 inventoryService.deleteRemainderById(id);
-                System.out.println("remainder with id = " + id + " - deleted");
-                break;
+                log.info("remainder with id = " + id + " - deleted");
+            }
         }
-    }
-
-    @Autowired
-    public void setInventoryService(InventoryServiceImpl inventoryService) {
-        this.inventoryService = inventoryService;
     }
 }

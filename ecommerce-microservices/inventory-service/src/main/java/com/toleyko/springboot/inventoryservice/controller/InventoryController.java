@@ -4,51 +4,50 @@ import com.toleyko.springboot.inventoryservice.entity.Remainder;
 import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
 import com.toleyko.springboot.inventoryservice.service.InventoryService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@AllArgsConstructor
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class InventoryController {
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
     @GetMapping("/inventory")
-    public List<Remainder> getAllRemainders() {
-        return inventoryService.getAllRemainders();
+    public ResponseEntity<List<Remainder>> getAllRemainders() {
+        return ResponseEntity.ok(inventoryService.getAllRemainders());
     }
 
     @GetMapping("/inventory/{id}")
-    public Remainder getRemainderById(@PathVariable Integer id) throws RemainderNotFoundException {
-        return inventoryService.getRemainderById(id);
+    public ResponseEntity<Remainder> getRemainderById(@PathVariable Long id) throws RemainderNotFoundException {
+        return ResponseEntity.ok(inventoryService.getRemainderById(id));
     }
 
     @GetMapping("/inventory/name/{name}")
-    public Remainder getRemainderByName(@PathVariable String name) throws RemainderNotFoundException {
-        return inventoryService.getRemainderByName(name);
+    public ResponseEntity<Remainder> getRemainderByName(@PathVariable String name) throws RemainderNotFoundException {
+        return ResponseEntity.ok(inventoryService.getRemainderByName(name));
     }
 
     @PostMapping("/inventory")
-    public Remainder saveRemainder(@Valid @RequestBody Remainder remainder) {
-        return inventoryService.saveRemainder(remainder);
+    public ResponseEntity<Remainder> saveRemainder(@Valid @RequestBody Remainder remainder) {
+        return ResponseEntity.ok(inventoryService.saveRemainder(remainder));
     }
 
     @PutMapping("/inventory/{id}")
-    public Remainder updateRemainder(@PathVariable Integer id, @Valid @RequestBody Remainder remainder) throws RemainderNotFoundException {
-        return inventoryService.updateRemainderById(id, remainder);
+    public ResponseEntity<Remainder> updateRemainder(@PathVariable Long id, @Valid @RequestBody Remainder remainder) throws RemainderNotFoundException {
+        return ResponseEntity.ok(inventoryService.updateRemainderById(id, remainder));
     }
 
     @PutMapping("/inventory/{id}/amount")
-    public Remainder updateRemainderLeftAmountById(@PathVariable Integer id, @RequestParam Integer amount) throws RemainderNotFoundException {
-        return inventoryService.updateRemainderLeftAmount(id, amount);
+    public ResponseEntity<Remainder> updateRemainderLeftAmountById(@PathVariable Long id, @RequestParam Integer amount) throws RemainderNotFoundException {
+        return ResponseEntity.ok(inventoryService.updateRemainderLeftAmount(id, amount));
     }
 
     @DeleteMapping("/inventory/{id}")
-    public Remainder deleteRemainderById(@PathVariable Integer id) throws RemainderNotFoundException {
-        return inventoryService.deleteRemainderById(id);
-    }
-
-    @Autowired
-    public void setInventoryService(InventoryService inventoryService) {
-        this.inventoryService = inventoryService;
+    public ResponseEntity<Remainder> deleteRemainderById(@PathVariable Long id) throws RemainderNotFoundException {
+        return ResponseEntity.ok(inventoryService.deleteRemainderById(id));
     }
 }

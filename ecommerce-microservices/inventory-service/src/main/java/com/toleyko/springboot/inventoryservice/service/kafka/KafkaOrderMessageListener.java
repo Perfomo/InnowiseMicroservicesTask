@@ -2,12 +2,15 @@ package com.toleyko.springboot.inventoryservice.service.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.toleyko.springboot.inventoryservice.dto.Order;
+import com.toleyko.springboot.inventoryservice.dto.OrderDto;
 import com.toleyko.springboot.inventoryservice.handlers.OrderHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+@AllArgsConstructor
+@Slf4j
 @Service
 public class KafkaOrderMessageListener {
     private OrderHandler orderHandler;
@@ -15,22 +18,11 @@ public class KafkaOrderMessageListener {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @KafkaListener(topics = "sended-orders", groupId = "sended-orders-group-1")
     public void consume(String message) throws JsonProcessingException {
-        System.out.println("Lis rec order");
-        System.out.println(message);
-        Order order = objectMapper.readValue(message, Order.class);
-        System.out.println("old order: " + order);
-        Order newOrder = orderHandler.handleOrder(order);
-        System.out.println("new order: " + newOrder);
+        log.info(message);
+        OrderDto order = objectMapper.readValue(message, OrderDto.class);
+        log.info("old order: " + order);
+        OrderDto newOrder = orderHandler.handleOrder(order);
+        log.info("new order: " + newOrder);
         publisher.sendMessageToTopic(objectMapper.writeValueAsString(newOrder));
-    }
-
-    @Autowired
-    public void setOrderHandler(OrderHandler orderHandler) {
-        this.orderHandler = orderHandler;
-    }
-
-    @Autowired
-    public void setPublisher(KafkaToOrderMessagePublisher publisher) {
-        this.publisher = publisher;
     }
 }

@@ -5,9 +5,14 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+import java.math.BigDecimal;
+
+@Getter
+@Setter
 @Entity
 @Accessors(chain = true)
 @Table(name = "inventory")
@@ -15,7 +20,7 @@ public class Remainder {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "name", unique = true)
     @NotEmpty(message = "Invalid name")
@@ -31,5 +36,5 @@ public class Remainder {
 
     @Column(name = "cost")
     @DecimalMin(value = "0.0", inclusive = false, message = "Cost must be more than 0")
-    private Double cost;
+    private BigDecimal cost;
 }

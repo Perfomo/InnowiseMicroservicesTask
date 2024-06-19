@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,7 @@ public class InventoryControllerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        InventoryController inventoryController = new InventoryController();
-        inventoryController.setInventoryService(inventoryService);
+        InventoryController inventoryController = new InventoryController(inventoryService);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(inventoryController)
                 .setControllerAdvice(GlobalInventoryHandler.class)
@@ -40,8 +41,8 @@ public class InventoryControllerTest {
     @Test
     public void getAllRemainders_SuccessfulTest() throws Exception {
         List<Remainder> expected = new ArrayList<>();
-        expected.add(new Remainder().setId(1).setName("pc").setLeft(1).setSold(0));
-        expected.add(new Remainder().setId(2).setName("car").setLeft(1).setSold(0));
+        expected.add(new Remainder().setId(1L).setName("pc").setLeft(1).setSold(0));
+        expected.add(new Remainder().setId(2L).setName("car").setLeft(1).setSold(0));
         when(inventoryService.getAllRemainders()).thenReturn(expected);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/inventory"))
@@ -57,7 +58,7 @@ public class InventoryControllerTest {
 
     @Test
     public void getRemainderById_SuccessfulTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         Remainder remainder = new Remainder();
         remainder.setId(id);
         remainder.setName("pc");
@@ -77,7 +78,7 @@ public class InventoryControllerTest {
 
     @Test
     public void getRemainderById_RemainderNotFoundExceptionTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
 
         when(inventoryService.getRemainderById(id)).thenThrow(new RemainderNotFoundException("Not found"));
 
@@ -94,7 +95,7 @@ public class InventoryControllerTest {
     public void getRemainderByName_SuccessfulTest() throws Exception {
         String name = "pc";
         Remainder remainder = new Remainder();
-        remainder.setId(1);
+        remainder.setId(1L);
         remainder.setName(name);
         when(inventoryService.getRemainderByName(name)).thenReturn(remainder);
 
@@ -127,18 +128,18 @@ public class InventoryControllerTest {
 
     @Test
     public void saveRemainder_SuccessfulTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         String name = "PC";
         Remainder remainder = new Remainder();
-        remainder.setId(id).setName(name);
-        when(inventoryService.saveRemainder(remainder)).thenReturn(remainder);
+        remainder.setId(id).setName(name).setLeft(2).setSold(2).setCost(BigDecimal.valueOf(2.2));
+        when(inventoryService.saveRemainder(any(Remainder.class))).thenReturn(remainder);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/inventory")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(remainder)))
                 .andExpect(status().isOk())
                 .andReturn();
-        verify(inventoryService, times(1)).saveRemainder(remainder);
+        verify(inventoryService, times(1)).saveRemainder(any(Remainder.class));
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertEquals(asJsonString(remainder), responseBody);
     }
@@ -148,7 +149,7 @@ public class InventoryControllerTest {
                 .setName("")
                 .setSold(-1)
                 .setLeft(-1)
-                .setCost(0.0);
+                .setCost(BigDecimal.ZERO);
         HashMap<String, String> expected = new HashMap<>();
         expected.put("name", "Invalid name");
         expected.put("left", "Left amount must be 0 or more");
@@ -166,35 +167,35 @@ public class InventoryControllerTest {
 
     @Test
     public void updateRemainder_SuccessfulTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         String name = "PC";
         Remainder remainder = new Remainder();
         remainder.setId(id);
         remainder.setName(name);
-        when(inventoryService.updateRemainderById(id, remainder)).thenReturn(remainder);
+        when(inventoryService.updateRemainderById(eq(id), any(Remainder.class))).thenReturn(remainder);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/inventory/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(remainder)))
                 .andExpect(status().isOk())
                 .andReturn();
-        verify(inventoryService, times(1)).updateRemainderById(id, remainder);
+        verify(inventoryService, times(1)).updateRemainderById(eq(id), any(Remainder.class));
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertEquals(asJsonString(remainder), responseBody);
     }
     @Test
     public void updateRemainder_RemainderNotFoundExceptionTest() throws Exception {
         Remainder remainder = new Remainder().setName("pc");
-        Integer id = 1;
+        Long id = 1L;
 
-        when(inventoryService.updateRemainderById(id, remainder)).thenThrow(new RemainderNotFoundException("Not found"));
+        when(inventoryService.updateRemainderById(eq(id), any(Remainder.class))).thenThrow(new RemainderNotFoundException("Not found"));
         mockMvc.perform(MockMvcRequestBuilders.put("/api/inventory/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(remainder)))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> Assertions.assertInstanceOf(RemainderNotFoundException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Not found", result.getResolvedException().getMessage()));
-        verify(inventoryService, times(1)).updateRemainderById(id, remainder);
+        verify(inventoryService, times(1)).updateRemainderById(eq(id), any(Remainder.class));
     }
     @Test
     public void updateRemainder_BeanValidationExceptionTest() throws Exception {
@@ -202,7 +203,7 @@ public class InventoryControllerTest {
                 .setName("")
                 .setSold(-1)
                 .setLeft(-1)
-                .setCost(0.0);
+                .setCost(BigDecimal.ZERO);
         HashMap<String, String> expected = new HashMap<>();
         expected.put("name", "Invalid name");
         expected.put("left", "Left amount must be 0 or more");
@@ -220,7 +221,8 @@ public class InventoryControllerTest {
 
     @Test
     public void updateRemainderLeftAmountById_SuccessfulTest() throws Exception {
-        Integer id = 1, amount = 5;
+        Long id = 1L;
+        Integer amount = 5;
         Remainder remainder = new Remainder().setId(id).setLeft(amount);
         when(inventoryService.updateRemainderLeftAmount(id, amount)).thenReturn(remainder);
 
@@ -235,7 +237,8 @@ public class InventoryControllerTest {
     }
     @Test
     public void updateRemainderLeftAmountById_RemainderNotFoundExceptionTest() throws Exception {
-        Integer id = 1, amount = 5;
+        Long id = 1L;
+        Integer amount = 5;
         when(inventoryService.updateRemainderLeftAmount(id, amount)).thenThrow(new RemainderNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/inventory/{id}/amount", id)
@@ -249,7 +252,7 @@ public class InventoryControllerTest {
 
     @Test
     public void deleteRemainderById_SuccessfulTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         Remainder remainder = new Remainder().setId(id);
         when(inventoryService.deleteRemainderById(id)).thenReturn(remainder);
 
@@ -264,7 +267,7 @@ public class InventoryControllerTest {
     }
     @Test
     public void deleteRemainderById_RemainderNotFoundExceptionTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         when(inventoryService.deleteRemainderById(id)).thenThrow(new RemainderNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/inventory/{id}", id)
