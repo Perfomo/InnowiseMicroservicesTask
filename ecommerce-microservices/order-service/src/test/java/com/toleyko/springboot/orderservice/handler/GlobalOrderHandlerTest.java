@@ -1,6 +1,5 @@
 package com.toleyko.springboot.orderservice.handler;
 
-import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
 import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import org.junit.jupiter.api.Assertions;
@@ -27,15 +26,6 @@ public class GlobalOrderHandlerTest {
 
         Assertions.assertEquals(orderError, response.getBody());
         Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    public void handleException_ForbiddenExceptionTest() {
-        ResponseEntity<OrderError> response = globalOrderHandler.handleException(new ForbiddenException("Forbidden"));
-        orderError.setInfo("Forbidden");
-
-        Assertions.assertEquals(orderError, response.getBody());
-        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test

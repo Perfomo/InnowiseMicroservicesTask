@@ -1,14 +1,13 @@
 package com.toleyko.springboot.userservice.handler;
 
 import com.toleyko.springboot.userservice.handler.exception.BadUserDataException;
-import com.toleyko.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
-import org.apache.kafka.common.protocol.types.Field;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,7 +25,18 @@ public class GlobalUserHandlerTest {
     private static final UserIncorrectData userIncorrectData = new UserIncorrectData();
 
     @Test
-    public void handleException_noSuchUserTest() {
+    public void handleException_AccessDeniedExceptionTest() {
+        AccessDeniedException accessDeniedException = new AccessDeniedException("Access denied");
+
+        ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(accessDeniedException);
+        userIncorrectData.setInfo("Access denied");
+
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        Assertions.assertEquals(userIncorrectData, response.getBody());
+    }
+
+    @Test
+    public void handleException_NoSuchUserExceptionTest() {
         NoSuchUserException noSuchUserException = new NoSuchUserException("User not found");
 
         ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(noSuchUserException);
@@ -55,17 +65,6 @@ public class GlobalUserHandlerTest {
         userIncorrectData.setInfo("Bad user data.");
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        Assertions.assertEquals(userIncorrectData, response.getBody());
-    }
-
-    @Test
-    public void handleException_ForbiddenExceptionTest() {
-        ForbiddenException forbiddenException = new ForbiddenException("Access denied");
-
-        ResponseEntity<UserIncorrectData> response = globalUserHandler.handleException(forbiddenException);
-        userIncorrectData.setInfo("Access denied");
-
-        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         Assertions.assertEquals(userIncorrectData, response.getBody());
     }
 

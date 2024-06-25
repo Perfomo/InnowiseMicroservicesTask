@@ -1,94 +1,63 @@
 package com.toleyko.springboot.orderservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.orderservice.entity.History;
 import com.toleyko.springboot.orderservice.entity.Order;
-import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
-import com.toleyko.springboot.orderservice.handler.PermissionHandler;
 import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
+import com.toleyko.springboot.orderservice.service.OrderFacadeService;
 import com.toleyko.springboot.orderservice.service.OrderService;
 import com.toleyko.springboot.orderservice.service.OrdersHistoryService;
-import com.toleyko.springboot.orderservice.service.kafka.KafkaToInventoryMessagePublisher;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api")
 public class OrderController {
     private OrderService orderService;
-    private KafkaToInventoryMessagePublisher publisher;
-    private ObjectMapper objectMapper = new ObjectMapper();
     private OrdersHistoryService ordersHistoryService;
-    private PermissionHandler permissionHandler;
-
+    private OrderFacadeService orderFacadeService;
     @GetMapping("/history")
-    public List<History> getHistory() {
-        return ordersHistoryService.getHistory();
+    public ResponseEntity<List<History>> getHistory() {
+        return ResponseEntity.ok(ordersHistoryService.getHistory());
     }
 
     @GetMapping("/orders")
-    public List<Order> getAllOrders() throws ForbiddenException, TokenDataExtractionException {
-        if (permissionHandler.isManager()) {
-            return orderService.getAllOrders();
-        }
-        throw new ForbiddenException("Access denied");
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @GetMapping("/orders/{id}")
-    public Order getOrderById(@PathVariable Integer id) throws OrderNotFoundException {
-        return orderService.getOrderById(id);
+    public ResponseEntity<Order> getOrderById(@PathVariable Long id) throws OrderNotFoundException {
+        return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
     @GetMapping("/{username}/orders")
-    public List<Order> getUserOrders(@PathVariable String username) throws OrderNotFoundException, ForbiddenException, TokenDataExtractionException {
-        String authUsername = permissionHandler.getUsername();
-        if (username.equals(authUsername) || permissionHandler.isManager()) {
-            return orderService.getOrdersByUsername(username);
-        }
-        throw new ForbiddenException("Access denied");
+    @PreAuthorize("authentication.name == #username || hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<Order>> getUserOrders(@PathVariable String username) throws OrderNotFoundException {
+        return ResponseEntity.ok(orderService.getOrdersByUsername(username));
     }
+
     @PostMapping("/orders")
-    public Order saveOrder(@Valid @RequestBody Order order) throws TokenDataExtractionException, JsonProcessingException {
-        String username = permissionHandler.getUsername();
-        String userId = permissionHandler.getUserId();
-        order.setUsername(username);
-        order.setUserId(userId);
-        Order order1 = orderService.saveOrder(order);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(order1));
-        return order1;
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Order> saveOrder(@Valid @RequestBody Order order, Principal principal) throws TokenDataExtractionException, JsonProcessingException {
+        return ResponseEntity.ok(orderFacadeService.saveAndSendOrder(order.setUsername(principal.getName())));
     }
 
     @PutMapping("/orders/{id}")
-    public Order updateOrder(@PathVariable Integer id, @RequestBody Order order) throws OrderNotFoundException {
-        return orderService.updateOrderById(id, order);
+    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order order) throws OrderNotFoundException {
+        return ResponseEntity.ok(orderService.updateOrderById(id, order));
     }
 
     @DeleteMapping("/orders/{id}")
-    public Order deleteOrderById(@PathVariable Integer id) throws OrderNotFoundException {
-        return orderService.deleteOrderById(id);
-    }
-
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    @Autowired
-    public void setPublisher(KafkaToInventoryMessagePublisher publisher) {
-        this.publisher = publisher;
-    }
-
-    @Autowired
-    public void setOrdersHistoryService(OrdersHistoryService ordersHistoryService) {
-        this.ordersHistoryService = ordersHistoryService;
-    }
-
-    @Autowired
-    public void setPermissionHandler(PermissionHandler permissionHandler) {
-        this.permissionHandler = permissionHandler;
+    public ResponseEntity<Order> deleteOrderById(@PathVariable Long id) throws OrderNotFoundException {
+        return ResponseEntity.ok(orderService.deleteOrderById(id));
     }
 }

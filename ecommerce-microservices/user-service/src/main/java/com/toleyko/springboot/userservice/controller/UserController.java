@@ -1,17 +1,15 @@
 package com.toleyko.springboot.userservice.controller;
 
 import com.toleyko.springboot.userservice.dto.User;
-import com.toleyko.springboot.userservice.handler.UserPermissionHandler;
 import com.toleyko.springboot.userservice.handler.exception.BadUserDataException;
-import com.toleyko.springboot.userservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
 import com.toleyko.springboot.userservice.service.UserKeycloakService;
-import com.toleyko.springboot.userservice.service.kafka.KafkaToOrderMessagePublisher;
 import jakarta.validation.Valid;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.util.List;
@@ -20,53 +18,34 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
     private UserKeycloakService userKeycloakService;
-    private UserPermissionHandler userPermissionHandler;
-    private KafkaToOrderMessagePublisher publisher;
 
     @Value("${GATEWAY_SERVICE_PORT}")
     private String gatewayPort;
-
     @GetMapping("/users")
-    public List<UserRepresentation> getAllUsers() throws ForbiddenException {
-        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .stream().anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"))) {
-            return userKeycloakService.getUsers();
-        }
-        throw new ForbiddenException("Access denied");
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<UserRepresentation>> getAllUsers() {
+        return ResponseEntity.ok(userKeycloakService.getUsers());
     }
-
     @PostMapping("/users")
-    public UserRepresentation createUser(@Valid @RequestBody User user) throws UserAlreadyExistException, BadUserDataException {
-        return userKeycloakService.createUser(user);
+    public ResponseEntity<UserRepresentation> createUser(@Valid @RequestBody User user) throws UserAlreadyExistException, BadUserDataException {
+        return ResponseEntity.ok(userKeycloakService.createUser(user));
     }
-
     @GetMapping("/users/{userName}")
-    public UserRepresentation getUser(@PathVariable String userName) throws ForbiddenException {
-        if (userPermissionHandler.isPermitted(userName)) {
-            return userKeycloakService.getUserByUsername(userName);
-        }
-        throw new ForbiddenException("You are not a " + userName);
+    @PreAuthorize("authentication.name == #userName || hasRole('ROLE_MANAGER')")
+    public ResponseEntity<UserRepresentation> getUser(@PathVariable String userName) {
+        return ResponseEntity.ok(userKeycloakService.getUserByUsername(userName));
     }
 
     @PutMapping("/users/{userName}")
-    public UserRepresentation updateUser(@PathVariable String userName, @Valid @RequestBody User user) throws ForbiddenException, BadUserDataException {
-        if (userPermissionHandler.isPermitted(userName)) {
-            if (userName.equals(user.getUsername())) {
-                return userKeycloakService.updateUser(userName, user);
-            }
-            throw new BadUserDataException("Username changing is not permitted");
-        }
-        throw new ForbiddenException("You are not a " + userName);
+    @PreAuthorize("authentication.name == #userName || hasRole('ROLE_MANAGER')")
+    public ResponseEntity<UserRepresentation> updateUser(@PathVariable String userName, @Valid @RequestBody User user) throws BadUserDataException {
+        return ResponseEntity.ok(userKeycloakService.updateUser(userName, user));
     }
 
     @DeleteMapping("/users/{userName}")
-    public void deleteUserByUserName(@PathVariable String userName) throws ForbiddenException {
-        if (userPermissionHandler.isPermitted(userName)) {
-            userKeycloakService.deleteUser(userName);
-            publisher.sendMessageToTopic(userName);
-            return;
-        }
-        throw new ForbiddenException("You are not a " + userName);
+    @PreAuthorize("authentication.name == #userName || hasRole('ROLE_MANAGER')")
+    public void deleteUserByUserName(@PathVariable String userName) {
+        userKeycloakService.deleteUser(userName);
     }
 
     @GetMapping("/logout")
@@ -77,16 +56,7 @@ public class UserController {
     }
 
     @Autowired
-    public void setPublisher(KafkaToOrderMessagePublisher publisher) {
-        this.publisher = publisher;
-    }
-
-    @Autowired
-    public void setUserService(UserKeycloakService userKeycloakService) {
+    public UserController(UserKeycloakService userKeycloakService) {
         this.userKeycloakService = userKeycloakService;
-    }
-    @Autowired
-    public void setPermissionHandler(UserPermissionHandler userPermissionHandler) {
-        this.userPermissionHandler = userPermissionHandler;
     }
 }

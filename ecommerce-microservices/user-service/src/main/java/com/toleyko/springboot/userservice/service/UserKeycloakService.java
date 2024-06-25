@@ -8,6 +8,8 @@ import com.toleyko.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
 import com.toleyko.springboot.userservice.service.kafka.KafkaToOrderMessagePublisher;
 import jakarta.ws.rs.core.Response;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.common.util.Time;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -19,14 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Slf4j
+@AllArgsConstructor
 public class UserKeycloakService {
     private Keycloak keycloak;
     private KafkaToOrderMessagePublisher publisher;
-    @Autowired
-    public void setKeycloak(Keycloak keycloak) {
-        this.keycloak = keycloak;
-    }
-
     public UserRepresentation createUser(User userDTO) throws UserAlreadyExistException, BadUserDataException {
         UserRepresentation user = this.createUserRepresentation(userDTO);
         user.setEnabled(true);
@@ -68,15 +67,18 @@ public class UserKeycloakService {
         return userRepresentation.getFirst();
     }
 
-    public UserRepresentation updateUser(String userName, User userDTO) {
-        UserRepresentation user = this.getUserByUsername(userName);
-        user.setUsername(userDTO.getUsername());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
-        keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).update(user);
-        return this.getUserByUsername(user.getUsername());
+    public UserRepresentation updateUser(String userName, User userDTO) throws BadUserDataException {
+        if (userName.equals(userDTO.getUsername())) {
+            UserRepresentation user = this.getUserByUsername(userName);
+            user.setUsername(userDTO.getUsername());
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
+            keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).update(user);
+            return this.getUserByUsername(user.getUsername());
+        }
+        throw new BadUserDataException("Username changing is not permitted");
     }
 
     public void deleteUser(String userName) {
@@ -95,10 +97,5 @@ public class UserKeycloakService {
         user.setCredentials(Collections.singletonList(Credentials.createPasswordCredentials(userDTO.getPassword())));
         user.setCreatedTimestamp(Time.currentTimeMillis());
         return user;
-    }
-
-    @Autowired
-    public void setPublisher(KafkaToOrderMessagePublisher publisher) {
-        this.publisher = publisher;
     }
 }

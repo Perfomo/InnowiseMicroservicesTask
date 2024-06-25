@@ -4,63 +4,48 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.productservice.entity.Product;
 import com.toleyko.springboot.productservice.handlers.exception.ProductNotFoundException;
-import com.toleyko.springboot.productservice.service.KafkaToInventoryMessagePublisher;
+import com.toleyko.springboot.productservice.service.ProductFacadeService;
+import com.toleyko.springboot.productservice.service.kafka.KafkaToInventoryMessagePublisher;
 import com.toleyko.springboot.productservice.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor()
 @RequestMapping("/api")
 public class ProductController {
+    private ProductFacadeService productFacadeService;
     private ProductService productService;
-    private KafkaToInventoryMessagePublisher publisher;
-    private ObjectMapper objectMapper = new ObjectMapper();
     @GetMapping("/products")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable Integer id) throws ProductNotFoundException {
-        return productService.getProductById(id);
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) throws ProductNotFoundException {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @GetMapping("/products/name/{name}")
-    public Product getProductByName(@PathVariable String name) throws ProductNotFoundException {
-        return productService.getProductByName(name);
+    public ResponseEntity<Product> getProductByName(@PathVariable String name) throws ProductNotFoundException {
+        return ResponseEntity.ok(productService.getProductByName(name));
     }
 
     @PostMapping("/products")
-    public Product saveProduct(@Valid @RequestBody Product product) throws JsonProcessingException {
-        Product res = productService.saveProduct(product);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"save", res.getName(), res.getCost().toString()}));
-        return res;
+    public ResponseEntity<Product> saveProduct(@Valid @RequestBody Product product) throws JsonProcessingException {
+        return ResponseEntity.ok(productFacadeService.saveAndSendProduct(product));
     }
 
     @PutMapping("/products/{id}")
-    public Product updateProduct(@PathVariable Integer id, @Valid @RequestBody Product product) throws ProductNotFoundException, JsonProcessingException {
-        String oldName = productService.getProductById(id).getName();
-        Product res = productService.updateProductById(id, product);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"update", oldName +"~"+ res.getName(), res.getCost().toString()}));
-        return res;
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) throws ProductNotFoundException, JsonProcessingException {
+        return ResponseEntity.ok(productFacadeService.updateAndSendProduct(product, id));
     }
 
     @DeleteMapping("/products/{id}")
-    public Product deleteProductById(@PathVariable Integer id) throws JsonProcessingException, ProductNotFoundException {
-        Product product = productService.deleteProductById(id);
-        publisher.sendMessageToTopic(objectMapper.writeValueAsString(new String[] {"delete", product.getName()}));
-        return product;
-    }
-
-    @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
-
-    @Autowired
-    public void setPublisher(KafkaToInventoryMessagePublisher publisher) {
-        this.publisher = publisher;
+    public ResponseEntity<Product> deleteProductById(@PathVariable Long id) throws JsonProcessingException, ProductNotFoundException {
+        return ResponseEntity.ok(productFacadeService.deleteAndSendProduct(id));
     }
 }

@@ -4,11 +4,15 @@ import com.toleyko.springboot.orderservice.dto.OrderHistory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Accessors(chain = true)
 @Table(name = "history")
@@ -16,10 +20,10 @@ public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "time_stamp")
-    private LocalDateTime time;
+    private Instant time;
 
     @Embedded
     @Column(name = "`order`")

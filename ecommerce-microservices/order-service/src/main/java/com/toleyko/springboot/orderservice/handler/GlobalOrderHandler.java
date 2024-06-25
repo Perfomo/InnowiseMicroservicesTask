@@ -1,6 +1,5 @@
 package com.toleyko.springboot.orderservice.handler;
 
-import com.toleyko.springboot.orderservice.handler.exception.ForbiddenException;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
 import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import org.springframework.http.HttpStatus;
@@ -27,13 +26,6 @@ public class GlobalOrderHandler {
         OrderError error = new OrderError();
         error.setInfo(e.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<OrderError> handleException(ForbiddenException e) {
-        OrderError error = new OrderError();
-        error.setInfo(e.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler

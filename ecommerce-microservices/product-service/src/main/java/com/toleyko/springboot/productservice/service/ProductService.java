@@ -6,9 +6,9 @@ import com.toleyko.springboot.productservice.handlers.exception.ProductNotFoundE
 import java.util.List;
 public interface ProductService {
     public List<Product> getAllProducts();
-    public Product getProductById(Integer id) throws ProductNotFoundException;
+    public Product getProductById(Long id) throws ProductNotFoundException;
     public Product getProductByName(String name) throws ProductNotFoundException;
-    public Product deleteProductById(Integer id) throws ProductNotFoundException;
+    public Product deleteProductById(Long id) throws ProductNotFoundException;
     public Product saveProduct(Product product);
-    public Product updateProductById(Integer id, Product product) throws ProductNotFoundException;
+    public Product updateProductById(Long id, Product product) throws ProductNotFoundException;
 }

@@ -5,9 +5,12 @@ import com.toleyko.springboot.orderservice.dao.OrderHistoryRepository;
 import com.toleyko.springboot.orderservice.entity.History;
 import com.toleyko.springboot.orderservice.entity.Order;
 import com.toleyko.springboot.orderservice.mapper.OrderToOrderHistoryMapper;
+import com.toleyko.springboot.orderservice.service.impls.OrdersHistoryServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -15,12 +18,14 @@ import static org.mockito.Mockito.when;
 
 public class OrdersHistoryServiceImplTest {
 
-    private OrdersHistoryServiceImpl ordersHistoryService = new OrdersHistoryServiceImpl();
-    private OrderHistoryRepository orderHistoryRepository = mock(OrderHistoryRepository.class);
+    private OrdersHistoryServiceImpl ordersHistoryService;
+    @Mock
+    private OrderHistoryRepository orderHistoryRepository;
 
     @BeforeEach
     public void setUp() {
-        ordersHistoryService.setOrderHistoryRepository(orderHistoryRepository);
+        MockitoAnnotations.openMocks(this);
+        ordersHistoryService = new OrdersHistoryServiceImpl(orderHistoryRepository);
     }
 
     @Test

@@ -1,24 +1,29 @@
 package com.toleyko.springboot.orderservice.entity;
 
+import com.toleyko.springboot.orderservice.handler.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Accessors(chain = true)
 @Table(name = "orders")
 public class Order {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "status")
-    private String status;
+    private OrderStatus status;
 
     @Column(name = "user_name")
     private String username;
@@ -34,5 +39,5 @@ public class Order {
     private Map<String, Integer> products;
 
     @Column(name = "cost")
-    private Double cost;
+    private BigDecimal cost;
 }

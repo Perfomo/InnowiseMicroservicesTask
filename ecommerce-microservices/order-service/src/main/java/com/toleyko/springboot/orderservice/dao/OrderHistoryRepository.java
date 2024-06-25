@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderHistoryRepository extends JpaRepository<History, Integer> {
+public interface OrderHistoryRepository extends JpaRepository<History, Long> {
 }

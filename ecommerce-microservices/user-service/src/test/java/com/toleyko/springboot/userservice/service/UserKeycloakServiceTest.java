@@ -4,6 +4,8 @@ import com.toleyko.springboot.userservice.dto.User;
 import com.toleyko.springboot.userservice.handler.exception.BadUserDataException;
 import com.toleyko.springboot.userservice.handler.exception.NoSuchUserException;
 import com.toleyko.springboot.userservice.handler.exception.UserAlreadyExistException;
+import com.toleyko.springboot.userservice.service.kafka.KafkaToOrderMessagePublisher;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,9 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.*;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -23,13 +28,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UserKeycloakServiceTest {
+    @Mock
     private Keycloak keycloak;
+    @Mock
     private UsersResource usersResource;
+    @Mock
+    private KafkaToOrderMessagePublisher publisher;
+    private UserKeycloakService userKeycloakService;
     @BeforeEach
     public void setUp() {
-        this.keycloak = mock(Keycloak.class);
+        MockitoAnnotations.openMocks(this);
+        userKeycloakService = new UserKeycloakService(keycloak, publisher);
         RealmResource realmResource = mock(RealmResource.class);
-        this.usersResource = mock(UsersResource.class);
         when(keycloak.realm(anyString())).thenReturn(realmResource);
         when(realmResource.users()).thenReturn(this.usersResource);
 
@@ -45,8 +55,6 @@ public class UserKeycloakServiceTest {
     void createUser_SuccessfulTest() throws UserAlreadyExistException, BadUserDataException, URISyntaxException {
         Response successfulResponse = Response.status(Response.Status.CREATED).location(new URI("/api/users")).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(successfulResponse);
-        UserKeycloakService userKeycloakService = new UserKeycloakService();
-        userKeycloakService.setKeycloak(keycloak);
         User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         UserResource userResource = mock(UserResource.class);
@@ -68,8 +76,6 @@ public class UserKeycloakServiceTest {
 
         Response conflictResponse = Response.status(Response.Status.CONFLICT).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(conflictResponse);
-        UserKeycloakService userKeycloakService = new UserKeycloakService();
-        userKeycloakService.setKeycloak(keycloak);
         User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         Assertions.assertThrows(UserAlreadyExistException.class, () -> {
@@ -82,8 +88,7 @@ public class UserKeycloakServiceTest {
 
         Response badResponse = Response.status(Response.Status.BAD_REQUEST).build();
         when(this.usersResource.create(any(UserRepresentation.class))).thenReturn(badResponse);
-        UserKeycloakService userKeycloakService = new UserKeycloakService();
-        userKeycloakService.setKeycloak(keycloak);
+
         User user = new User("johnDoe", "john@example.com", "password", "Kir", "Tol");
 
         Assertions.assertThrows(BadUserDataException.class, () -> {
@@ -105,8 +110,6 @@ public class UserKeycloakServiceTest {
             return null;
         });
 
-        UserKeycloakService userKeycloakService = new UserKeycloakService();
-        userKeycloakService.setKeycloak(keycloak);
         UserRepresentation result = userKeycloakService.getUserByUsername(username);
 
         Assertions.assertEquals(userRepresentation, result);
@@ -125,9 +128,6 @@ public class UserKeycloakServiceTest {
             }
             return null;
         });
-
-        UserKeycloakService userKeycloakService = new UserKeycloakService();
-        userKeycloakService.setKeycloak(keycloak);
 
         Assertions.assertThrows(NoSuchUserException.class, () -> {
             userKeycloakService.getUserByUsername(username);

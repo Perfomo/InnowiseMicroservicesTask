@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toleyko.springboot.productservice.entity.Product;
 import com.toleyko.springboot.productservice.handlers.GlobalProductHandler;
 import com.toleyko.springboot.productservice.handlers.exception.ProductNotFoundException;
-import com.toleyko.springboot.productservice.service.KafkaToInventoryMessagePublisher;
+import com.toleyko.springboot.productservice.service.ProductFacadeService;
 import com.toleyko.springboot.productservice.service.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,16 +14,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,15 +31,14 @@ public class ProductControllerTest {
     @Mock
     private ProductService productService;
     @Mock
-    private KafkaToInventoryMessagePublisher publisher;
-    private ProductController productController = new ProductController();
+    private ProductFacadeService productFacadeService;
+    private ProductController productController;
     private MockMvc mockMvc;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        productController.setProductService(productService);
-        productController.setPublisher(publisher);
+        productController = new ProductController(productFacadeService, productService);
         mockMvc = MockMvcBuilders
                 .standaloneSetup(productController)
                 .setControllerAdvice(new GlobalProductHandler())
@@ -51,8 +48,8 @@ public class ProductControllerTest {
     @Test
     public void getAllProducts_SuccessfulTest() throws Exception {
         List<Product> expectedProducts = new ArrayList<>();
-        expectedProducts.add((new Product()).setName("Car").setCost(10.1));
-        expectedProducts.add((new Product()).setName("PC").setCost(10.1));
+        expectedProducts.add((new Product()).setName("Car").setCost(BigDecimal.valueOf(10.1)));
+        expectedProducts.add((new Product()).setName("PC").setCost(BigDecimal.valueOf(10.1)));
         when(productService.getAllProducts()).thenReturn(expectedProducts);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products"))
@@ -67,8 +64,8 @@ public class ProductControllerTest {
 
     @Test
     public void getProductById_SuccessfulTest() throws Exception {
-        Integer id = 1;
-        Product product = new Product().setId(id).setName("Car").setCost(10.1);
+        Long id = 1L;
+        Product product = new Product().setId(id).setName("Car").setCost(BigDecimal.valueOf(10.1));
         when(productService.getProductById(id)).thenReturn(product);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{id}", id)
@@ -86,7 +83,7 @@ public class ProductControllerTest {
     }
     @Test
     public void getProductById_ProductNotFoundExceptionTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         when(productService.getProductById(id)).thenThrow(new ProductNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{id}", id)
@@ -100,9 +97,9 @@ public class ProductControllerTest {
 
     @Test
     public void getProductByName_SuccessfulTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         String name = "car";
-        Product product = new Product().setId(id).setName(name).setCost(10.1);
+        Product product = new Product().setId(id).setName(name).setCost(BigDecimal.valueOf(10.1));
         when(productService.getProductByName(name)).thenReturn(product);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/products/name/{name}", name)
@@ -133,9 +130,8 @@ public class ProductControllerTest {
 
     @Test
     public void saveProduct_SuccessfulTest() throws Exception {
-        Product product = new Product().setId(1).setName("pc").setCost(10.1);
-        when(productService.saveProduct(product)).thenReturn(product);
-        doNothing().when(publisher).sendMessageToTopic(anyString());
+        Product product = new Product().setId(1L).setName("pc").setCost(BigDecimal.valueOf(10.1));
+        when(productFacadeService.saveAndSendProduct(any(Product.class))).thenReturn(product);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -143,18 +139,14 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        verify(productService, times(1)).saveProduct(product);
+        verify(productFacadeService, times(1)).saveAndSendProduct(any(Product.class));
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertNotNull(responseBody);
     }
     @Test
     public void saveProduct_JsonProcessingExceptionTest() throws Exception {
-        Product product = new Product().setId(1).setName("pc").setCost(10.1);
-        when(productService.saveProduct(product)).thenReturn(product);
-
-        ObjectMapper objectMapper = mock(ObjectMapper.class);
-        ReflectionTestUtils.setField(productController, "objectMapper", objectMapper);
-        when(objectMapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
+        Product product = new Product().setId(1L).setName("pc").setCost(BigDecimal.valueOf(10.1));
+        when(productFacadeService.saveAndSendProduct(any(Product.class))).thenThrow(JsonProcessingException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -162,11 +154,11 @@ public class ProductControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
 
-        verify(productService, times(1)).saveProduct(product);
+        verify(productFacadeService, times(1)).saveAndSendProduct(any(Product.class));
     }
     @Test
     public void saveProduct_BeanValidationExceptionTest() throws Exception {
-        Product product = new Product().setId(1).setName("").setCost(0.0);
+        Product product = new Product().setId(1L).setName("").setCost(BigDecimal.valueOf(0.0));
         HashMap<String, String> expected = new HashMap<>();
         expected.put("name", "Invalid name");
         expected.put("cost", "Cost must be more than 0");
@@ -183,11 +175,9 @@ public class ProductControllerTest {
 
     @Test
     public void updateProduct_SuccessfulTest() throws Exception {
-        Integer id = 1;
-        Product product = new Product().setId(id).setName("Car").setCost(10.1);
-        when(productService.updateProductById(id, product)).thenReturn(product);
-        when(productService.getProductById(id)).thenReturn(product);
-        doNothing().when(publisher).sendMessageToTopic(anyString());
+        Long id = 1L;
+        Product product = new Product().setId(id).setName("Car").setCost(BigDecimal.valueOf(10.1));
+        when(productFacadeService.updateAndSendProduct(any(Product.class), anyLong())).thenReturn(product);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -195,16 +185,15 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        verify(productService, times(1)).getProductById(id);
-        verify(productService, times(1)).updateProductById(id, product);
+        verify(productFacadeService, times(1)).updateAndSendProduct(any(Product.class), anyLong());
         String responseBody = result.getResponse().getContentAsString();
         Assertions.assertNotNull(responseBody);
     }
     @Test
     public void updateProduct_ProductNotFoundExceptionTest() throws Exception {
-        Integer id = 1;
-        Product product = new Product().setId(id).setName("PC").setCost(2.4);
-        when(productService.getProductById(id)).thenThrow(new ProductNotFoundException("Not found"));
+        Long id = 1L;
+        Product product = new Product().setId(id).setName("PC").setCost(BigDecimal.valueOf(2.4));
+        when(productFacadeService.updateAndSendProduct(any(Product.class), anyLong())).thenThrow(new ProductNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -213,32 +202,24 @@ public class ProductControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(ProductNotFoundException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Not found", result.getResolvedException().getMessage()));
 
-        verify(productService, times(1)).getProductById(id);
+        verify(productFacadeService, times(1)).updateAndSendProduct(any(Product.class), anyLong());
     }
     @Test
     public void updateProduct_JsonProcessingExceptionTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         Product product = new Product().setName("pr");
-        when(productService.getProductById(id)).thenReturn(product);
-        when(productService.updateProductById(id, product)).thenReturn(product);
-
-        ObjectMapper objectMapper = mock(ObjectMapper.class);
-        ReflectionTestUtils.setField(productController, "objectMapper", objectMapper);
-        when(objectMapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
-
-        doNothing().when(publisher).sendMessageToTopic(anyString());
+        when(productFacadeService.updateAndSendProduct(any(Product.class), anyLong())).thenThrow(JsonProcessingException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(product)))
                 .andExpect(status().isBadRequest());
 
-        verify(productService, times(1)).getProductById(id);
-        verify(productService, times(1)).updateProductById(id, product);
+        verify(productFacadeService, times(1)).updateAndSendProduct(any(Product.class), anyLong());
     }
     @Test
     public void updateProduct_BeanValidationExceptionTest() throws Exception {
-        Product product = new Product().setId(1).setName("").setCost(0.0);
+        Product product = new Product().setId(1L).setName("").setCost(BigDecimal.valueOf(0.0));
         HashMap<String, String> expected = new HashMap<>();
         expected.put("name", "Invalid name");
         expected.put("cost", "Cost must be more than 0");
@@ -255,10 +236,9 @@ public class ProductControllerTest {
 
     @Test
     public void deleteProductById_SuccessfulTest() throws Exception {
-        Integer id = 1;
+        Long id = 1L;
         Product product = new Product().setId(id);
-        when(productService.deleteProductById(id)).thenReturn(product);
-        doNothing().when(publisher).sendMessageToTopic(anyString());
+        when(productFacadeService.deleteAndSendProduct(id)).thenReturn(product);
 
        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -266,12 +246,12 @@ public class ProductControllerTest {
                 .andReturn();
        String responseBody = result.getResponse().getContentAsString();
        Assertions.assertEquals(asJsonString(product), responseBody);
-       verify(productService, times(1)).deleteProductById(id);
+       verify(productFacadeService, times(1)).deleteAndSendProduct(id);
     }
     @Test
     public void deleteProductById_ProductNotFoundExceptionTest() throws Exception {
-        Integer id = 1;
-        when(productService.deleteProductById(id)).thenThrow(new ProductNotFoundException("Not found"));
+        Long id = 1L;
+        when(productFacadeService.deleteAndSendProduct(id)).thenThrow(new ProductNotFoundException("Not found"));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -279,24 +259,19 @@ public class ProductControllerTest {
                 .andExpect(result -> Assertions.assertInstanceOf(ProductNotFoundException.class, result.getResolvedException()))
                 .andExpect(result -> Assertions.assertEquals("Not found", result.getResolvedException().getMessage()));
 
-        verify(productService, times(1)).deleteProductById(id);
+        verify(productFacadeService, times(1)).deleteAndSendProduct(id);
     }
     @Test
     public void deleteProductById_JsonProcessingExceptionTest() throws Exception {
-        Integer id = 1;
-        Product product = new Product().setName("pc");
-        when(productService.deleteProductById(id)).thenReturn(product);
-
-        ObjectMapper objectMapper = mock(ObjectMapper.class);
-        ReflectionTestUtils.setField(productController, "objectMapper", objectMapper);
-        when(objectMapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
+        Long id = 1L;
+        when(productFacadeService.deleteAndSendProduct(id)).thenThrow(JsonProcessingException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertInstanceOf(JsonProcessingException.class, result.getResolvedException()));
 
-        verify(productService, times(1)).deleteProductById(id);
+        verify(productFacadeService, times(1)).deleteAndSendProduct(id);
     }
 
     private static String asJsonString(Object obj) throws Exception {

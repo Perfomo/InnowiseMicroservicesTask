@@ -2,11 +2,14 @@ package com.toleyko.springboot.orderservice.service;
 
 import com.toleyko.springboot.orderservice.dao.OrderRepository;
 import com.toleyko.springboot.orderservice.entity.Order;
+import com.toleyko.springboot.orderservice.handler.OrderStatus;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
+import com.toleyko.springboot.orderservice.service.impls.OrderServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,21 +17,23 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 public class OrderServiceImplTest {
-    private final OrderRepository orderRepository = mock(OrderRepository.class);
-    private final OrderServiceImpl orderService = new OrderServiceImpl();
+    @Mock
+    private OrderRepository orderRepository;
+    private OrderServiceImpl orderService;
 
     @BeforeEach
     public void setUp() {
-        orderService.setOrderRepository(orderRepository);
+        MockitoAnnotations.openMocks(this);
+        orderService = new OrderServiceImpl(orderRepository);
     }
 
     @Test
     public void getOrderById_SuccessfulTest() throws OrderNotFoundException {
-        Integer id = 1;
-        Order order = new Order().setStatus("ok");
+        Long id = 1L;
+        Order order = new Order().setStatus(OrderStatus.OK);
         Optional<Order> optional = Optional.of(order);
 
-        when(orderRepository.findById(1)).thenReturn(optional);
+        when(orderRepository.findById(1L)).thenReturn(optional);
 
         Assertions.assertEquals(order, orderService.getOrderById(id));
         verify(orderRepository, times(1)).findById(id);
@@ -36,7 +41,7 @@ public class OrderServiceImplTest {
     }
     @Test
     public void getOrderById_OrderNotFoundExceptionTest() {
-        Integer id = 1;
+        Long id = 1L;
 
         when(orderRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -46,11 +51,11 @@ public class OrderServiceImplTest {
 
     @Test
     public void deleteOrderById_SuccessfulTest() throws OrderNotFoundException {
-        Integer id = 1;
-        Order order = new Order().setStatus("ok");
+        Long id = 1L;
+        Order order = new Order().setStatus(OrderStatus.OK);
         Optional<Order> optional = Optional.of(order);
 
-        when(orderRepository.findById(1)).thenReturn(optional);
+        when(orderRepository.findById(1L)).thenReturn(optional);
 
         Assertions.assertEquals(order, orderService.deleteOrderById(id));
         verify(orderRepository, times(1)).findById(id);
@@ -58,7 +63,7 @@ public class OrderServiceImplTest {
     }
     @Test
     public void deleteOrderById_OrderNotFoundExceptionTest() {
-        Integer id = 1;
+        Long id = 1L;
 
         when(orderRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -69,11 +74,11 @@ public class OrderServiceImplTest {
 
     @Test
     public void updateOrderById_SuccessfulTest() throws OrderNotFoundException {
-        Integer id = 1;
-        Order order = new Order().setStatus("ok");
+        Long id = 1L;
+        Order order = new Order().setStatus(OrderStatus.OK);
         Optional<Order> optional = Optional.of(order);
 
-        when(orderRepository.findById(1)).thenReturn(optional);
+        when(orderRepository.findById(1L)).thenReturn(optional);
         when(orderRepository.save(order)).thenReturn(order);
 
         Assertions.assertEquals(order, orderService.updateOrderById(id, order));
@@ -82,7 +87,7 @@ public class OrderServiceImplTest {
     }
     @Test
     public void updateOrderById_OrderNotFoundExceptionTest() {
-        Integer id = 1;
+        Long id = 1L;
 
         when(orderRepository.findById(id)).thenReturn(Optional.empty());
 
