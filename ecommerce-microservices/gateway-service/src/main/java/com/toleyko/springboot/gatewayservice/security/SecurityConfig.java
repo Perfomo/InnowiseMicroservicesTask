@@ -37,30 +37,6 @@ public class SecurityConfig {
     @Value("${GATEWAY_SERVICE_PORT}")
     private String gatewayPort;
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-//        configuration.setAllowedMethods(Arrays.asList("*"));
-//        configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-//
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**")
-//                        .allowedOrigins("http://localhost:5173")
-//                        .allowedMethods("*")
-//                        .allowedHeaders("Access-Control-Allow-Origin");
-//            }
-//        };
-//    }
-
     @Bean
     public SecurityFilterChain SecurityWebFilterChain(HttpSecurity http) throws Exception {
         http.cors(c -> c.configurationSource(request -> {
@@ -68,6 +44,7 @@ public class SecurityConfig {
             configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
             configuration.setAllowedMethods(Arrays.asList("*"));
             configuration.setAllowedHeaders(Arrays.asList("*"));
+            configuration.setAllowCredentials(false);
             return configuration;
         }));
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
@@ -80,6 +57,7 @@ public class SecurityConfig {
         http.oauth2Login(Customizer.withDefaults());
         http.authorizeHttpRequests(c -> c
                 .requestMatchers("/users/**").authenticated()
+                .requestMatchers("/products/api/products", HttpMethod.GET).permitAll()
                 .requestMatchers("/products/**").hasRole("MANAGER")
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("actuator/**").permitAll()
