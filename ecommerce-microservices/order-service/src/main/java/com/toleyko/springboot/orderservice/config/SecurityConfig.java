@@ -21,9 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain SecurityWebFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/api/orders", HttpMethod.POST).authenticated()
-                        .requestMatchers("/api/*/orders", HttpMethod.GET).authenticated()
-                        .anyRequest().hasRole("MANAGER"))
+                        .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }

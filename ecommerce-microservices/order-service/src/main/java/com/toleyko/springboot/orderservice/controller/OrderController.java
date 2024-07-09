@@ -23,7 +23,9 @@ public class OrderController {
     private OrderService orderService;
     private OrdersHistoryService ordersHistoryService;
     private OrderFacadeService orderFacadeService;
+
     @GetMapping("/history")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<History>> getHistory() {
         return ResponseEntity.ok(ordersHistoryService.getHistory());
     }
@@ -35,6 +37,7 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Order> getOrderById(@PathVariable Long id) throws OrderNotFoundException {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
@@ -52,11 +55,13 @@ public class OrderController {
     }
 
     @PutMapping("/orders/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order order) throws OrderNotFoundException {
         return ResponseEntity.ok(orderService.updateOrderById(id, order));
     }
 
     @DeleteMapping("/orders/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Order> deleteOrderById(@PathVariable Long id) throws OrderNotFoundException {
         return ResponseEntity.ok(orderService.deleteOrderById(id));
     }
