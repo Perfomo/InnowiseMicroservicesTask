@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Flex, Layout } from "antd";
 import LogoutButton from "../GeneralElements/LogoutButton";
+import TokenManager from "../../TokenManager";
+import ChangeUserInfoButton from "../GeneralElements/ChangeUserInfoButton";
+import DeleteUserButton from "../GeneralElements/DeleteUserButton";
+import UserOrdersButton from "../GeneralElements/UserOrdersButton";
 
 const ProfileContent: React.FC = () => {
   const [userData, setUserData] = useState<any>([]);
@@ -8,7 +12,6 @@ const ProfileContent: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        // 401
         "http://172.17.0.1:8081/users/api/users/" +
           localStorage.getItem("username"),
         {
@@ -20,6 +23,13 @@ const ProfileContent: React.FC = () => {
       );
 
       if (!response.ok) {
+        if (response.status === 401) {
+          try {
+            TokenManager.tokenRefresh()
+          } catch(error) {
+            
+          }
+        }
         throw new Error("Network response was not ok");
       }
 
@@ -36,7 +46,8 @@ const ProfileContent: React.FC = () => {
   }, []);
 
   return (
-    <Layout style={{ height: "90vh", backgroundColor: "white" }}>
+    <Layout style={{ height: "100vh", backgroundColor: "white" }}>
+      <h1 style={{textAlign: "center", marginBottom: "0%", marginTop: "1%"}}>User info</h1>
       <Flex
         justify="center"
         align="normal"
@@ -44,18 +55,18 @@ const ProfileContent: React.FC = () => {
       >
         <table
           style={{
-            width: "40%",
+            width: "50%",
             height: "40%",
             textAlign: "center",
           }}
         >
+
           <tbody>
             <tr>
               <td
                 style={{
                   border: "1px solid blue",
                   borderCollapse: "collapse",
-                  width: "30",
                 }}
               >
                 Email
@@ -102,10 +113,25 @@ const ProfileContent: React.FC = () => {
                 {userData.lastName}
               </td>
             </tr>
-            <tr>
-              <LogoutButton />
-            </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <td style={{ width: "50%" }}>
+                <LogoutButton />
+              </td>
+              <td>
+                <UserOrdersButton />
+              </td>
+            </tr>
+            <tr>
+              <td style={{ width: "50%" }}>
+                <DeleteUserButton />
+              </td>
+              <td>
+                <ChangeUserInfoButton />
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </Flex>
     </Layout>

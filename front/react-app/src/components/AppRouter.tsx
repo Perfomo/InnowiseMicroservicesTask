@@ -6,7 +6,8 @@ import LoginPage from './loginPage/LoginPage';
 import RegisterPage from './RegisterPage/RegisterPage';
 import CatalogPage from './CatalogPage/CatalogPage';
 import ProfilePage from './ProfilePage/ProfilePage';
-
+import ChangeUserInfoPage from './ChangeUserInfoPage/ChangeUserInfoPage';
+import OrdersPage from './OrdersPage/OrdersPage';
 
 const AppRouter: React.FC = () => {
   return (
@@ -18,6 +19,8 @@ const AppRouter: React.FC = () => {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/catalog' element={<CatalogPage />} />
         <Route path='/profile' element={<ProfilePage />} />
+        <Route path='/changeUserInfo' element={<ChangeUserInfoPage />} />
+        <Route path='/orders'element={<OrdersPage />} />
       </Routes>
     </Router>
   );

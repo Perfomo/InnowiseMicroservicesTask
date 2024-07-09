@@ -1,16 +1,20 @@
 import { Flex, Layout } from "antd";
 import { useEffect, useState } from "react";
 import CatalogElement from "../GeneralElements/CatalogElement";
+import OrderContent from "../GeneralElements/OrderContetnt";
 
-const CatalogContent: React.FC = () => {
-  const [catalogData, setCatalogData] = useState<any[]>([]);
+const OrdersContent: React.FC = () => {
+  const [orderData, setOrderData] = useState<any[]>([]);
 
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "http://172.17.0.1:8081/products/api/products",
+        "http://172.17.0.1:8081/orders/api/"+ localStorage.getItem("username") +"/orders",
         {
           method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
         }
       );
 
@@ -20,9 +24,9 @@ const CatalogContent: React.FC = () => {
 
       const data = await response.json();
       console.log("data", data);
-      setCatalogData(data);
+      setOrderData(data);
     } catch (error) {
-      console.error("Error during getting products: ", error);
+      console.error("Error during getting orders: ", error);
     }
   };
 
@@ -44,12 +48,8 @@ const CatalogContent: React.FC = () => {
             marginRight: "3%",
           }}
         >
-          {catalogData.map((item, index) => (
-            <CatalogElement
-              key={index}
-              productName={item.name}
-              productCost={item.cost}
-            />
+          {orderData.map((item, index) => (
+            <OrderContent key={index} orderCost={item.cost} orderStatus={item.status} products={item.products} />
           ))}
         </Flex>
       </Layout>
@@ -57,4 +57,4 @@ const CatalogContent: React.FC = () => {
   );
 };
 
-export default CatalogContent;
+export default OrdersContent;

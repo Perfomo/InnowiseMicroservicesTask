@@ -1,24 +1,22 @@
 import { Button } from "antd";
 
-const LogoutButton = () => {
+const UserOrdersButton = () => {
   return (
     <Button
-      href="/"
+      href="/orders"
       type="primary"
-      onClick={() => localStorage.clear()}
       ghost
       style={{
+        color: "green",
+        borderColor: "green",
         width: "50%",
         height: "6vh",
         fontWeight: 700,
-        color: "red",
-        borderColor: "red",
-        marginTop: "2%"
       }}
     >
-      Logout
+      Orders
     </Button>
   );
 };
 
-export default LogoutButton;
+export default UserOrdersButton;

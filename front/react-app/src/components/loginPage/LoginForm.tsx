@@ -1,47 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Flex, Form, Input } from "antd";
-import Layout from "antd/es/layout/layout";
+import { Button, Flex, Form, Input, Layout, Alert } from "antd";
 import { useNavigate } from 'react-router-dom';
+import TokenManager from '../../TokenManager';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   const onFinish = async (values: any) => {
     try {
-      const response = await fetch('http://172.17.0.1:8080/realms/microServsRealm/protocol/openid-connect/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-          'client_id': 'frontClient',
-          'grant_type': 'password',
-          'username': values.username,
-          'password': values.password,
-          'client_secret': 'v9fDuQD5uVTuVSM9QSeWJ0JzS9nBIQFM'
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-
-      const data = await response.json();
-      console.log('Token received: ', data);
-
-      localStorage.setItem('token', data.access_token);
-      localStorage.setItem('username', values.username)
-
-      navigate("/profile")
-
-    } catch (error) {
-      console.error('Error during login: ', error);
+      await TokenManager.authenticate(values);
+      navigate("/profile");
+    } catch(error) {
+      setError("Authentication error: Invalid username or password");
     }
   };
-
-
 
   return (
     <Layout style={{ height: "90vh", backgroundColor: "white" }}>
@@ -56,6 +30,8 @@ const LoginForm: React.FC = () => {
           initialValues={{ remember: true }}
           onFinish={onFinish}
         >
+          {error && <Alert message={error} type="error" />} 
+          
           <Form.Item
             name="username"
             rules={[{ required: true, message: "Please input your Username!" }]}
