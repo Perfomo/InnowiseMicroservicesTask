@@ -13,7 +13,7 @@ const ErrorEmptyCart: React.FC = () => {
             width: "94%",
             marginLeft: "3%",
             marginRight: "3%",
-            marginBottom: "10%"
+            marginBottom: "10%",
           }}
         >
           <div
@@ -22,10 +22,10 @@ const ErrorEmptyCart: React.FC = () => {
           >
             <div className="card-header">Oups... Your cart is empy</div>
             <div className="card-body">
-              <h5 className="card-title">You can't create an order without produts.</h5>
-              <p className="card-text">
-                Add some products from catalog page.
-              </p>
+              <h5 className="card-title">
+                You can't create an order without produts.
+              </h5>
+              <p className="card-text">Add some products from catalog page.</p>
             </div>
           </div>
         </Flex>

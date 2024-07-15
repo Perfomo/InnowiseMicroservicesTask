@@ -1,12 +1,16 @@
 import { Button, Form, FormInstance, Input } from "antd";
 
 interface AllUserInfoFormProps {
-    form: FormInstance;
-    onFinish: (values: any) => void;
-    buttonText: string;
+  form: FormInstance;
+  onFinish: (values: any) => void;
+  buttonText: string;
 }
 
-const AllUserInfoForm = ({form, onFinish, buttonText}: AllUserInfoFormProps) => {
+const AllUserInfoForm = ({
+  form,
+  onFinish,
+  buttonText,
+}: AllUserInfoFormProps) => {
   return (
     <Form
       form={form}

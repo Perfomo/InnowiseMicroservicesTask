@@ -7,6 +7,7 @@ import com.toleyko.springboot.inventoryservice.handlers.exception.InsufficientQu
 import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
 import com.toleyko.springboot.inventoryservice.service.InventoryService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Component
+@Slf4j
 public class OrderHandler {
     private InventoryService inventoryService;
     private InventoryRepository inventoryRepository;
@@ -25,9 +27,9 @@ public class OrderHandler {
         for (Map.Entry<String, String> entry : order.getProducts().entrySet()) {
             String name = entry.getKey();
             String amount = entry.getValue();
-            System.out.println("name: " + name + "\n" + "amount: " + amount);
+            log.info("name: " + name + "\n" + "amount: " + amount);
             Remainder remainder = inventoryService.getRemainderByName(name);
-            System.out.println("Remainder: " + remainder);
+            log.info("Remainder: " + remainder);
             if (remainder == null || remainder.getLeft() < Integer.parseInt(amount)) {
                 order.getProducts().replace(name, amount + " not enough at storage for order");
                 isOK = false;

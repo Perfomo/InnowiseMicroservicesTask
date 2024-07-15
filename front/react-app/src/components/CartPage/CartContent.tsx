@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Flex, Layout } from "antd";
-import TokenManager from "../../TokenManager";
 import CatalogElement from "../GeneralElements/CatalogElement";
 import CartManager from "../../CartManager";
 import ErrorEmptyCart from "../GeneralElements/ErrorEmptyCart";
@@ -21,7 +20,6 @@ const CartContent: React.FC = () => {
           align="normal"
           wrap={true}
           style={{
-            // height: "100vh",
             width: "94%",
             marginLeft: "3%",
             marginRight: "3%",

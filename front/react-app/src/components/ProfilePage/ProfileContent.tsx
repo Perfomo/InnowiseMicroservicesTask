@@ -34,7 +34,6 @@ const ProfileContent: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log("data", data);
       setUserData(data);
     } catch (error) {
       console.error("Error during login: ", error);

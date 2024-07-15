@@ -24,7 +24,6 @@ const OrdersContent: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log("data", data);
       setOrderData(data);
       setIsLoading(false);
     } catch (error) {
@@ -57,7 +56,6 @@ const OrdersContent: React.FC = () => {
           align="normal"
           wrap={true}
           style={{
-            // height: "100vh",
             width: "94%",
             marginLeft: "3%",
             marginRight: "3%",

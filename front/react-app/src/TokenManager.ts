@@ -21,15 +21,14 @@ export default class TokenManager {
             }
       
             const data = await response.json();
-            console.log('Token received: ', data);
 
             localStorage.setItem("token", data.access_token);
             localStorage.setItem("refToken", data.refresh_token);
             localStorage.setItem('username', values.username)
             
           } catch (error) {
-            console.error('Error during login: ', error);
-            throw(error);
+              console.error('Error during login: ', error);
+              throw(error);
           }
     }
 

@@ -49,7 +49,6 @@ export default class CartManager {
         }
         localStorage.setItem("cartCost", JSON.stringify(Math.round((totalPrice + cost) * 100000) / 100000))
         localStorage.setItem("cart", JSON.stringify(cart));
-        console.log(localStorage.getItem("cartCost"))
     }
 
     public static removeProduct(name: string) {
@@ -67,7 +66,6 @@ export default class CartManager {
             }
             localStorage.setItem("cart", JSON.stringify(cart));
         }
-        console.log(localStorage.getItem("cartCost"))
     }
 
     public static parseCartToOrderRequest() {

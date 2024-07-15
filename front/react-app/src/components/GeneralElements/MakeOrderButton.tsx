@@ -1,7 +1,6 @@
 import { Button } from "antd";
 import axios from "axios";
 import CartManager from "../../CartManager";
-import { useNavigate } from "react-router-dom";
 
 interface CostTagProps {
   cost: string | null;
@@ -28,7 +27,6 @@ const onClick = () => {
     })
     .catch((error) => {
       console.log(error);
-      // localStorage.clear();
     });
   }
 };

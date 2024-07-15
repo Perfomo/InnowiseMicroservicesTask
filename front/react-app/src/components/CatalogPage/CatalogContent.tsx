@@ -5,7 +5,7 @@ import CostTag from "../GeneralElements/CostTag";
 
 const CatalogContent: React.FC = () => {
   const [catalogData, setCatalogData] = useState<any[]>([]);
-  const [totalCost, setTotalCost] = useState(localStorage.getItem("cartCost"))
+  const [totalCost, setTotalCost] = useState(localStorage.getItem("cartCost"));
   const handleElementQuantityChange = (newCost: string) => {
     setTotalCost(newCost);
   };
@@ -23,7 +23,6 @@ const CatalogContent: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log("data", data);
       setCatalogData(data);
     } catch (error) {
       console.error("Error during getting products: ", error);
@@ -42,7 +41,6 @@ const CatalogContent: React.FC = () => {
           align="normal"
           wrap={true}
           style={{
-            // height: "100vh",
             width: "94%",
             marginLeft: "3%",
             marginRight: "3%",
@@ -58,7 +56,14 @@ const CatalogContent: React.FC = () => {
           ))}
         </Flex>
       </Layout>
-      <footer style={{position: "fixed", bottom: "0", width: "100%", textAlign: "center"}}>
+      <footer
+        style={{
+          position: "fixed",
+          bottom: "0",
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
         <CostTag cost={totalCost} />
       </footer>
     </>
