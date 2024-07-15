@@ -62,7 +62,7 @@ const ChangeUserInfoForm: React.FC = () => {
         align="center"
         style={{ height: "100vh", width: "100%" }}
       >
-        <AllUserInfoForm form={form} onFinish={onFinish} />
+        <AllUserInfoForm form={form} onFinish={onFinish} buttonText="Change info" />
       </Flex>
     </Layout>
   );

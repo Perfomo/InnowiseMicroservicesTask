@@ -14,6 +14,6 @@ public class OrderDto {
     private OrderStatus status;
     private String username;
     private String userId;
-    private Map<String, Integer> products;
+    private Map<String, String> products;
     private BigDecimal cost;
 }

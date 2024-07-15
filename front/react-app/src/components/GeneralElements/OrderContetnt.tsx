@@ -7,10 +7,11 @@ interface CatalogElementProps {
 const OrderContent = (props: CatalogElementProps) => {
   return (
     <div
-      className="card text-bg-primary mb-3"
-      style={{
+    className= {(props.orderStatus === "OK") ? "card text-bg-primary mb-3" : "card text-bg-danger mb-3"}
+    style={{
         width: "200px",
-        height: "200px",
+        // height: "200px",
+        minHeight: "200px",
         margin: "1%",
         textAlign: "center",
       }}

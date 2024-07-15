@@ -1,10 +1,11 @@
 import { Flex, Layout } from "antd";
 import { useEffect, useState } from "react";
-import CatalogElement from "../GeneralElements/CatalogElement";
 import OrderContent from "../GeneralElements/OrderContetnt";
+import ErrorNoOrders from "../GeneralElements/ErrorNoOrders";
 
 const OrdersContent: React.FC = () => {
   const [orderData, setOrderData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true); 
 
   const fetchData = async () => {
     try {
@@ -25,14 +26,28 @@ const OrdersContent: React.FC = () => {
       const data = await response.json();
       console.log("data", data);
       setOrderData(data);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error during getting orders: ", error);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  console.log(orderData)
+
+  if (isLoading) {
+    return <></>;
+  }
+
+  if (orderData.length === 0) {
+    return (
+      <ErrorNoOrders />
+    );
+  }
 
   return (
     <>
@@ -42,7 +57,7 @@ const OrdersContent: React.FC = () => {
           align="normal"
           wrap={true}
           style={{
-            height: "100vh",
+            // height: "100vh",
             width: "94%",
             marginLeft: "3%",
             marginRight: "3%",

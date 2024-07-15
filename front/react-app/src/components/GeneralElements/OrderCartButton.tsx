@@ -4,6 +4,7 @@ import { Button } from "antd";
 const OrderCartButton = () => {
   return (
     <Button
+      href="/cart"
       type="primary"
       ghost
       style={{

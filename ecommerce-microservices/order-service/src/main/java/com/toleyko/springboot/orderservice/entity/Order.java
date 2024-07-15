@@ -36,7 +36,7 @@ public class Order {
     @CollectionTable(name = "product_list", joinColumns = @JoinColumn(name = "id"))
     @MapKeyColumn(name = "product_id")
     @Column(name = "products")
-    private Map<String, Integer> products;
+    private Map<String, String> products;
 
     @Column(name = "cost")
     private BigDecimal cost;

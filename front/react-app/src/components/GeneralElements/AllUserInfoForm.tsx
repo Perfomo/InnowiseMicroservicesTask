@@ -3,9 +3,10 @@ import { Button, Form, FormInstance, Input } from "antd";
 interface AllUserInfoFormProps {
     form: FormInstance;
     onFinish: (values: any) => void;
+    buttonText: string;
 }
 
-const AllUserInfoForm = ({form, onFinish}: AllUserInfoFormProps) => {
+const AllUserInfoForm = ({form, onFinish, buttonText}: AllUserInfoFormProps) => {
   return (
     <Form
       form={form}
@@ -109,7 +110,7 @@ const AllUserInfoForm = ({form, onFinish}: AllUserInfoFormProps) => {
 
       <Form.Item style={{ margin: "0%" }}>
         <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-          Register
+          {buttonText}
         </Button>
       </Form.Item>
     </Form>

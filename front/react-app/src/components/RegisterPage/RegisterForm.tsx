@@ -2,9 +2,11 @@ import React from "react";
 import { Flex, Form, Layout } from "antd";
 import axios from "axios";
 import AllUserInfoForm from "../GeneralElements/AllUserInfoForm";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const onFinish = (values: any) => {
     const { confirmPassword, ...requestData } = values;
@@ -12,7 +14,7 @@ const RegisterForm: React.FC = () => {
     axios.post("http://172.17.0.1:8081/users/api/users", requestData)
       .then(response => {
         form.resetFields();
-        // add logic
+        navigate("/login")
       })
       .catch(error => {
 
@@ -41,7 +43,7 @@ const RegisterForm: React.FC = () => {
         align="center"
         style={{ height: "100vh", width: "100%" }}
       >
-      <AllUserInfoForm form={form} onFinish={onFinish} />
+      <AllUserInfoForm form={form} onFinish={onFinish} buttonText="Register" />
       </Flex>
     </Layout>
   );

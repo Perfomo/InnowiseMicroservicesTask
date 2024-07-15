@@ -40,13 +40,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain SecurityWebFilterChain(HttpSecurity http) throws Exception {
-//        http.cors(c -> c.configurationSource(request -> {
-//            CorsConfiguration configuration = new CorsConfiguration();
-//            configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-//            configuration.setAllowedMethods(Arrays.asList("*"));
-//            configuration.setAllowedHeaders(Arrays.asList("*"));
-//            return configuration;
-//        }));
         http.cors(c -> c.disable());
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .csrf(c -> c.ignoringRequestMatchers("/api/users"))

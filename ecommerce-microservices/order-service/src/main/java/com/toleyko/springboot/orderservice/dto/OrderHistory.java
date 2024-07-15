@@ -21,6 +21,6 @@ public class OrderHistory {
     @CollectionTable(name = "history_prder_products", joinColumns = @JoinColumn(name = "order_id"))
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
-    private Map<String, Integer> products;
+    private Map<String, String> products;
     private BigDecimal cost;
 }

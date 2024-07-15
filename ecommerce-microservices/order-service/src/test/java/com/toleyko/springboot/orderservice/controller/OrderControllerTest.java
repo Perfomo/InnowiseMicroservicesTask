@@ -181,8 +181,8 @@ public class OrderControllerTest {
         order.setCost(BigDecimal.valueOf(1.2));
         order.setUserId("1");
         order.setUsername("user");
-        Map<String, Integer> products = new HashMap<>();
-        products.put("2",2);
+        Map<String, String> products = new HashMap<>();
+        products.put("2","2");
         order.setProducts(products);
         when(orderFacadeService.saveAndSendOrder(any(Order.class))).thenReturn(order);
 
@@ -207,8 +207,8 @@ public class OrderControllerTest {
         order.setCost(BigDecimal.valueOf(1.2));
         order.setUserId("1");
         order.setUsername("user");
-        Map<String, Integer> products = new HashMap<>();
-        products.put("2",2);
+        Map<String, String> products = new HashMap<>();
+        products.put("2","2");
         order.setProducts(products);
         when(orderFacadeService.saveAndSendOrder(any(Order.class))).thenThrow(new TokenDataExtractionException("error"));
 
@@ -231,8 +231,8 @@ public class OrderControllerTest {
         order.setCost(BigDecimal.valueOf(1.2));
         order.setUserId("1");
         order.setUsername("user");
-        Map<String, Integer> products = new HashMap<>();
-        products.put("2",2);
+        Map<String, String> products = new HashMap<>();
+        products.put("2","2");
         order.setProducts(products);
         when(orderFacadeService.saveAndSendOrder(any(Order.class))).thenThrow(JsonProcessingException.class);
 

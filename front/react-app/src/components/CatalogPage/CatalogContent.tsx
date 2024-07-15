@@ -1,10 +1,14 @@
 import { Flex, Layout } from "antd";
 import { useEffect, useState } from "react";
 import CatalogElement from "../GeneralElements/CatalogElement";
+import CostTag from "../GeneralElements/CostTag";
 
 const CatalogContent: React.FC = () => {
   const [catalogData, setCatalogData] = useState<any[]>([]);
-
+  const [totalCost, setTotalCost] = useState(localStorage.getItem("cartCost"))
+  const handleElementQuantityChange = (newCost: string) => {
+    setTotalCost(newCost);
+  };
   const fetchData = async () => {
     try {
       const response = await fetch(
@@ -32,13 +36,13 @@ const CatalogContent: React.FC = () => {
 
   return (
     <>
-      <Layout style={{ height: "90vh", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <Flex
           justify="center"
           align="normal"
           wrap={true}
           style={{
-            height: "100vh",
+            // height: "100vh",
             width: "94%",
             marginLeft: "3%",
             marginRight: "3%",
@@ -49,10 +53,14 @@ const CatalogContent: React.FC = () => {
               key={index}
               productName={item.name}
               productCost={item.cost}
+              onChangeElementQuantity={handleElementQuantityChange}
             />
           ))}
         </Flex>
       </Layout>
+      <footer style={{position: "fixed", bottom: "0", width: "100%", textAlign: "center"}}>
+        <CostTag cost={totalCost} />
+      </footer>
     </>
   );
 };
