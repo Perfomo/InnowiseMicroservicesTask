@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -218,7 +219,11 @@ public class UserControllerTest {
 
     @Test
     public void logoutTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/logout"))
-                .andExpect(status().is(302));
+        Authentication authentication2 = new UsernamePasswordAuthenticationToken("manager", "manager",
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_MANAGER")));
+        doNothing().when(userKeycloakService).logoutKeycloakUser(anyString());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/logout")
+                        .principal(authentication2))
+                .andExpect(status().isOk());
     }
 }

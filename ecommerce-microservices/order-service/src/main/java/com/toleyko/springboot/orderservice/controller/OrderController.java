@@ -3,6 +3,7 @@ package com.toleyko.springboot.orderservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.toleyko.springboot.orderservice.entity.History;
 import com.toleyko.springboot.orderservice.entity.Order;
+import com.toleyko.springboot.orderservice.handler.OrderStatus;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
 import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import com.toleyko.springboot.orderservice.service.OrderFacadeService;
@@ -51,7 +52,7 @@ public class OrderController {
     @PostMapping("/orders")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Order> saveOrder(@Valid @RequestBody Order order, Principal principal) throws TokenDataExtractionException, JsonProcessingException {
-        return ResponseEntity.ok(orderFacadeService.saveAndSendOrder(order.setUsername(principal.getName())));
+        return ResponseEntity.ok(orderFacadeService.saveAndSendOrder(order.setUsername(principal.getName()).setStatus(OrderStatus.PENDING)));
     }
 
     @PutMapping("/orders/{id}")
