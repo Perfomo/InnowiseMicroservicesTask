@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { Flex, Layout } from "antd";
 import LogoutButton from "../GeneralElements/LogoutButton";
 import TokenManager from "../../TokenManager";
@@ -12,8 +12,7 @@ const ProfileContent: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "http://172.17.0.1:8081/users/api/users/" +
-          localStorage.getItem("username"),
+        "/users/api/users/" + localStorage.getItem("username"),
         {
           method: "GET",
           headers: {
@@ -21,13 +20,13 @@ const ProfileContent: React.FC = () => {
           },
         }
       );
-
       if (!response.ok) {
         if (response.status === 401) {
           try {
-            TokenManager.tokenRefresh()
-          } catch(error) {
-            
+            TokenManager.tokenRefresh();
+            // window.location.reload();
+          } catch (error) {
+            console.log("error: " + error);
           }
         }
         throw new Error("Network response was not ok");
@@ -35,6 +34,7 @@ const ProfileContent: React.FC = () => {
 
       const data = await response.json();
       setUserData(data);
+
     } catch (error) {
       console.error("Error during login: ", error);
     }
@@ -44,13 +44,21 @@ const ProfileContent: React.FC = () => {
     fetchData();
   }, []);
 
+  const tdStyle: CSSProperties = {
+    border: "1px solid blue",
+    borderCollapse: "collapse",
+    height: "45px",
+  };
+
   return (
     <Layout style={{ height: "100vh", backgroundColor: "white" }}>
-      <h1 style={{textAlign: "center", marginBottom: "0%", marginTop: "1%"}}>User info</h1>
+      <h1 style={{ textAlign: "center", marginBottom: "0%", marginTop: "1%" }}>
+        User info
+      </h1>
       <Flex
         justify="center"
         align="normal"
-        style={{ height: "100vh", width: "100%", marginTop: "2%" }}
+        style={{ width: "100%", marginTop: "2%" }}
       >
         <table
           style={{
@@ -59,56 +67,44 @@ const ProfileContent: React.FC = () => {
             textAlign: "center",
           }}
         >
-
           <tbody>
             <tr>
-              <td
-                style={{
-                  border: "1px solid blue",
-                  borderCollapse: "collapse",
-                }}
-              >
-                Email
-              </td>
-              <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
-              >
-                {userData.email}
-              </td>
+              <td style={tdStyle}>Email</td>
+              <td style={tdStyle}>{userData.email}</td>
             </tr>
             <tr>
               <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
+                style={tdStyle}
               >
                 Username
               </td>
               <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
-              >
+                style={tdStyle}
+                >
                 {userData.username}
               </td>
             </tr>
             <tr>
               <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
-              >
+                style={tdStyle}
+                >
                 First Name
               </td>
               <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
-              >
+                style={tdStyle}
+                >
                 {userData.firstName}
               </td>
             </tr>
             <tr>
               <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
-              >
+                style={tdStyle}
+                >
                 Last Name
               </td>
               <td
-                style={{ border: "1px solid blue", borderCollapse: "collapse" }}
-              >
+                style={tdStyle}
+                >
                 {userData.lastName}
               </td>
             </tr>

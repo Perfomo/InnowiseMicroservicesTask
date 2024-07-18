@@ -10,7 +10,7 @@ const OrdersContent: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "http://172.17.0.1:8081/orders/api/"+ localStorage.getItem("username") +"/orders",
+        "/orders/api/"+ localStorage.getItem("username") +"/orders",
         {
           method: "GET",
           headers: {

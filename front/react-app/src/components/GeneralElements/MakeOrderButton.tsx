@@ -14,7 +14,7 @@ const onClick = () => {
   else {
     console.log(CartManager.parseCartToOrderRequest());
     axios
-    .post("http://172.17.0.1:8081/orders/api/orders", CartManager.parseCartToOrderRequest(), {
+    .post("/orders/api/orders", CartManager.parseCartToOrderRequest(), {
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token"),
         "Content-Type": "application/json"
@@ -23,7 +23,7 @@ const onClick = () => {
     .then ((response) => {
       localStorage.removeItem("cart")
       localStorage.removeItem("cartCost")
-      window.location.href = "/orders";
+      window.location.href = "/userOrders";
     })
     .catch((error) => {
       console.log(error);

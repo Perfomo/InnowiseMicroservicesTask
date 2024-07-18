@@ -20,7 +20,7 @@ const AppRouter: React.FC = () => {
         <Route path='/catalog' element={<CatalogPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/changeUserInfo' element={<ChangeUserInfoPage />} />
-        <Route path='/orders'element={<OrdersPage />} />
+        <Route path='/userOrders'element={<OrdersPage />} />
         <Route path='/cart' element={<CartPage />} />
       </Routes>
     </Router>

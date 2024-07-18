@@ -15,7 +15,7 @@ const ChangeUserInfoForm: React.FC = () => {
     if (values.username === localStorage.getItem("username")) {
       axios
         .put(
-          "http://172.17.0.1:8081/users/api/users/" +
+          "/users/api/users/" +
             localStorage.getItem("username"),
           requestData,
           {

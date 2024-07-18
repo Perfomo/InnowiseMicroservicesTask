@@ -11,7 +11,7 @@ const RegisterForm: React.FC = () => {
   const onFinish = (values: any) => {
     const { confirmPassword, ...requestData } = values;
 
-    axios.post("http://172.17.0.1:8081/users/api/users", requestData)
+    axios.post("/users/api/users", requestData)
       .then(response => {
         form.resetFields();
         navigate("/login")

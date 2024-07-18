@@ -12,7 +12,7 @@ const CatalogContent: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "http://172.17.0.1:8081/products/api/products",
+        "/products/api/products",
         {
           method: "GET",
         }

@@ -4,7 +4,7 @@ import axios from "axios";
 const onClick = (values: any) => {
   axios
     .delete(
-      "http://172.17.0.1:8081/users/api/users/" +
+      "/users/api/users/" +
         localStorage.getItem("username"),
       {
         headers: {
