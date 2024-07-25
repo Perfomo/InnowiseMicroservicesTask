@@ -59,12 +59,10 @@ export default class TokenManager {
         console.log("Token refreshed")
         localStorage.setItem("refToken", data.refresh_token)    
       } catch (error) {
-        // localStorage.clear()
         console.error('Error refreshing token:', error);
         throw error;
       }
     }
-    
-  }
+}
   
   

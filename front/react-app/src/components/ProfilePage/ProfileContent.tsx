@@ -24,7 +24,7 @@ const ProfileContent: React.FC = () => {
         if (response.status === 401) {
           try {
             TokenManager.tokenRefresh();
-            // window.location.reload();
+            window.location.reload();
           } catch (error) {
             console.log("error: " + error);
           }
@@ -36,6 +36,7 @@ const ProfileContent: React.FC = () => {
       setUserData(data);
 
     } catch (error) {
+      localStorage.clear();
       console.error("Error during login: ", error);
     }
   };
