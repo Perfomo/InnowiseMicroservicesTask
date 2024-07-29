@@ -2,17 +2,17 @@ import { Button, Form, FormInstance, Input, InputNumber } from "antd";
 import { useEffect, useState } from "react";
 
 
-interface AllUserInfoFormProps {
+interface AllInventoryInfoFormProps {
   form: FormInstance;
   onFinish: (values: any) => void;
   buttonText: string;
 }
 
-const ProductInfoForm = ({
+const InventoryInfoForm = ({
   form,
   onFinish,
   buttonText,
-}: AllUserInfoFormProps) => {
+}: AllInventoryInfoFormProps) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
   useEffect(() => {
@@ -31,6 +31,10 @@ const ProductInfoForm = ({
       name="register"
       onFinish={onFinish}
       onFieldsChange={handleFieldsChange}
+      initialValues={{
+        residence: ["zhejiang", "hangzhou", "xihu"],
+        prefix: "86",
+      }}
       style={{ maxWidth: 600 }}
       scrollToFirstError
     >
@@ -39,19 +43,19 @@ const ProductInfoForm = ({
         rules={[
           {
             required: true,
-            message: "Please input product name!",
+            message: "Please input inventory name!",
           },
         ]}
       >
-        <Input placeholder="Product Name" />
+        <Input placeholder="Inventory Name" />
       </Form.Item>
 
       <Form.Item
-        name="cost"
+        name="left"
         rules={[
           {
             required: true,
-            message: "Please input product cost!",
+            message: "Please input inventory left!",
           },
           {
             type: "number",
@@ -61,7 +65,43 @@ const ProductInfoForm = ({
           },
         ]}
       >
-        <InputNumber style={{width: "100%"}} placeholder="Product Cost" />
+        <InputNumber style={{width: "100%"}} placeholder="Inventory Left" />
+      </Form.Item>
+
+      <Form.Item
+        name="sold"
+        rules={[
+          {
+            required: true,
+            message: "Please indicate the number of inventory sales!",
+          },
+          {
+            type: "number",
+            min: 0,
+            max: 1000000,
+            message: "Please enter a valid number!",
+          },
+        ]}
+      >
+        <InputNumber style={{width: "100%"}} placeholder="Inventory Sales" />
+      </Form.Item>
+
+      <Form.Item
+        name="cost"
+        rules={[
+          {
+            required: true,
+            message: "Please input inventory cost!",
+          },
+          {
+            type: "number",
+            min: 0,
+            max: 1000000,
+            message: "Please enter a valid number!",
+          },
+        ]}
+      >
+        <InputNumber style={{width: "100%"}} placeholder="Inventory Cost" />
       </Form.Item>
 
       <Form.Item style={{ margin: "0%" }}>
@@ -73,4 +113,4 @@ const ProductInfoForm = ({
   );
 };
 
-export default ProductInfoForm;
+export default InventoryInfoForm;

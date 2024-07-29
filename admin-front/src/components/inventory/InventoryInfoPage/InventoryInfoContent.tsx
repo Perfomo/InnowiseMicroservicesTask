@@ -3,27 +3,30 @@ import { Flex, Layout } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import TokenManager from "../../general/generalElements/TokenManager";
 import BackButton from "../../general/generalElements/BackButton";
-import ProductInInventoryButton from "./ProductInInventoryButton";
 import DeleteButton from "../../general/generalElements/DeleteButton";
 import ChangeInfoButton from "../../general/generalElements/ChangeInfoButton";
+import ChangeInventoryAmountButton from "../generalComponents/ChangeImventoryAmountButton";
 
-const ProductInfoContent: React.FC = () => {
-  const [productData, setProductData] = useState<any>([]);
+const InventoryInfoContent: React.FC = () => {
+  const [inventoryData, setInventoryData] = useState<any>([]);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const name = state?.name;
-  const product = state?.product
+  const inventory = state?.inventory;
 
   const fetchData = async () => {
     try {
-      const response = await fetch("/api/products/api/products/name/" + name, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
+      const response = await fetch(
+        "/api/inventory/api/inventory/name/" + name,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -42,7 +45,7 @@ const ProductInfoContent: React.FC = () => {
       }
 
       const data = await response.json();
-      setProductData(data);
+      setInventoryData(data);
     } catch (error) {
       localStorage.clear();
       console.error("Error during getting info: ", error);
@@ -50,17 +53,16 @@ const ProductInfoContent: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!product) {
+    if (!inventory) {
       fetchData();
-    }
-    else {
-      setProductData(product);
+    } else {
+      setInventoryData(inventory);
     }
   }, []);
 
   useEffect(() => {
     if (isNotFound) {
-      navigate("/products/find");
+      navigate("/inventory/find");
     }
   }, [isNotFound, navigate]);
 
@@ -81,7 +83,7 @@ const ProductInfoContent: React.FC = () => {
   return (
     <Layout style={{ height: "100vh", backgroundColor: "white" }}>
       <h1 style={{ textAlign: "center", marginBottom: "0%", marginTop: "1%" }}>
-        Product info
+        Inventory info
       </h1>
       <Flex
         justify="center"
@@ -98,15 +100,23 @@ const ProductInfoContent: React.FC = () => {
           <tbody>
             <tr>
               <td style={tdStyle}>Id</td>
-              <td style={tdStyle}>{productData.id}</td>
+              <td style={tdStyle}>{inventoryData.id}</td>
             </tr>
             <tr>
               <td style={tdStyle}>Name</td>
-              <td style={tdStyle}>{productData.name}</td>
+              <td style={tdStyle}>{inventoryData.name}</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Left</td>
+              <td style={tdStyle}>{inventoryData.left}</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Sold</td>
+              <td style={tdStyle}>{inventoryData.sold}</td>
             </tr>
             <tr>
               <td style={tdStyle}>Cost</td>
-              <td style={tdStyle}>{productData.cost}$</td>
+              <td style={tdStyle}>{inventoryData.cost}$</td>
             </tr>
           </tbody>
           <tfoot>
@@ -115,15 +125,24 @@ const ProductInfoContent: React.FC = () => {
                 <BackButton />
               </td>
               <td style={tdStyleButton}>
-                <ProductInInventoryButton name={String(productData.name)} />
+                <ChangeInventoryAmountButton
+                  searchEl={String(inventoryData.id)}
+                  type="inventory"
+                />
               </td>
             </tr>
             <tr>
               <td style={{ width: "50%" }}>
-                <DeleteButton searchEl={String(productData.id)} type="products" />
+                <DeleteButton
+                  searchEl={String(inventoryData.id)}
+                  type="inventory"
+                />
               </td>
               <td>
-                <ChangeInfoButton searchEl={String(productData.id)} type="products"/>
+                <ChangeInfoButton
+                  searchEl={String(inventoryData.id)}
+                  type="inventory"
+                />
               </td>
             </tr>
           </tfoot>
@@ -133,4 +152,4 @@ const ProductInfoContent: React.FC = () => {
   );
 };
 
-export default ProductInfoContent;
+export default InventoryInfoContent;

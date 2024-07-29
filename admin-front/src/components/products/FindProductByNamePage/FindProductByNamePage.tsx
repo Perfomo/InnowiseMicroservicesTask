@@ -14,7 +14,7 @@ const FindProductByIdPage: React.FC = () => {
   return (
     <>
       <MainHeader />
-      <FindProduct searchBy="id" />
+      <FindProduct searchBy="name" />
     </>
   );
 };

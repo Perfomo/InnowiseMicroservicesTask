@@ -14,6 +14,15 @@ import ProductInfoPage from "./components/products/ProductInfoPage/ProductInfoPa
 import ChangeProductInfoPage from "./components/products/ChangeProductInfoPage/ChangeProductInfoPage";
 import AddProductPage from "./components/products/AddProductPage/AddProductPage";
 import FindProductByIdPage from "./components/products/FindProductByIdPage/FindProductByIdPage";
+import FindProductByNamePage from "./components/products/FindProductByNamePage/FindProductByNamePage";
+import InventoryMenuPage from "./components/inventory/InventoryMenuPage/InventoryMenuPage";
+import AllInventoryPage from "./components/inventory/AllInventoryPage/AllInventoryPage";
+import InventoryInfoPage from "./components/inventory/InventoryInfoPage/InventoryInfoPage";
+import ChangeInventoryInfoPage from "./components/inventory/ChangeInventoryInfoPage/ChangeInventoryInfoPage";
+import ChangeInventoryAmountPage from "./components/inventory/ChangeInventoryAmountPage/ChangeInventoryAmountPage";
+import AddInventoryPage from "./components/inventory/AddInventoryPage/AddInventoryPage";
+import FindInventoryByIdPage from "./components/inventory/FindInventoryByIdPage/FindInventoryByIdPage";
+import FindInventoryByNamePage from "./components/inventory/FindInventoryByNamePage/FindInventoryByNamePage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -35,15 +44,30 @@ const AppRouter: React.FC = () => {
           element={<ChangeUserInfoPage />}
         />
 
-
         <Route path="/products/menu" element={<ProductsMenuPage />} />
         <Route path="/products/add" element={<AddProductPage />} />
         <Route path="/products/show" element={<AllProductsPage />} />
-        <Route path="/products/find/id/:id" element={<FindProductByIdPage />} />
+        <Route path="/products/find/id" element={<FindProductByIdPage />} />
+        <Route path="/products/find/name" element={<FindProductByNamePage />} />
         <Route path="/products/:name/show" element={<ProductInfoPage />} />
         <Route
           path="/products/:id/changeInfo"
           element={<ChangeProductInfoPage />}
+        />
+
+        <Route path="/inventory/menu" element={<InventoryMenuPage />} />
+        <Route path="/inventory/show" element={<AllInventoryPage />} />
+        <Route path="/inventory/add" element={<AddInventoryPage />} />
+        <Route path="/inventory/find/id" element={<FindInventoryByIdPage />} />
+        <Route path="/inventory/find/name" element={<FindInventoryByNamePage />} />
+        <Route path="/inventory/:name/show" element={<InventoryInfoPage />} />
+        <Route
+          path="/inventory/:id/changeInfo"
+          element={<ChangeInventoryInfoPage />}
+        />
+        <Route
+          path="/inventory/:id/changeAmount"
+          element={<ChangeInventoryAmountPage />}
         />
       </Routes>
     </Router>

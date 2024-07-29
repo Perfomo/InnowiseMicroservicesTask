@@ -1,18 +1,18 @@
-import { Button, Form, FormInstance, Input, InputNumber } from "antd";
+import { Button, Form, FormInstance, InputNumber } from "antd";
 import { useEffect, useState } from "react";
 
 
-interface AllUserInfoFormProps {
+interface AllInventoryAmountFormProps {
   form: FormInstance;
   onFinish: (values: any) => void;
   buttonText: string;
 }
 
-const ProductInfoForm = ({
+const InventoryAmountForm = ({
   form,
   onFinish,
   buttonText,
-}: AllUserInfoFormProps) => {
+}: AllInventoryAmountFormProps) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
   useEffect(() => {
@@ -31,27 +31,20 @@ const ProductInfoForm = ({
       name="register"
       onFinish={onFinish}
       onFieldsChange={handleFieldsChange}
+      initialValues={{
+        residence: ["zhejiang", "hangzhou", "xihu"],
+        prefix: "86",
+      }}
       style={{ maxWidth: 600 }}
       scrollToFirstError
     >
-      <Form.Item
-        name="name"
-        rules={[
-          {
-            required: true,
-            message: "Please input product name!",
-          },
-        ]}
-      >
-        <Input placeholder="Product Name" />
-      </Form.Item>
 
       <Form.Item
-        name="cost"
+        name="amount"
         rules={[
           {
             required: true,
-            message: "Please input product cost!",
+            message: "Please input inventory amount!",
           },
           {
             type: "number",
@@ -61,7 +54,7 @@ const ProductInfoForm = ({
           },
         ]}
       >
-        <InputNumber style={{width: "100%"}} placeholder="Product Cost" />
+        <InputNumber style={{width: "100%"}} placeholder="Inventory Amount" />
       </Form.Item>
 
       <Form.Item style={{ margin: "0%" }}>
@@ -73,4 +66,4 @@ const ProductInfoForm = ({
   );
 };
 
-export default ProductInfoForm;
+export default InventoryAmountForm;

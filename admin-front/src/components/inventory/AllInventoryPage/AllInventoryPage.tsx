@@ -1,22 +1,19 @@
 import React from "react";
 import ErrorUnauthorizedPage from "../../general/ErrorUnauthorizedPage/ErrorUnauthorizedPage";
 import MainHeader from "../../general/loginPage/MainHeader";
-import FindProduct from "../generalElements/FindProduct";
+import AllInventoryContent from "./AllInventoryContent";
 
-const FindProductByIdPage: React.FC = () => {
+
+const AllInventoryPage: React.FC = () => {
   if (!localStorage.getItem("token")) {
-    return (
-      <>
-        <ErrorUnauthorizedPage />
-      </>
-    );
+    return <ErrorUnauthorizedPage />;
   }
   return (
     <>
       <MainHeader />
-      <FindProduct searchBy="id" />
+      <AllInventoryContent />
     </>
   );
 };
 
-export default FindProductByIdPage;
+export default AllInventoryPage;

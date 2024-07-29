@@ -1,18 +1,20 @@
 
 import { useNavigate } from 'react-router-dom';
 
-interface CatalogElementProps {
+interface InventoryElementProps {
   id: number;
   name: string;
+  left: number;
+  sold: number;
   cost: number;
 }
 
-const AllProductsContentElement = (props: CatalogElementProps) => {
+const AllInventoryContentElement = (props: InventoryElementProps) => {
   const navigate = useNavigate();
 
   const onClick = () => {
     const name = props.name;
-    navigate('/products/' + name + "/show", { state: { name: name } });
+    navigate('/inventory/' + name + "/show", { state: { name: name } });
   };
 
   return (
@@ -21,7 +23,7 @@ const AllProductsContentElement = (props: CatalogElementProps) => {
       onClick={onClick}
       style={{
         width: "200px",
-        height: "140px",
+        height: "180px",
         margin: "1%",
         textAlign: "center",
       }}
@@ -32,6 +34,11 @@ const AllProductsContentElement = (props: CatalogElementProps) => {
       <div className="card-body">
         <p className="card-text">
         {props.name}
+        <br/>
+        Left: {props.left}
+        <br/>
+
+        Sold: {props.sold}
         </p>
         <p
           className="card-title"
@@ -44,4 +51,4 @@ const AllProductsContentElement = (props: CatalogElementProps) => {
   );
 };
 
-export default AllProductsContentElement;
+export default AllInventoryContentElement;
