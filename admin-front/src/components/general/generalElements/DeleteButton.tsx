@@ -36,7 +36,7 @@ const DeleteButton = ({searchEl, type}: DeleteButtonProps) => {
         borderColor: "red",
       }}
     >
-      Delete {type[0] === "s" ? type.slice(0,-1) : type}
+      Delete {type[type.length - 1] === "s" ? type.slice(0,-1) : type} 
     </Button>
   );
 };

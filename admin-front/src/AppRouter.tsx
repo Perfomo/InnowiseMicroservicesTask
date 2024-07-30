@@ -23,6 +23,12 @@ import ChangeInventoryAmountPage from "./components/inventory/ChangeInventoryAmo
 import AddInventoryPage from "./components/inventory/AddInventoryPage/AddInventoryPage";
 import FindInventoryByIdPage from "./components/inventory/FindInventoryByIdPage/FindInventoryByIdPage";
 import FindInventoryByNamePage from "./components/inventory/FindInventoryByNamePage/FindInventoryByNamePage";
+import OrdersMenuPage from "./components/orders/OrdersMenuPage/OrdersMenuPage";
+import AllOrdersPage from "./components/orders/AllOrdersPage/AllOrdersPage";
+import OrdersInfoPage from "./components/orders/OrdersInfoPage/OrdersInfoPage";
+import FindOrderByIdPage from "./components/orders/FindOrderByIdPage/FindOrderByIdPage";
+import FindUserOrdersPage from "./components/orders/FindUserOrdersPage/FindUserOrdersPage";
+import OrdersHistoryPage from "./components/orders/OrdersHistoryPage/OrdersHistoryPage";
 
 const AppRouter: React.FC = () => {
   return (
@@ -59,7 +65,10 @@ const AppRouter: React.FC = () => {
         <Route path="/inventory/show" element={<AllInventoryPage />} />
         <Route path="/inventory/add" element={<AddInventoryPage />} />
         <Route path="/inventory/find/id" element={<FindInventoryByIdPage />} />
-        <Route path="/inventory/find/name" element={<FindInventoryByNamePage />} />
+        <Route
+          path="/inventory/find/name"
+          element={<FindInventoryByNamePage />}
+        />
         <Route path="/inventory/:name/show" element={<InventoryInfoPage />} />
         <Route
           path="/inventory/:id/changeInfo"
@@ -69,6 +78,13 @@ const AppRouter: React.FC = () => {
           path="/inventory/:id/changeAmount"
           element={<ChangeInventoryAmountPage />}
         />
+
+        <Route path="/orders/menu" element={<OrdersMenuPage />} />
+        <Route path="/orders/show" element={<AllOrdersPage />} />
+        <Route path="/orders/:id/show" element={<OrdersInfoPage />} />
+        <Route path="/orders/find/id" element={<FindOrderByIdPage />} />
+        <Route path="/orders/find/username" element={<FindUserOrdersPage />} />
+        <Route path="/orders/history" element={<OrdersHistoryPage />} />
       </Routes>
     </Router>
   );

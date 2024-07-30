@@ -18,6 +18,7 @@ const MenuContent: React.FC = () => {
           <CustomPrimaryButton path="/users/menu" text="Users" />
           <CustomPrimaryButton path="/products/menu" text="Products" />
           <CustomPrimaryButton path="/inventory/menu" text="Inventory" />
+          <CustomPrimaryButton path="/orders/menu" text="Orders" />
         </Flex>
       </Layout>
     </>
