@@ -7,6 +7,7 @@ import com.toleyko.springboot.inventoryservice.handlers.exception.InsufficientQu
 import com.toleyko.springboot.inventoryservice.handlers.exception.RemainderNotFoundException;
 import com.toleyko.springboot.inventoryservice.service.InventoryService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,30 +16,37 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Component
+@Slf4j
 public class OrderHandler {
     private InventoryService inventoryService;
     private InventoryRepository inventoryRepository;
     @Transactional
-    public OrderDto handleOrder(OrderDto order) {
-        try {
-            BigDecimal orderCost = BigDecimal.ZERO;
-            for (Map.Entry<String, Integer> entry : order.getProducts().entrySet()) {
-                String id = entry.getKey();
-                Integer amount = entry.getValue();
+    public OrderDto handleOrder(OrderDto order) throws RemainderNotFoundException {
+        boolean isOK = true;
+        BigDecimal orderCost = BigDecimal.ZERO;
+        for (Map.Entry<String, String> entry : order.getProducts().entrySet()) {
+            String name = entry.getKey();
+            String amount = entry.getValue();
+            log.info("name: " + name + "\n" + "amount: " + amount);
+            Remainder remainder = inventoryService.getRemainderByName(name);
+            log.info("Remainder: " + remainder);
+            if (remainder == null || remainder.getLeft() < Integer.parseInt(amount)) {
+                order.getProducts().replace(name, amount + " not enough at storage for order");
+                isOK = false;
+            }
+            if (isOK) {
+                remainder.setLeft(remainder.getLeft() - Integer.parseInt(amount));
+                remainder.setSold(remainder.getSold() + Integer.parseInt(amount));
 
-                Remainder remainder = inventoryService.getRemainderById(Long.valueOf(id));
-                if (remainder == null || remainder.getLeft() < amount) {
-                    throw new InsufficientQuantityException("Not enough: " + id + "\tOr product not found");
-                }
-                remainder.setLeft(remainder.getLeft() - amount);
-                remainder.setSold(remainder.getSold() + amount);
-
-                orderCost = orderCost.add(remainder.getCost().multiply(BigDecimal.valueOf(amount)));
+                orderCost = orderCost.add(remainder.getCost().multiply(BigDecimal.valueOf(Integer.parseInt(amount))));
                 inventoryRepository.save(remainder);
             }
+        }
+        if (isOK) {
             order.setCost(orderCost);
             order.setStatus(OrderStatus.OK);
-        } catch (InsufficientQuantityException | RemainderNotFoundException e) {
+        }
+        else {
             order.setStatus(OrderStatus.ERROR);
             order.setCost(BigDecimal.ZERO);
         }

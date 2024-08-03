@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class User {
-    @NotEmpty(message = "Invalid username")
+    @Size(min = 4, max = 15, message = "Invalid length of username")
     private String username;
     @Email(message = "Invalid email")
     private String email;

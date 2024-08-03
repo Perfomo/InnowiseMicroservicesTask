@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -48,11 +50,10 @@ public class UserController {
         userKeycloakService.deleteUser(userName);
     }
 
-    @GetMapping("/logout")
-    public RedirectView logout() {
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://172.17.0.1:" + gatewayPort + "/logout");
-        return redirectView;
+    @DeleteMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    public void logout(Principal principal) {
+        userKeycloakService.logoutKeycloakUser(principal.getName());
     }
 
     @Autowired

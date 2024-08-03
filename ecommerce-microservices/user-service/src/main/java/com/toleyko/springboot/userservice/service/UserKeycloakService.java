@@ -88,6 +88,11 @@ public class UserKeycloakService {
         publisher.sendMessageToTopic(userName);
     }
 
+    public void logoutKeycloakUser(String username) {
+        UserRepresentation user = this.getUserByUsername(username);
+        keycloak.realm(KeycloakConfig.realm).users().get(user.getId()).logout();
+    }
+
     private UserRepresentation createUserRepresentation(User userDTO) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(userDTO.getUsername());

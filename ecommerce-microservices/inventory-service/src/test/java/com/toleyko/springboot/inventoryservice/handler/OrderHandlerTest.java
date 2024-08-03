@@ -28,7 +28,7 @@ public class OrderHandlerTest {
     private OrderHandler orderHandler;
     private OrderDto order;
     private Remainder remainder;
-    private Map<String, Integer> products;
+    private Map<String, String> products;
 
     @BeforeEach
     public void setUp() {
@@ -49,8 +49,8 @@ public class OrderHandlerTest {
                 .setSold(0);
 
         products = new HashMap<>();
-        products.put("1", 2);
-        products.put("2", 3);
+        products.put("pc", "2");
+        products.put("car", "3");
         order.setProducts(products);
 
     }
@@ -64,11 +64,11 @@ public class OrderHandlerTest {
                 .setUserId("3")
                 .setStatus(OrderStatus.OK);
         expected.setProducts(products);
-        doReturn(remainder).when(inventoryService).getRemainderById(anyLong());
+        doReturn(remainder).when(inventoryService).getRemainderByName(anyString());
         when(inventoryRepository.save(any(Remainder.class))).thenReturn(remainder);
 
         Assertions.assertEquals(expected, orderHandler.handleOrder(order));
-        verify(inventoryService, times(2)).getRemainderById(anyLong());
+        verify(inventoryService, times(2)).getRemainderByName(anyString());
         verify(inventoryRepository, times(2)).save(any(Remainder.class));
     }
 
@@ -82,11 +82,11 @@ public class OrderHandlerTest {
                 .setUserId("3")
                 .setStatus(OrderStatus.ERROR);
         expected.setProducts(products);
-        doReturn(remainder).when(inventoryService).getRemainderById(anyLong());
+        doReturn(remainder).when(inventoryService).getRemainderByName(anyString());
         when(inventoryRepository.save(any(Remainder.class))).thenReturn(remainder);
 
         Assertions.assertEquals(expected, orderHandler.handleOrder(order));
-        verify(inventoryService, times(2)).getRemainderById(anyLong());
+        verify(inventoryService, times(2)).getRemainderByName(anyString());
         verify(inventoryRepository, times(1)).save(any(Remainder.class));
     }
 }

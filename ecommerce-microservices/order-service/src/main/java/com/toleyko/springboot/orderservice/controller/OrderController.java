@@ -3,6 +3,7 @@ package com.toleyko.springboot.orderservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.toleyko.springboot.orderservice.entity.History;
 import com.toleyko.springboot.orderservice.entity.Order;
+import com.toleyko.springboot.orderservice.handler.OrderStatus;
 import com.toleyko.springboot.orderservice.handler.exception.OrderNotFoundException;
 import com.toleyko.springboot.orderservice.handler.exception.TokenDataExtractionException;
 import com.toleyko.springboot.orderservice.service.OrderFacadeService;
@@ -23,7 +24,9 @@ public class OrderController {
     private OrderService orderService;
     private OrdersHistoryService ordersHistoryService;
     private OrderFacadeService orderFacadeService;
+
     @GetMapping("/history")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<History>> getHistory() {
         return ResponseEntity.ok(ordersHistoryService.getHistory());
     }
@@ -35,6 +38,7 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Order> getOrderById(@PathVariable Long id) throws OrderNotFoundException {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
@@ -48,15 +52,17 @@ public class OrderController {
     @PostMapping("/orders")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Order> saveOrder(@Valid @RequestBody Order order, Principal principal) throws TokenDataExtractionException, JsonProcessingException {
-        return ResponseEntity.ok(orderFacadeService.saveAndSendOrder(order.setUsername(principal.getName())));
+        return ResponseEntity.ok(orderFacadeService.saveAndSendOrder(order.setUsername(principal.getName()).setStatus(OrderStatus.PENDING)));
     }
 
     @PutMapping("/orders/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order order) throws OrderNotFoundException {
         return ResponseEntity.ok(orderService.updateOrderById(id, order));
     }
 
     @DeleteMapping("/orders/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Order> deleteOrderById(@PathVariable Long id) throws OrderNotFoundException {
         return ResponseEntity.ok(orderService.deleteOrderById(id));
     }

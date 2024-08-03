@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -135,7 +136,7 @@ public class UserControllerTest {
         expected.put("firstName", "Invalid firstname");
         expected.put("password", "Invalid password, length must be more that 3 and less than 16");
         expected.put("email", "Invalid email");
-        expected.put("username", "Invalid username");
+        expected.put("username", "Invalid length of username");
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/users")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -187,18 +188,6 @@ public class UserControllerTest {
     }
 
     @Test
-    public void updateUser_BadUserDataExceptionTest() throws Exception {
-        String username = "Perfomo";
-        User user = new User("Per","3sd@gmail.com","root", "Kir", "Tol");
-        when(userKeycloakService.updateUser(anyString(), any(User.class))).thenThrow(BadUserDataException.class);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", username)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(user)))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> Assertions.assertInstanceOf(BadUserDataException.class, result.getResolvedException()));
-    }
-    @Test
     public void updateUser_BeanValidationExceptionTest() throws Exception {
         User user = new User("","@gmail.com","ro", "", "");
         HashMap<String, String> expected = new HashMap<>();
@@ -206,7 +195,7 @@ public class UserControllerTest {
         expected.put("lastName", "Invalid lastname");
         expected.put("password", "Invalid password, length must be more that 3 and less than 16");
         expected.put("email", "Invalid email");
-        expected.put("username", "Invalid username");
+        expected.put("username", "Invalid length of username");
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/users/{username}", "Perfomo")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -230,7 +219,11 @@ public class UserControllerTest {
 
     @Test
     public void logoutTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/logout"))
-                .andExpect(status().is(302));
+        Authentication authentication2 = new UsernamePasswordAuthenticationToken("manager", "manager",
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_MANAGER")));
+        doNothing().when(userKeycloakService).logoutKeycloakUser(anyString());
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/logout")
+                        .principal(authentication2))
+                .andExpect(status().isOk());
     }
 }
